@@ -15,7 +15,7 @@ for (const screen of templatesCollection) {
 const min = 0;
 const max = screens.length - 1;
 
-const showScreen = function (number) {
+const showScreen = (number) => {
   if (number >= min && number <= max) {
     mainContainer.innerHTML = screens[number].innerHTML;
   }
@@ -23,13 +23,13 @@ const showScreen = function (number) {
 
 showScreen(min);
 
-document.addEventListener(`keydown`, function (event) {
+document.addEventListener(`keydown`, (event) => {
   if (event.altKey && event.keyCode === arrowLeft) {
     changePointer(pointer - 1);
   }
 });
 
-document.addEventListener(`keydown`, function (event) {
+document.addEventListener(`keydown`, (event) => {
   if (event.altKey && event.keyCode === arrowRight) {
     changePointer(pointer + 1);
   }
