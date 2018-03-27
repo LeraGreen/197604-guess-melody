@@ -1,7 +1,7 @@
 # Личный проект «Угадай мелодию» [![Build status][travis-image]][travis-url]
 
 * Студент: [Валерия Зелёная](https://up.htmlacademy.ru/ecmascript/4/user/197604).
-* Наставник: `Неизвестно`.
+* Наставник: [Игорь Алексеенко](https://htmlacademy.ru/profile/o0).
 
 ---
 
