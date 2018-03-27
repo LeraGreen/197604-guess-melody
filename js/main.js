@@ -4,29 +4,28 @@ const mainContainer = app.querySelector(`.main`);
 const template = document.getElementById(`templates`);
 const templateContent = template.content;
 const templatesCollection = templateContent.querySelectorAll(`.main`);
-const templates = [];
+const screens = [];
 const arrowLeft = 37;
 const arrowRight = 39;
 
+for (const screen of templatesCollection) {
+  screens.push(screen);
+}
+
 const min = 0;
-const max = templates.length;
+const max = screens.length;
 
-for (const template of templatesCollection) {
-  templates.push(template);
-}
-console.log(templates);
+console.log(screens);
 
-const showScreen = (number) => {
+const showScreen = function (number) {
   if (number >= min && number <= max) {
-    mainContainer.innerHTML = templates[number].innerHTML;
-  } else {
-    return false;
+    mainContainer.innerHTML = screens[number].innerHTML;
   }
-}
+};
 
 showScreen(0);
 
-document.addEventListener(`keydown`, (event) => {
+document.addEventListener(`keydown`, function (event) {
   console.log(event.keyCode);
   if (event.altKey && event.keyCode === arrowLeft) {
     changePointer(pointer - 1);
@@ -34,7 +33,7 @@ document.addEventListener(`keydown`, (event) => {
   }
 });
 
-document.addEventListener(`keydown`, (event) => {
+document.addEventListener(`keydown`, function (event) {
   console.log(event.keyCode);
   if (event.altKey && event.keyCode === arrowRight) {
     changePointer(pointer + 1);
