@@ -1,42 +1,45 @@
-const app = document.querySelector(`.app`);
-const mainContainer = app.querySelector(`.main`);
-const templateContent = document.getElementById(`templates`).content;
-const templatesCollection = templateContent.querySelectorAll(`.main`);
-const screens = [];
-const arrowLeft = 37;
-const arrowRight = 39;
-let pointer = 0;
-
-for (const screen of templatesCollection) {
-  screens.push(screen);
-}
-
-const min = 0;
-const max = screens.length - 1;
-
-const showScreen = (number) => {
-  if (number >= min && number <= max) {
-    mainContainer.innerHTML = screens[number].innerHTML;
-  }
+const KeyCode = {
+  ARROW_LEFT: 37,
+  ARROW_RIGHT: 39
 };
 
-showScreen(min);
+const checkNumberInRange = (number, min, max) => number >= min && number <= max;
 
-document.addEventListener(`keydown`, (event) => {
-  if (event.altKey && event.keyCode === arrowLeft) {
-    changePointer(pointer - 1);
+const checkKeyModifier = (evt, button) => evt.altKey && evt.keyCode === button;
+
+const getChangeScreenFn = () => {
+  const appContainer = document.querySelector(`.app`);
+  const mainContainer = appContainer.querySelector(`.main`);
+  const templateContent = document.getElementById(`templates`).content;
+  const screens = Array.from(templateContent.querySelectorAll(`.main`));
+  const minValue = 0;
+  const maxValue = screens.length - 1;
+  let pointer = -1;
+
+  const showScreen = (screen) => {
+    mainContainer.innerHTML = screen.innerHTML;
+  };
+
+  return (isNext) => {
+    const number = isNext ? pointer + 1 : pointer - 1;
+    if (checkNumberInRange(number, minValue, maxValue)) {
+      pointer = number;
+      showScreen(screens[pointer]);
+    }
+  };
+};
+
+document.addEventListener(`keydown`, (evt) => {
+  if (checkKeyModifier(evt, KeyCode.ARROW_LEFT)) {
+    changeScreen(false);
   }
 });
 
-document.addEventListener(`keydown`, (event) => {
-  if (event.altKey && event.keyCode === arrowRight) {
-    changePointer(pointer + 1);
+document.addEventListener(`keydown`, (evt) => {
+  if (checkKeyModifier(evt, KeyCode.ARROW_RIGHT)) {
+    changeScreen(true);
   }
 });
 
-const changePointer = (number) => {
-  if (number >= min && number <= max) {
-    pointer = number;
-    showScreen(pointer);
-  }
-};
+const changeScreen = getChangeScreenFn();
+changeScreen(true);
