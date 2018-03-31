@@ -1,6 +1,3 @@
-// import {getElementFromTemplate} from '../js/utils.js';
-
-
 const KeyCode = {
   ARROW_LEFT: 37,
   ARROW_RIGHT: 39
