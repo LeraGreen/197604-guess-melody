@@ -7,7 +7,7 @@ export const getElementFromTemplate = (string) => {
 };
 
 export const showScreen = (element) => {
-  const mainClass = '.main';
+  const mainClass = `.main`;
   const main = appContainer.querySelector(mainClass);
   if (main) {
     appContainer.replaceChild(element, main);
