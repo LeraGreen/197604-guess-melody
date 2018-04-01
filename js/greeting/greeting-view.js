@@ -1,6 +1,4 @@
-import getElementFromTemplate from '../utils';
-
-const template = `<section class="main main--welcome">
+export default `<section class="main main--welcome">
   <section class="logo" title="Угадай мелодию"><h1>Угадай мелодию</h1></section>
   <button class="main-play">Начать игру</button>
   <h2 class="title main-title">Правила игры</h2>
@@ -10,5 +8,3 @@ const template = `<section class="main main--welcome">
     Удачи!
   </p>
 </section>`;
-
-export default getElementFromTemplate(template);
