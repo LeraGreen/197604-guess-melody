@@ -9,5 +9,5 @@ answersForm.addEventListener(`click`, (event) => {
   if (event.target.classList.contains(buttonNextClass)) {
     showScreen(secondScreenContent);
   }
-})
+});
 export default firstScreenContent;
