@@ -17,7 +17,7 @@ const getWinScreen = () => {
   const buttonReplay = winScreen.querySelector(`.main-replay`);
   buttonReplay.addEventListener(`click`, () => showScreen(getGreetingScreen()));
 
-  return winScreen; 
+  return winScreen;
 };
 
 export default getWinScreen;

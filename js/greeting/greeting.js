@@ -17,6 +17,6 @@ const getGreetingScreen = () => {
   const playButton = greetingScreen.querySelector(`.main-play`);
   playButton.addEventListener(`click`, () => showScreen(getFirstScreen()));
   return greetingScreen;
-}
+};
 
 export default getGreetingScreen;
