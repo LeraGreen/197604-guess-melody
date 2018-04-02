@@ -1,4 +1,7 @@
-export default `<section class="main main--result">
+import {getElementFromTemplate, showScreen} from '../utils';
+import greetingScreenContent from '../greeting/greeting';
+
+const template = `<section class="main main--result">
   <section class="logo" title="Угадай мелодию"><h1>Угадай мелодию</h1></section>
 
   <h2 class="title">Вы настоящий меломан!</h2>
@@ -8,3 +11,9 @@ export default `<section class="main main--result">
   <span class="main-comparison">Вы заняли 2 место из 10. Это&nbsp;лучше чем у&nbsp;80%&nbsp;игроков</span>
   <span role="button" tabindex="0" class="main-replay">Сыграть ещё раз</span>
 </section>`;
+
+const resultContent = getElementFromTemplate(template);
+const buttonReplay = resultContent.querySelector(`.main-replay`);
+buttonReplay.addEventListener(`click`, () => showScreen(greetingScreenContent));
+
+export default resultContent;
