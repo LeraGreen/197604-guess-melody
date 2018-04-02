@@ -1,5 +1,5 @@
 import {getElementFromTemplate, showScreen} from '../utils';
-import greetingScreenContent from '../greeting/greeting';
+import greetingScreen from '../greeting/greeting';
 
 const template = `<section class="main main--result">
   <section class="logo" title="Угадай мелодию"><h1>Угадай мелодию</h1></section>
@@ -8,8 +8,8 @@ const template = `<section class="main main--result">
   <span role="button" tabindex="0" class="main-replay">Попробовать ещё раз</span>
 </section>
 </template>`;
-const resultAttemptsOutContent = getElementFromTemplate(template);
-const buttonReplay = resultAttemptsOutContent.querySelector(`.main-replay`);
-buttonReplay.addEventListener(`click`, () => showScreen(greetingScreenContent));
+const attemptsOutScreen = getElementFromTemplate(template);
+const buttonReplay = attemptsOutScreen.querySelector(`.main-replay`);
+buttonReplay.addEventListener(`click`, () => showScreen(greetingScreen));
 
-export default resultAttemptsOutContent;
+export default attemptsOutScreen;

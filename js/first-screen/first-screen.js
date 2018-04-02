@@ -1,5 +1,5 @@
 import {getElementFromTemplate, showScreen} from '../utils';
-import secondScreenContent from '../second-screen/second-screen';
+import secondScreen from '../second-screen/second-screen';
 
 const template = `<section class="main main--level main--level-artist">
   <svg xmlns="http://www.w3.org/2000/svg" class="timer" viewBox="0 0 780 780">
@@ -63,11 +63,11 @@ const template = `<section class="main main--level main--level-artist">
 
 
 const buttonNextClass = `main-answer`;
-const firstScreenContent = getElementFromTemplate(template);
-const answersForm = firstScreenContent.querySelector(`.main-list`);
+const firstScreen = getElementFromTemplate(template);
+const answersForm = firstScreen.querySelector(`.main-list`);
 answersForm.addEventListener(`click`, (evt) => {
   if (evt.target.classList.contains(buttonNextClass)) {
-    showScreen(secondScreenContent);
+    showScreen(secondScreen);
   }
 });
-export default firstScreenContent;
+export default firstScreen;

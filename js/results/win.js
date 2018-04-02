@@ -12,8 +12,8 @@ const template = `<section class="main main--result">
   <span role="button" tabindex="0" class="main-replay">Сыграть ещё раз</span>
 </section>`;
 
-const resultContent = getElementFromTemplate(template);
-const buttonReplay = resultContent.querySelector(`.main-replay`);
+const winScreen = getElementFromTemplate(template);
+const buttonReplay = winScreen.querySelector(`.main-replay`);
 buttonReplay.addEventListener(`click`, () => showScreen(greetingScreenContent));
 
-export default resultContent;
+export default winScreen;

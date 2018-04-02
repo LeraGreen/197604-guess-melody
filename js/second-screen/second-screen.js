@@ -1,7 +1,7 @@
 import {getElementFromTemplate, showScreen} from '../utils';
-import resultContent from '../results/win';
-import resultAttemptsOutContent from '../results/attempts-out';
-import resultTimeOutContent from '../results/timeout';
+import winScreen from '../results/win';
+import attemptsOutScreen from '../results/attempts-out';
+import timeOutScreen from '../results/timeout';
 
 const template = `<section class="main main--level main--level-genre">
   <svg xmlns="http://www.w3.org/2000/svg" class="timer" viewBox="0 0 780 780">
@@ -86,13 +86,13 @@ const template = `<section class="main main--level main--level-genre">
   </div>
 </section>`;
 
-const resultScreens = [resultContent, resultAttemptsOutContent, resultTimeOutContent];
+const resultScreens = [winScreen, attemptsOutScreen, timeOutScreen];
 const getRandomScreen = (array) => array[Math.floor(Math.random() * array.length)];
 
-const secondScreenContent = getElementFromTemplate(template);
-const answersForm = secondScreenContent.querySelector(`.genre`);
+const secondScreen = getElementFromTemplate(template);
+const answersForm = secondScreen.querySelector(`.genre`);
 answersForm.addEventListener(`submit`, () => {
   showScreen(getRandomScreen(resultScreens));
 });
 
-export default secondScreenContent;
+export default secondScreen;
