@@ -87,10 +87,7 @@ const getSecondScreen = () => {
     </div>
   </section>`;
 
-  const winScreen = getWinScreen();
-  const attemptsOutScreen = getAttemptsOutScreen();
-  const timeOutScreen = getTimeOutScreen();
-  const resultScreens = [winScreen, attemptsOutScreen, timeOutScreen];
+  const resultScreens = [getWinScreen(), getAttemptsOutScreen(), getTimeOutScreen()];
   const secondScreen = getElementFromTemplate(template);
   const answersForm = secondScreen.querySelector(`.genre`);
   answersForm.addEventListener(`submit`, () => {
