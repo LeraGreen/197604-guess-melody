@@ -1,4 +1,4 @@
 import {showScreen} from './utils';
-import greetingScreen from './greeting/greeting';
+import getGreetingScreen from './greeting/greeting';
 
-showScreen(greetingScreen);
+showScreen(getGreetingScreen());

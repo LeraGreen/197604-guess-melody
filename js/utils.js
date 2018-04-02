@@ -14,3 +14,5 @@ export const showScreen = (element) => {
   }
   appContainer.insertBefore(element, appContainer.children[0]);
 };
+
+export const getRandomScreen = (array) => array[Math.floor(Math.random() * array.length)];
