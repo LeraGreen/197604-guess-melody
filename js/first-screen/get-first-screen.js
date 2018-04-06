@@ -66,8 +66,8 @@ const getFirstScreen = () => {
 
   const firstScreen = getElementFromTemplate(template);
   const answersForm = firstScreen.querySelector(`.main-list`);
-  answersForm.addEventListener(`click`, (evt) => {
-    if (evt.target.classList.contains(`main-answer`)) {
+  answersForm.addEventListener(`change`, (evt) => {
+    if (evt.target.name === `answer`) {
       showScreen(getSecondScreen());
     }
   });
