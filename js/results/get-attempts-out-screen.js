@@ -1,5 +1,5 @@
 import {getElementFromTemplate, showScreen} from '../utils';
-import getGreetingScreen from '../greeting/greeting';
+import getGreetingScreen from '../greeting/get-greeting-screen';
 
 const getAttemptsOutScreen = () => {
   const template = `<section class="main main--result">

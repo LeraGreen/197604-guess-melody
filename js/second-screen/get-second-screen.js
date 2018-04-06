@@ -1,7 +1,7 @@
-import {getElementFromTemplate, showScreen, getRandomScreen} from '../utils';
-import getWinScreen from '../results/win';
-import getAttemptsOutScreen from '../results/attempts-out';
-import getTimeOutScreen from '../results/timeout';
+import {getElementFromTemplate, showScreen, getRandomFromArray} from '../utils';
+import getWinScreen from '../results/get-win-screen';
+import getAttemptsOutScreen from '../results/get-attempts-out-screen';
+import getTimeOutScreen from '../results/get-timeout-screen';
 
 const getSecondScreen = () => {
   const template = `<section class="main main--level main--level-genre">
@@ -91,7 +91,7 @@ const getSecondScreen = () => {
   const secondScreen = getElementFromTemplate(template);
   const answersForm = secondScreen.querySelector(`.genre`);
   answersForm.addEventListener(`submit`, () => {
-    showScreen(getRandomScreen(resultScreens));
+    showScreen(getRandomFromArray(resultScreens));
   });
 
   return secondScreen;

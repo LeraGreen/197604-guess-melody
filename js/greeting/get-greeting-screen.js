@@ -1,5 +1,5 @@
 import {getElementFromTemplate, showScreen} from '../utils';
-import getFirstScreen from '../first-screen/first-screen';
+import getFirstScreen from '../first-screen/get-first-screen';
 
 const getGreetingScreen = () => {
   const template = `<section class="main main--welcome">
