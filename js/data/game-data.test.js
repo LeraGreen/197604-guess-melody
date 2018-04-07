@@ -48,20 +48,17 @@ describe(`statistics from game`, () => {
   describe(`winner statistics from game`, () => {
     it(`should return 33 percent for winner`, () => {
       const otherResults = [20, 15, 3, 14, 5];
-      assert.equal(33, getWinnerStatistics(13,
-        otherResults).percent);
+      assert.equal(33, getWinnerStatistics(13, otherResults).percent);
     });
 
     it(`should return 6 players`, () => {
       const otherResults = [20, 15, 3, 14, 5];
-      assert.equal(6, getWinnerStatistics(13,
-        otherResults).players);
+      assert.equal(6, getWinnerStatistics(13, otherResults).players);
     });
 
     it(`should return 4 for user position`, () => {
       const otherResults = [20, 15, 3, 14, 5];
-      assert.equal(4, getWinnerStatistics(13,
-        otherResults).position);
+      assert.equal(4, getWinnerStatistics(13, otherResults).position);
     });
   });
 
@@ -99,7 +96,7 @@ describe(`statistics from game`, () => {
   });
 });
 
-describe.only(`Timer tick`, () => {
+describe(`Timer tick`, () => {
   it(`Should increase current time on tick and show that time hasn't reached maximum`, () => {
     const timerTest = Object.assign({}, timer, {
       currentTime: 27

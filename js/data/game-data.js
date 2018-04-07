@@ -11,13 +11,13 @@ export const timer = {
   maxTime: 60 * 5
 };
 
-export const tick = (timer) => {
-  if (timer.currentTime < timer.maxTime) {
-    timer.currentTime++;
+export const tick = (gameTimer) => {
+  if (gameTimer.currentTime < gameTimer.maxTime) {
+    gameTimer.currentTime++;
   } else {
-    timer.isFinished = true;
+    gameTimer.isFinished = true;
   }
-  return timer;
+  return gameTimer;
 };
 
 export const settings = {
@@ -29,12 +29,12 @@ export const settings = {
 export const checkAnswer = (answerData) => {
   if (answerData.answer) {
     if (answerData.time < 30) {
-      return `fast`
+      return `fast`;
     }
     return `correct`;
   }
   return `wrong`;
-}
+};
 
 const AnswerType = {
   FAST: `fast`,
@@ -68,7 +68,7 @@ export const getStatistics = (userResult, gameSettings, otherResults) => {
     }
   }
   const winnerResult = getWinnerStatistics(userResult.points, otherResults);
-  return `Вы заняли ${winnerResult.position} место из ${winnerResult.players} игроков. Это лучше, чем у ${winnerResult.percent}% игроков!`
+  return `Вы заняли ${winnerResult.position} место из ${winnerResult.players} игроков. Это лучше, чем у ${winnerResult.percent}% игроков!`;
 };
 
 export const getWinnerStatistics = (userPoints, otherResults) => {
@@ -76,7 +76,7 @@ export const getWinnerStatistics = (userPoints, otherResults) => {
   const winners = otherResults.sort((a, b) => b - a);
   const userPosition = winners.indexOf(userPoints) + 1;
   const percent = Math.round(((winners.length - userPosition) / winners.length) * 100);
-  return {position: userPosition, players: winners.length, percent: percent};
+  return {position: userPosition, players: winners.length, percent};
 };
 
 // битовые штуки или как оно там называется
