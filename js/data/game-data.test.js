@@ -1,5 +1,5 @@
 import {assert} from 'chai';
-import {settings, checkAnswer, calsPoints, getStatistics, getWinnerStatistics} from './game-data';
+import {settings, timer, tick, checkAnswer, calsPoints, getStatistics, getWinnerStatistics} from './game-data';
 
 
 describe(`check answer type`, () => {
@@ -96,5 +96,36 @@ describe(`statistics from game`, () => {
       const otherResults = [20, 15, 3, 14, 5];
       assert.equal(`Вы заняли 4 место из 6 игроков. Это лучше, чем у 33% игроков!`, getStatistics(result, settings, otherResults));
     });
+  });
+});
+
+describe.only(`Timer tick`, () => {
+  it(`Should increase current time on tick and show that time hasn't reached maximum`, () => {
+    const timerTest = Object.assign({}, timer, {
+      currentTime: 27
+    });
+
+    assert.equal(28, tick(timerTest).currentTime);
+    assert.equal(false, tick(timerTest).isFinished);
+  });
+
+  it(`Should tick and return flag if timer has reached maximum`, () => {
+    const timerTest = Object.assign({}, timer, {
+      currentTime: 5 * 60 - 1,
+      maxTime: 5 * 60
+    });
+
+    assert.equal(300, tick(timerTest).currentTime);
+    assert(tick(timerTest).isFinished);
+  });
+
+  it(`Shouldn't up if timer already in maximum`, () => {
+    const timerTest = Object.assign({}, timer, {
+      currentTime: 5 * 60,
+      maxTime: 5 * 60
+    });
+
+    assert.equal(300, tick(timerTest).currentTime);
+    assert.equal(true, tick(timerTest).isFinished);
   });
 });

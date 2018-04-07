@@ -5,10 +5,25 @@ export const initialState = {
   answers: []
 };
 
+export const timer = {
+  currentTime: 0,
+  isFinished: false,
+  maxTime: 60 * 5
+};
+
+export const tick = (timer) => {
+  if (timer.currentTime < timer.maxTime) {
+    timer.currentTime++;
+  } else {
+    timer.isFinished = true;
+  }
+  return timer;
+};
+
 export const settings = {
   maxLives: 3,
   screens: 10,
-  timeToGame: 300 // five minutes
+  timeToGame: 5 * 60 // five minutes
 };
 
 export const checkAnswer = (answerData) => {
