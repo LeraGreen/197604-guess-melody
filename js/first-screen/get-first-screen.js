@@ -1,5 +1,5 @@
 import {getElementFromTemplate, showScreen} from '../utils';
-import getSecondScreen from '../second-screen/second-screen';
+import getSecondScreen from '../second-screen/get-second-screen';
 
 
 const getFirstScreen = () => {
@@ -64,11 +64,10 @@ const getFirstScreen = () => {
   </section>`;
 
 
-  const buttonNextClass = `main-answer`;
   const firstScreen = getElementFromTemplate(template);
   const answersForm = firstScreen.querySelector(`.main-list`);
-  answersForm.addEventListener(`click`, (evt) => {
-    if (evt.target.classList.contains(buttonNextClass)) {
+  answersForm.addEventListener(`change`, (evt) => {
+    if (evt.target.name === `answer`) {
       showScreen(getSecondScreen());
     }
   });
