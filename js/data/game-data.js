@@ -12,8 +12,8 @@ export const initialState = {
 };
 
 export const currentState = {
-  mistakes: 0,
-  time: 0,
+  mistakes: 2,
+  time: 5 * 60 - 1,
   question: 0
 };
 
@@ -82,4 +82,10 @@ export const upMistake = (state) => {
     state.mistakes++;
   }
   return state;
+};
+
+export const splitTime = (seconds) => {
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = seconds % 60;
+  return {'minutes': minutes, 'seconds': remainingSeconds};
 };

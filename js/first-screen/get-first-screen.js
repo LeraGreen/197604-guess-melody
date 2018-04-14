@@ -1,11 +1,12 @@
 import {getElementFromTemplate, showScreen} from '../utils';
 import getSecondScreen from '../second-screen/get-second-screen';
 import header from '../header/header';
+import {currentState} from '../data/game-data';
 
 
-const getFirstScreen = () => {
+const getFirstScreen = (state) => {
   const template = `<section class="main main--level main--level-artist">
-    ${header()}
+    ${header(state)}
 
     <div class="main-wrap">
       <h2 class="title main-title">Кто исполняет эту песню?</h2>
@@ -54,7 +55,7 @@ const getFirstScreen = () => {
   const answersForm = firstScreen.querySelector(`.main-list`);
   answersForm.addEventListener(`change`, (evt) => {
     if (evt.target.name === `answer`) {
-      showScreen(getSecondScreen());
+      showScreen(getSecondScreen(currentState));
     }
   });
 

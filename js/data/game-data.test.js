@@ -1,5 +1,5 @@
 import {assert} from 'chai';
-import {settings, currentState, tick, checkAnswer, calsPoints, getStatistics, getWinnerStatistics, upMistake} from './game-data';
+import {settings, currentState, tick, checkAnswer, calsPoints, getStatistics, getWinnerStatistics, upMistake, splitTime} from './game-data';
 
 
 describe(`check answer type`, () => {
@@ -153,6 +153,36 @@ describe(`Change state`, () => {
 
       assert.equal(0, tick(timerTest).time);
     });
+  });
+
+});
+
+describe.only(`Get minutes and seconds from seconds`, () => {
+  it(`Shoulls return 4 minutes and 59 seconds`, () => {
+    const timeTest = Object.assign({}, currentState, {
+      time: 5 * 60 - 1
+    });
+
+    assert.equal(4, splitTime(timeTest.time).minutes);
+    assert.equal(59, splitTime(timeTest.time).seconds);
+  });
+
+  it(`Shoulls return 0 minutes and 59 seconds`, () => {
+    const timeTest = Object.assign({}, currentState, {
+      time: 59
+    });
+
+    assert.equal(0, splitTime(timeTest.time).minutes);
+    assert.equal(59, splitTime(timeTest.time).seconds);
+  });
+
+  it(`Shoulls return 5 minutes and 0 seconds`, () => {
+    const timeTest = Object.assign({}, currentState, {
+      time: 300
+    });
+
+    assert.equal(5, splitTime(timeTest.time).minutes);
+    assert.equal(0, splitTime(timeTest.time).seconds);
   });
 
 });

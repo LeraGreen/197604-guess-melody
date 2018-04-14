@@ -4,9 +4,9 @@ import getAttemptsOutScreen from '../results/get-attempts-out-screen';
 import getTimeOutScreen from '../results/get-timeout-screen';
 import header from '../header/header';
 
-const getSecondScreen = () => {
+const getSecondScreen = (state) => {
   const template = `<section class="main main--level main--level-genre">
-    ${header()}
+    ${header(state)}
 
     <div class="main-wrap">
       <h2 class="title">Выберите инди-рок треки</h2>
