@@ -1,37 +1,30 @@
-const MAX_MISTAKES = 3;
-const TIME_START = 60 * 5;
-const TIME_FINISH = 0;
-
-export const timer = {
-  currentTime: 0,
-  isFinished: false
+export const settings = {
+  maxMistakes: 3,
+  screens: 10,
+  timeToGame: 5 * 60,
+  timeToEnd: 0
 };
 
 export const initialState = {
   mistakes: 0,
-  time: TIME_START,
+  time: settings.timeToGame,
   currentQuestion: 0
 };
 
 export const currentState = {
   mistakes: 0,
   time: 0,
-  currentQuestion: 0
+  question: 0,
+  isFinished: false
 };
 
-export const tick = (gameTimer) => {
-  if (gameTimer.currentTime > TIME_FINISH) {
-    gameTimer.currentTime--;
+export const tick = (state) => {
+  if (state.time > settings.timeToEnd) {
+    state.time--;
   } else {
-    gameTimer.isFinished = true;
+    state.isFinished = true;
   }
-  return gameTimer;
-};
-
-export const settings = {
-  maxLives: 3,
-  screens: 10,
-  timeToGame: 5 * 60 // five minutes
+  return state;
 };
 
 export const checkAnswer = (answerData) => {
@@ -86,3 +79,11 @@ export const getWinnerStatistics = (userPoints, otherResults) => {
   const percent = Math.round(((winners.length - userPosition) / winners.length) * 100);
   return {position: userPosition, players: winners.length, percent};
 };
+
+// const upMistake = (state) => {
+//   if (state.mistakes < settings.maxMistakes) {
+//     state.mistakes++;
+//   } else {
+//
+//   }
+// };

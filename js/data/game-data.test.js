@@ -1,5 +1,5 @@
 import {assert} from 'chai';
-import {settings, timer, tick, checkAnswer, calsPoints, getStatistics, getWinnerStatistics} from './game-data';
+import {settings, currentState, tick, checkAnswer, calsPoints, getStatistics, getWinnerStatistics, upMistake} from './game-data';
 
 
 describe(`check answer type`, () => {
@@ -98,42 +98,38 @@ describe(`statistics from game`, () => {
 
 describe.only(`Timer tick`, () => {
   it(`Should decrease current time on tick and show that time hasn't reached minimum`, () => {
-    const timerTest = Object.assign({}, timer, {
-      currentTime: 27
+    const timerTest = Object.assign({}, currentState, {
+      time: 27
     });
 
-    assert.equal(26, tick(timerTest).currentTime);
+    assert.equal(26, tick(timerTest).time);
     assert.equal(false, tick(timerTest).isFinished);
   });
 
   it(`Should tick and return flag if timer hasn't reached maximum`, () => {
-    const timerTest = Object.assign({}, timer, {
-      currentTime: 5 * 60
+    const timerTest = Object.assign({}, currentState, {
+      time: 5 * 60
     });
 
-    assert.equal(299, tick(timerTest).currentTime);
+    assert.equal(299, tick(timerTest).time);
     assert(!tick(timerTest).isFinished);
   });
 
   it(`Should return 0 and flag if timer already in minimum`, () => {
-    const timerTest = Object.assign({}, timer, {
-      currentTime: 0
+    const timerTest = Object.assign({}, currentState, {
+      time: 0
     });
 
-    assert.equal(0, tick(timerTest).currentTime);
+    assert.equal(0, tick(timerTest).time);
     assert.equal(true, tick(timerTest).isFinished);
   });
 });
 
 describe(`Change state`, () => {
-  describe(`change mistakes`, () => {
-    it(`Should increase current time on tick and show that time hasn't reached maximum`, () => {
-      const timerTest = Object.assign({}, timer, {
-        currentTime: 27
-      });
+  describe(`Change mistakes`, () => {
+    it(`Should increase current mistakes on mistake and show that mistakes hasn't reached maximum`, () => {
 
-      assert.equal(28, tick(timerTest).currentTime);
-      assert.equal(false, tick(timerTest).isFinished);
+      assert.equal(1, upMistake(currentState).mistakes);
     });
 
   });
