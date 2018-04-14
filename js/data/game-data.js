@@ -1,12 +1,15 @@
+const MAX_MISTAKES = 3;
+const TIME_START = 60 * 5;
+const TIME_FINISH = 0;
+
 export const timer = {
   currentTime: 0,
-  isFinished: false,
-  maxTime: 60 * 5
+  isFinished: false
 };
 
 export const initialState = {
   mistakes: 0,
-  time: timer.maxTime,
+  time: TIME_START,
   currentQuestion: 0
 };
 
@@ -17,7 +20,7 @@ export const currentState = {
 };
 
 export const tick = (gameTimer) => {
-  if (gameTimer.currentTime > 0) {
+  if (gameTimer.currentTime > TIME_FINISH) {
     gameTimer.currentTime--;
   } else {
     gameTimer.isFinished = true;
