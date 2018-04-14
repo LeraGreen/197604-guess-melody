@@ -96,7 +96,7 @@ describe(`statistics from game`, () => {
   });
 });
 
-describe.only(`Timer tick`, () => {
+describe(`Timer tick`, () => {
   it(`Should decrease current time on tick and show that time hasn't reached minimum`, () => {
     const timerTest = Object.assign({}, currentState, {
       time: 27
@@ -121,17 +121,45 @@ describe.only(`Timer tick`, () => {
     });
 
     assert.equal(0, tick(timerTest).time);
-    assert.equal(true, tick(timerTest).isFinished);
+    assert(tick(timerTest).isFinished);
+  });
+
+  it(`Should return 0 and flag if timer already in minimum`, () => {
+    const timerTest = Object.assign({}, currentState, {
+      time: 1
+    });
+
+    assert.equal(0, tick(timerTest).time);
+    assert(tick(timerTest).isFinished);
   });
 });
 
-describe(`Change state`, () => {
+describe.only(`Change state`, () => {
   describe(`Change mistakes`, () => {
-    it(`Should increase current mistakes on mistake and show that mistakes hasn't reached maximum`, () => {
-
-      assert.equal(1, upMistake(currentState).mistakes);
+    it(`Should increase current mistakes and show that mistakes hasn't reached maximum`, () => {
+      const mistakesTest = Object.assign({}, currentState, {
+        mistakes: 0
+      });
+      assert.equal(1, upMistake(mistakesTest).mistakes);
+      assert(!upMistake(mistakesTest).isFinished);
     });
 
+    it(`Shouldn't increase current mistakes and should show that mistakes has reached maximum`, () => {
+      const mistakesTest = Object.assign({}, currentState, {
+        mistakes: 2
+      });
+      assert.equal(3, upMistake(mistakesTest).mistakes);
+      assert(upMistake(mistakesTest).isFinished);
+    });
+
+    it(`Shouldn't increase current mistakes and should show that mistakes has reached maximum`, () => {
+      const mistakesTest = Object.assign({}, currentState, {
+        mistakes: 3,
+        isFinished: false
+      });
+      assert.equal(3, upMistake(mistakesTest).mistakes);
+      assert(upMistake(mistakesTest).isFinished);
+    });
   });
 
 

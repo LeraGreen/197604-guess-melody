@@ -21,7 +21,8 @@ export const currentState = {
 export const tick = (state) => {
   if (state.time > settings.timeToEnd) {
     state.time--;
-  } else {
+  }
+  if (state.time === settings.timeToEnd && !state.isFinished) {
     state.isFinished = true;
   }
   return state;
@@ -80,10 +81,12 @@ export const getWinnerStatistics = (userPoints, otherResults) => {
   return {position: userPosition, players: winners.length, percent};
 };
 
-// const upMistake = (state) => {
-//   if (state.mistakes < settings.maxMistakes) {
-//     state.mistakes++;
-//   } else {
-//
-//   }
-// };
+export const upMistake = (state) => {
+  if (state.mistakes < settings.maxMistakes) {
+    state.mistakes++;
+  }
+  if (state.mistakes === settings.maxMistakes && !state.isFinished) {
+    state.isFinished = true;
+  }
+  return state;
+};
