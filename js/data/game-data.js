@@ -14,8 +14,7 @@ export const initialState = {
 export const currentState = {
   mistakes: 0,
   time: 0,
-  question: 0,
-  isFinished: false
+  question: 0
 };
 
 export const tick = (state) => {
