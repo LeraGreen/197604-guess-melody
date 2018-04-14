@@ -1,18 +1,24 @@
-export const initialState = {
-  mistakes: 0,
-  time: 0,
-  currentQuestion: 0
-};
-
 export const timer = {
   currentTime: 0,
   isFinished: false,
   maxTime: 60 * 5
 };
 
+export const initialState = {
+  mistakes: 0,
+  time: timer.maxTime,
+  currentQuestion: 0
+};
+
+export const currentState = {
+  mistakes: 0,
+  time: 0,
+  currentQuestion: 0
+};
+
 export const tick = (gameTimer) => {
-  if (gameTimer.currentTime < gameTimer.maxTime) {
-    gameTimer.currentTime++;
+  if (gameTimer.currentTime > 0) {
+    gameTimer.currentTime--;
   } else {
     gameTimer.isFinished = true;
   }
@@ -77,11 +83,3 @@ export const getWinnerStatistics = (userPoints, otherResults) => {
   const percent = Math.round(((winners.length - userPosition) / winners.length) * 100);
   return {position: userPosition, players: winners.length, percent};
 };
-
-// битовые штуки или как оно там называется
-
-// const results = {
-//   ATTEMPTS_OUT: `У вас закончились все попытки. Ничего, повезёт в следующий раз!`,
-//   TIME_OUT: `Время вышло! Вы не успели отгадать все мелодии`,
-//   WIN: `Вы заняли i место из t игроков. Это лучше, чем у n% игроков!`
-// };

@@ -96,33 +96,47 @@ describe(`statistics from game`, () => {
   });
 });
 
-describe(`Timer tick`, () => {
-  it(`Should increase current time on tick and show that time hasn't reached maximum`, () => {
+describe.only(`Timer tick`, () => {
+  it(`Should decrease current time on tick and show that time hasn't reached minimum`, () => {
     const timerTest = Object.assign({}, timer, {
       currentTime: 27
     });
 
-    assert.equal(28, tick(timerTest).currentTime);
+    assert.equal(26, tick(timerTest).currentTime);
     assert.equal(false, tick(timerTest).isFinished);
   });
 
-  it(`Should tick and return flag if timer has reached maximum`, () => {
+  it(`Should tick and return flag if timer hasn't reached maximum`, () => {
     const timerTest = Object.assign({}, timer, {
-      currentTime: 5 * 60 - 1,
-      maxTime: 5 * 60
+      currentTime: 5 * 60
     });
 
-    assert.equal(300, tick(timerTest).currentTime);
-    assert(tick(timerTest).isFinished);
+    assert.equal(299, tick(timerTest).currentTime);
+    assert(!tick(timerTest).isFinished);
   });
 
-  it(`Shouldn't up if timer already in maximum`, () => {
+  it(`Should return 0 and flag if timer already in minimum`, () => {
     const timerTest = Object.assign({}, timer, {
-      currentTime: 5 * 60,
-      maxTime: 5 * 60
+      currentTime: 0
     });
 
-    assert.equal(300, tick(timerTest).currentTime);
+    assert.equal(0, tick(timerTest).currentTime);
     assert.equal(true, tick(timerTest).isFinished);
   });
+});
+
+describe(`Change state`, () => {
+  describe(`change mistakes`, () => {
+    it(`Should increase current time on tick and show that time hasn't reached maximum`, () => {
+      const timerTest = Object.assign({}, timer, {
+        currentTime: 27
+      });
+
+      assert.equal(28, tick(timerTest).currentTime);
+      assert.equal(false, tick(timerTest).isFinished);
+    });
+
+  });
+
+
 });
