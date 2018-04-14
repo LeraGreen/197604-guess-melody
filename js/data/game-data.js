@@ -5,6 +5,12 @@ export const settings = {
   timeToEnd: 0
 };
 
+const AnswerType = {
+  FAST: `fast`,
+  CORRECT: `correct`,
+  WRONG: `wrong`
+};
+
 export const initialState = {
   mistakes: 0,
   time: settings.timeToGame,
@@ -16,6 +22,50 @@ export const currentState = {
   time: 5 * 60 - 1,
   question: 0
 };
+
+const questions = [
+  {
+    type: `artist`,
+    artist: `Kevin MacLeod`,
+    src: `https://www.youtube.com/audiolibrary_download?vid=91624fdc22fc54ed`,
+    answers: [
+      {
+        artist: `Kevin MacLeod`,
+        imageUrl: ``
+      },
+      {
+        artist: `Пелагея`,
+        imageUrl: ``
+      },
+      {
+        artist: `Кровосток`,
+        imageUrl: ``
+      }
+    ]
+  },
+  {
+    type: `genre`,
+    genre: `Jazz`,
+    answers: [
+      {
+        src: `https://www.youtube.com/audiolibrary_download?vid=dc3b4dc549becd6b`,
+        genre: `Rock`
+      },
+      {
+        src: `https://www.youtube.com/audiolibrary_download?vid=dc3b4dc549becd6b`,
+        genre: `Jazz`
+      },
+      {
+        src: `https://www.youtube.com/audiolibrary_download?vid=dc3b4dc549becd6b`,
+        genre: `Jazz`
+      },
+      {
+        src: `https://www.youtube.com/audiolibrary_download?vid=dc3b4dc549becd6b`,
+        genre: `Rock`
+      }
+    ]
+  }
+];
 
 export const tick = (state) => {
   if (state.time > settings.timeToEnd) {
@@ -32,12 +82,6 @@ export const checkAnswer = (answerData) => {
     return `correct`;
   }
   return `wrong`;
-};
-
-const AnswerType = {
-  FAST: `fast`,
-  CORRECT: `correct`,
-  WRONG: `wrong`
 };
 
 export const answerPoints = {};
