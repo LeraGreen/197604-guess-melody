@@ -1,8 +1,7 @@
 export const initialState = {
-  lives: 3,
+  mistakes: 0,
   time: 0,
-  currentQuestion: 0,
-  answers: []
+  currentQuestion: 0
 };
 
 export const timer = {
