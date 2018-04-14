@@ -96,52 +96,13 @@ describe(`statistics from game`, () => {
   });
 });
 
-describe(`Timer tick`, () => {
-  it(`Should decrease current time on tick and show that time hasn't reached minimum`, () => {
-    const timerTest = Object.assign({}, currentState, {
-      time: 27
-    });
-
-    assert.equal(26, tick(timerTest).time);
-    assert.equal(false, tick(timerTest).isFinished);
-  });
-
-  it(`Should tick and return flag if timer hasn't reached maximum`, () => {
-    const timerTest = Object.assign({}, currentState, {
-      time: 5 * 60
-    });
-
-    assert.equal(299, tick(timerTest).time);
-    assert(!tick(timerTest).isFinished);
-  });
-
-  it(`Should return 0 and flag if timer already in minimum`, () => {
-    const timerTest = Object.assign({}, currentState, {
-      time: 0
-    });
-
-    assert.equal(0, tick(timerTest).time);
-    assert(tick(timerTest).isFinished);
-  });
-
-  it(`Should return 0 and flag if timer already in minimum`, () => {
-    const timerTest = Object.assign({}, currentState, {
-      time: 1
-    });
-
-    assert.equal(0, tick(timerTest).time);
-    assert(tick(timerTest).isFinished);
-  });
-});
-
-describe.only(`Change state`, () => {
+describe(`Change state`, () => {
   describe(`Change mistakes`, () => {
     it(`Should increase current mistakes and show that mistakes hasn't reached maximum`, () => {
       const mistakesTest = Object.assign({}, currentState, {
         mistakes: 0
       });
       assert.equal(1, upMistake(mistakesTest).mistakes);
-      assert(!upMistake(mistakesTest).isFinished);
     });
 
     it(`Shouldn't increase current mistakes and should show that mistakes has reached maximum`, () => {
@@ -149,7 +110,6 @@ describe.only(`Change state`, () => {
         mistakes: 2
       });
       assert.equal(3, upMistake(mistakesTest).mistakes);
-      assert(upMistake(mistakesTest).isFinished);
     });
 
     it(`Shouldn't increase current mistakes and should show that mistakes has reached maximum`, () => {
@@ -158,9 +118,41 @@ describe.only(`Change state`, () => {
         isFinished: false
       });
       assert.equal(3, upMistake(mistakesTest).mistakes);
-      assert(upMistake(mistakesTest).isFinished);
     });
   });
 
+  describe(`Timer tick`, () => {
+    it(`Should decrease current time on tick and show that time hasn't reached minimum`, () => {
+      const timerTest = Object.assign({}, currentState, {
+        time: 27
+      });
+
+      assert.equal(26, tick(timerTest).time);
+    });
+
+    it(`Should tick and return flag if timer hasn't reached maximum`, () => {
+      const timerTest = Object.assign({}, currentState, {
+        time: 5 * 60
+      });
+
+      assert.equal(299, tick(timerTest).time);
+    });
+
+    it(`Should return 0 and flag if timer already in minimum`, () => {
+      const timerTest = Object.assign({}, currentState, {
+        time: 0
+      });
+
+      assert.equal(0, tick(timerTest).time);
+    });
+
+    it(`Should return 0 and flag if timer already in minimum`, () => {
+      const timerTest = Object.assign({}, currentState, {
+        time: 1
+      });
+
+      assert.equal(0, tick(timerTest).time);
+    });
+  });
 
 });

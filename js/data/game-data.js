@@ -8,7 +8,7 @@ export const settings = {
 export const initialState = {
   mistakes: 0,
   time: settings.timeToGame,
-  currentQuestion: 0
+  question: 0
 };
 
 export const currentState = {
@@ -21,9 +21,6 @@ export const currentState = {
 export const tick = (state) => {
   if (state.time > settings.timeToEnd) {
     state.time--;
-  }
-  if (state.time === settings.timeToEnd && !state.isFinished) {
-    state.isFinished = true;
   }
   return state;
 };
@@ -84,9 +81,6 @@ export const getWinnerStatistics = (userPoints, otherResults) => {
 export const upMistake = (state) => {
   if (state.mistakes < settings.maxMistakes) {
     state.mistakes++;
-  }
-  if (state.mistakes === settings.maxMistakes && !state.isFinished) {
-    state.isFinished = true;
   }
   return state;
 };
