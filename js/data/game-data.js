@@ -15,17 +15,17 @@ export const initialState = {
   mistakes: 0,
   time: settings.timeToGame,
   question: 0,
-  points: 0
+  answers: []
 };
 
 export const currentState = {
   mistakes: 2,
   time: 5 * 60 - 1,
   question: 0,
-  points: 0
+  answers: []
 };
 
-const questions = [
+export const questions = [
   {
     type: `artist`,
     artist: `Kevin MacLeod`,
@@ -33,15 +33,15 @@ const questions = [
     answers: [
       {
         artist: `Kevin MacLeod`,
-        imageUrl: ``
+        imageUrl: `http://placehold.it/134x134`
       },
       {
         artist: `Пелагея`,
-        imageUrl: ``
+        imageUrl: `http://placehold.it/134x134`
       },
       {
         artist: `Кровосток`,
-        imageUrl: ``
+        imageUrl: `http://placehold.it/134x134`
       }
     ]
   },
@@ -51,19 +51,23 @@ const questions = [
     answers: [
       {
         src: `https://www.youtube.com/audiolibrary_download?vid=dc3b4dc549becd6b`,
-        genre: `Rock`
+        genre: `Rock`,
+        name: `Travel Light`
       },
       {
         src: `https://www.youtube.com/audiolibrary_download?vid=dc3b4dc549becd6b`,
-        genre: `Jazz`
+        genre: `Jazz`,
+        name: `Travel Light`
       },
       {
         src: `https://www.youtube.com/audiolibrary_download?vid=dc3b4dc549becd6b`,
-        genre: `Jazz`
+        genre: `Jazz`,
+        name: `Travel Light`
       },
       {
         src: `https://www.youtube.com/audiolibrary_download?vid=dc3b4dc549becd6b`,
-        genre: `Rock`
+        genre: `Rock`,
+        name: `Travel Light`
       }
     ]
   }

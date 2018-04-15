@@ -1,10 +1,10 @@
 import {getElementFromTemplate, showScreen} from '../utils';
 import getSecondScreen from '../second-screen/get-second-screen';
 import header from '../header/header';
-import {currentState} from '../data/game-data';
+import {currentState, questions} from '../data/game-data';
 
 
-const getFirstScreen = (state) => {
+const getFirstScreen = (state, question) => {
   const template = `<section class="main main--level main--level-artist">
     ${header(state)}
 
@@ -20,34 +20,16 @@ const getFirstScreen = (state) => {
         </div>
       </div>
       <form class="main-list">
-        <div class="main-answer-wrapper">
-          <input class="main-answer-r" type="radio" id="answer-1" name="answer" value="val-1"/>
-          <label class="main-answer" for="answer-1">
-            <img class="main-answer-preview" src="http://placehold.it/134x134"
+      ${question.answers.reduce((acc, it, i) =>
+    acc + `<div class="main-answer-wrapper">
+          <input class="main-answer-r" type="radio" id="answer-${i}" name="answer" value="${it.artist}"/>
+          <label class="main-answer" for="answer-${i}">
+            <img class="main-answer-preview" src="${it.imageUrl}"
                  alt="Пелагея" width="134" height="134">
-            Пелагея
+            ${it.artist}
           </label>
-        </div>
-
-        <div class="main-answer-wrapper">
-          <input class="main-answer-r" type="radio" id="answer-2" name="answer" value="val-2"/>
-          <label class="main-answer" for="answer-2">
-            <img class="main-answer-preview" src="http://placehold.it/134x134"
-                 alt="Краснознаменная дивизия имени моей бабушки" width="134" height="134">
-            Краснознаменная дивизия имени моей бабушки
-          </label>
-        </div>
-
-        <div class="main-answer-wrapper">
-          <input class="main-answer-r" type="radio" id="answer-3" name="answer" value="val-3"/>
-          <label class="main-answer" for="answer-3">
-            <img class="main-answer-preview" src="http://placehold.it/134x134"
-                 alt="Lorde" width="134" height="134">
-            Lorde
-          </label>
-        </div>
-      </form>
-    </div>
+        </div>` + `\n`
+      , ``)}
   </section>`;
 
 
@@ -55,7 +37,7 @@ const getFirstScreen = (state) => {
   const answersForm = firstScreen.querySelector(`.main-list`);
   answersForm.addEventListener(`change`, (evt) => {
     if (evt.target.name === `answer`) {
-      showScreen(getSecondScreen(currentState));
+      showScreen(getSecondScreen(currentState, questions[1]));
     }
   });
 

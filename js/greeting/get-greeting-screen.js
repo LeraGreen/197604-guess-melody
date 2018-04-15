@@ -1,6 +1,6 @@
 import {getElementFromTemplate, showScreen} from '../utils';
 import getFirstScreen from '../first-screen/get-first-screen';
-import {currentState} from '../data/game-data';
+import {currentState, questions} from '../data/game-data';
 
 const getGreetingScreen = () => {
   const template = `<section class="main main--welcome">
@@ -16,7 +16,7 @@ const getGreetingScreen = () => {
 
   const greetingScreen = getElementFromTemplate(template);
   const playButton = greetingScreen.querySelector(`.main-play`);
-  playButton.addEventListener(`click`, () => showScreen(getFirstScreen(currentState)));
+  playButton.addEventListener(`click`, () => showScreen(getFirstScreen(currentState, questions[0])));
   return greetingScreen;
 };
 
