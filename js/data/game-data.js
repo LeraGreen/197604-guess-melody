@@ -22,7 +22,7 @@ export const currentState = {
   mistakes: 2,
   time: 5 * 60 - 1,
   question: 0,
-  answers: []
+  answers: [`fast`, `correct`, `wrong`, `fast`, `correct`, `wrong`, `fast`, `correct`, `wrong`, `fast`]
 };
 
 export const questions = [
@@ -147,3 +147,5 @@ export const splitTime = (seconds) => {
   const remainingSeconds = seconds % 60;
   return {'minutes': minutes, 'seconds': remainingSeconds};
 };
+
+export const calcAnswersType = (array, type) => array.filter((el) => el === type).length;

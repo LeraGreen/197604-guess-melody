@@ -1,5 +1,5 @@
 import {assert} from 'chai';
-import {settings, currentState, tick, checkAnswer, calsPoints, getStatistics, getWinnerStatistics, upMistake, splitTime} from './game-data';
+import {settings, currentState, tick, checkAnswer, calsPoints, getStatistics, getWinnerStatistics, upMistake, splitTime, calcAnswersType} from './game-data';
 
 
 describe(`check answer type`, () => {
@@ -200,4 +200,24 @@ describe(`Get minutes and seconds from seconds`, () => {
     assert.equal(0, splitTime(timeTest.time).seconds);
   });
 
+});
+
+describe.only(`Calc answers type`, () => {
+  it(`Shouls return 3 wrong answers`, () => {
+    const answers = [`fast`, `correct`, `wrong`, `fast`, `correct`, `wrong`, `fast`, `correct`, `wrong`, `fast`];
+
+    assert.equal(3, calcAnswersType(answers, `wrong`));
+  });
+
+  it(`Shouls return 3 correct answers`, () => {
+    const answers = [`fast`, `correct`, `wrong`, `fast`, `correct`, `wrong`, `fast`, `correct`, `wrong`, `fast`];
+
+    assert.equal(3, calcAnswersType(answers, `correct`));
+  });
+
+  it(`Shouls return 0 correct answers`, () => {
+    const answers = [`fast`, `wrong`, `fast`, `wrong`, `fast`, `wrong`, `fast`];
+
+    assert.equal(0, calcAnswersType(answers, `correct`));
+  });
 });
