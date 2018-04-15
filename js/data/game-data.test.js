@@ -45,20 +45,35 @@ describe(`points from answers`, () => {
 
 describe(`statistics from game`, () => {
 
-  describe(`winner statistics from game`, () => {
+  describe.only(`winner statistics from game`, () => {
     it(`should return 33 percent for winner`, () => {
-      const otherResults = [20, 15, 3, 14, 5];
+      const otherResults = [20, 15, 14, 5, 3];
       assert.equal(33, getWinnerStatistics(13, otherResults).percent);
     });
 
     it(`should return 6 players`, () => {
-      const otherResults = [20, 15, 3, 14, 5];
+      const otherResults = [20, 15, 14, 5, 3];
       assert.equal(6, getWinnerStatistics(13, otherResults).players);
     });
 
     it(`should return 4 for user position`, () => {
-      const otherResults = [20, 15, 3, 14, 5];
+      const otherResults = [20, 15, 14, 5, 3];
       assert.equal(4, getWinnerStatistics(13, otherResults).position);
+    });
+
+    it(`should return 100 percent for winner`, () => {
+      const otherResults = [20, 15, 14, 5, 3];
+      assert.equal(83, getWinnerStatistics(25, otherResults).percent);
+    });
+
+    it(`should return 6 players`, () => {
+      const otherResults = [20, 15, 14, 5, 3];
+      assert.equal(6, getWinnerStatistics(25, otherResults).players);
+    });
+
+    it(`should return 1 for user position`, () => {
+      const otherResults = [20, 15, 14, 5, 3];
+      assert.equal(1, getWinnerStatistics(25, otherResults).position);
     });
   });
 
@@ -157,7 +172,7 @@ describe(`Change state`, () => {
 
 });
 
-describe.only(`Get minutes and seconds from seconds`, () => {
+describe(`Get minutes and seconds from seconds`, () => {
   it(`Shoulls return 4 minutes and 59 seconds`, () => {
     const timeTest = Object.assign({}, currentState, {
       time: 5 * 60 - 1

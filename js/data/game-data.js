@@ -14,13 +14,15 @@ const AnswerType = {
 export const initialState = {
   mistakes: 0,
   time: settings.timeToGame,
-  question: 0
+  question: 0,
+  points: 0
 };
 
 export const currentState = {
   mistakes: 2,
   time: 5 * 60 - 1,
-  question: 0
+  question: 0,
+  points: 0
 };
 
 const questions = [
@@ -66,6 +68,8 @@ const questions = [
     ]
   }
 ];
+
+export const statistics = [20, 19, 15, 4, 2];
 
 export const tick = (state) => {
   if (state.time > settings.timeToEnd) {
@@ -114,9 +118,15 @@ export const getStatistics = (userResult, gameSettings, otherResults) => {
 };
 
 export const getWinnerStatistics = (userPoints, otherResults) => {
-  otherResults.push(userPoints);
-  const winners = otherResults.sort((a, b) => b - a);
-  const userPosition = winners.indexOf(userPoints) + 1;
+  const winners = otherResults.slice(0);
+  let userPosition;
+  for (let i = 0; i < otherResults.length; i++) {
+    if (winners[i] < userPoints) {
+      winners.splice(i, 0, userPoints);
+      userPosition = i + 1;
+      break;
+    }
+  }
   const percent = Math.round(((winners.length - userPosition) / winners.length) * 100);
   return {position: userPosition, players: winners.length, percent};
 };
