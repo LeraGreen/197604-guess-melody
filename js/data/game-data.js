@@ -18,12 +18,7 @@ export const initialState = {
   answers: []
 };
 
-export const currentState = {
-  mistakes: 2,
-  time: 5 * 60 - 1,
-  question: 0,
-  answers: [`fast`, `correct`, `wrong`, `fast`, `correct`, `wrong`, `fast`, `correct`, `wrong`, `fast`]
-};
+export const currentState = {};
 
 export const questions = [
   {

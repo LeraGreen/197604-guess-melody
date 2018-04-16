@@ -1,9 +1,9 @@
-import {getElementFromTemplate, showScreen, getRandomFromArray} from '../utils';
+import {getElementFromTemplate, showScreen, getRandomFromArray, showGameScreen} from '../utils';
 import getWinScreen from '../results/get-win-screen';
 import getAttemptsOutScreen from '../results/get-attempts-out-screen';
 import getTimeOutScreen from '../results/get-timeout-screen';
 import header from '../header/header';
-import {currentState, statistics} from '../data/game-data';
+import {currentState, statistics, questions} from '../data/game-data';
 
 const getSecondScreen = (state, question) => {
   const template = `<section class="main main--level main--level-genre">
@@ -34,12 +34,12 @@ const getSecondScreen = (state, question) => {
     </div>
   </section>`;
 
-  // const resultScreens = [getWinScreen(currentState, statistics), getAttemptsOutScreen(), getTimeOutScreen()];
+  const resultScreens = [getWinScreen(currentState, statistics), getAttemptsOutScreen(), getTimeOutScreen()];
   const secondScreen = getElementFromTemplate(template);
   const answersForm = secondScreen.querySelector(`.genre`);
   answersForm.addEventListener(`submit`, () => {
-    showScreen(getWinScreen(currentState, statistics));
     // showScreen(getRandomFromArray(resultScreens));
+    showGameScreen(state, questions);
   });
 
   return secondScreen;

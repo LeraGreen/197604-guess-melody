@@ -1,4 +1,4 @@
-import {getElementFromTemplate, showScreen} from '../utils';
+import {getElementFromTemplate, showScreen, showGameScreen} from '../utils';
 import getSecondScreen from '../second-screen/get-second-screen';
 import header from '../header/header';
 import {currentState, questions} from '../data/game-data';
@@ -37,7 +37,8 @@ const getFirstScreen = (state, question) => {
   const answersForm = firstScreen.querySelector(`.main-list`);
   answersForm.addEventListener(`change`, (evt) => {
     if (evt.target.name === `answer`) {
-      showScreen(getSecondScreen(currentState, questions[1]));
+      // showScreen(getSecondScreen(currentState, questions[1]));
+      showGameScreen(state, questions);
     }
   });
 
