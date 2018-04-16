@@ -1,6 +1,6 @@
 export const settings = {
   maxMistakes: 3,
-  screens: 10,
+  screens: 4,
   timeToGame: 5 * 60,
   timeToEnd: 0
 };
@@ -65,6 +65,44 @@ export const questions = [
         name: `Travel Light`
       }
     ]
+  },
+  {
+    type: `artist`,
+    artist: `Kevin MacLeod`,
+    src: `https://www.youtube.com/audiolibrary_download?vid=91624fdc22fc54ed`,
+    answers: [
+      {
+        artist: `Kevin MacLeod`,
+        imageUrl: `http://placehold.it/134x134`
+      },
+      {
+        artist: `Пелагея`,
+        imageUrl: `http://placehold.it/134x134`
+      },
+      {
+        artist: `Кровосток`,
+        imageUrl: `http://placehold.it/134x134`
+      }
+    ]
+  },
+  {
+    type: `artist`,
+    artist: `Kevin MacLeod`,
+    src: `https://www.youtube.com/audiolibrary_download?vid=91624fdc22fc54ed`,
+    answers: [
+      {
+        artist: `Kevin MacLeod`,
+        imageUrl: `http://placehold.it/134x134`
+      },
+      {
+        artist: `Пелагея`,
+        imageUrl: `http://placehold.it/134x134`
+      },
+      {
+        artist: `Кровосток`,
+        imageUrl: `http://placehold.it/134x134`
+      }
+    ]
   }
 ];
 
@@ -78,10 +116,12 @@ export const tick = (state) => {
 };
 
 export const checkAnswer = (answerData) => {
-  if (answerData.answer) {
-    if (answerData.time < 30) {
-      return `fast`;
-    }
+  if (answerData) {
+  // if (answerData.answer) {
+    // временно пока нет времени
+    // if (answerData.time < 30) {
+    //   return `fast`;
+    // }
     return `correct`;
   }
   return `wrong`;
