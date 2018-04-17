@@ -1,7 +1,7 @@
 import {getElementFromTemplate, showScreen} from '../utils';
 import getGreetingScreen from '../greeting/get-greeting-screen';
 import {calsPoints, splitTime, calcAnswersType, getWinnerStatistics} from '../data/game-data';
-import pluralize from '../data/plural';
+import pluralize from '../plural/plural';
 
 const getWinScreen = (state, statistics) => {
   const time = splitTime(state.time);
