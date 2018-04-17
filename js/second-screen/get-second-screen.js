@@ -3,8 +3,6 @@ import header from '../header/header';
 import {questions, checkAnswer} from '../data/game-data';
 import {showGameScreen, checkGenreScreen} from '../change-screen/change-screen';
 
-// TODO Обработать как ошибку экран без ответа на вопрос
-
 const getSecondScreen = (state, question) => {
   const template = `<section class="main main--level main--level-genre">
     ${header(state)}
@@ -28,7 +26,6 @@ const getSecondScreen = (state, question) => {
     </div>` + `\n`
       , ``)}
 
-
         <button class="genre-answer-send" type="submit">Ответить</button>
       </form>
     </div>
@@ -45,13 +42,18 @@ const getSecondScreen = (state, question) => {
       if (answer.checked) {
         checkedAnswers.push(answer.value);
       }
+      if (checkedAnswers.length) {
+        state.answers.push(checkAnswer(checkGenreScreen(checkedAnswers, question)));
+        showGameScreen(state, questions);
+      }
     }
-    state.answers.push(checkAnswer(checkGenreScreen(checkedAnswers, question)));
-    showGameScreen(state, questions);
+    // TODO Обработать как ошибку экран без ответа на вопрос
+    // TODO Или не отправлять форму и выводить сообщение с выбором хотя бы одного варианта
   });
   for (const playerControl of playerControlls) {
     playerControl.addEventListener(`click`, (evt) => {
       // неведомый превентдефоулт
+      // TODO в каждый момент времени может играть не больше одной композиции
       evt.preventDefault();
       const audio = secondScreen.querySelector(`#${evt.target.dataset.audio}`);
 
