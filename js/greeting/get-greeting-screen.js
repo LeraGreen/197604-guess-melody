@@ -1,6 +1,7 @@
-import {getElementFromTemplate, showScreen, showGameScreen} from '../utils';
-import getFirstScreen from '../first-screen/get-first-screen';
+import {getElementFromTemplate} from '../utils';
+// import getFirstScreen from '../first-screen/get-first-screen';
 import {initialState, currentState, questions} from '../data/game-data';
+import {showGameScreen} from '../change-screen/change-screen';
 
 const getGreetingScreen = () => {
   const template = `<section class="main main--welcome">

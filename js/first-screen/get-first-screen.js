@@ -1,7 +1,8 @@
-import {getElementFromTemplate, showScreen, showGameScreen, checkRightAnswer} from '../utils';
-import getSecondScreen from '../second-screen/get-second-screen';
+import {getElementFromTemplate} from '../utils';
+// import getSecondScreen from '../second-screen/get-second-screen';
 import header from '../header/header';
-import {currentState, questions, checkAnswer} from '../data/game-data';
+import {questions, checkAnswer} from '../data/game-data';
+import {showGameScreen, checkArtistScreen} from '../change-screen/change-screen';
 
 
 const getFirstScreen = (state, question) => {
@@ -37,7 +38,7 @@ const getFirstScreen = (state, question) => {
   const answersForm = firstScreen.querySelector(`.main-list`);
   answersForm.addEventListener(`change`, (evt) => {
     if (evt.target.name === `answer`) {
-      state.answers.push(checkAnswer(checkRightAnswer(evt.target.value, question)));
+      state.answers.push(checkAnswer(checkArtistScreen(evt.target.value, question)));
       // showScreen(getSecondScreen(currentState, questions[1]));
       showGameScreen(state, questions);
     }
