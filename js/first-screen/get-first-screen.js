@@ -13,7 +13,7 @@ const getFirstScreen = (state, question) => {
       <h2 class="title main-title">Кто исполняет эту песню?</h2>
       <div class="player-wrapper">
         <div class="player">
-          <audio></audio>
+          <audio src="${question.src}" autoplay preload="auto"></audio>
           <button class="player-control player-control--pause"></button>
           <div class="player-track">
             <span class="player-status"></span>
@@ -36,12 +36,22 @@ const getFirstScreen = (state, question) => {
 
   const firstScreen = getElementFromTemplate(template);
   const answersForm = firstScreen.querySelector(`.main-list`);
+  const playerControl = firstScreen.querySelector(`.player-control`);
+  const audio = firstScreen.querySelector(`audio`);
   answersForm.addEventListener(`change`, (evt) => {
     if (evt.target.name === `answer`) {
       state.answers.push(checkAnswer(checkArtistScreen(evt.target.value, question)));
-      // showScreen(getSecondScreen(currentState, questions[1]));
       showGameScreen(state, questions);
     }
+  });
+  playerControl.addEventListener(`click`, (evt) => {
+    if (evt.target.classList.contains(`player-control--pause`)) {
+      audio.pause();
+    } else if (evt.target.classList.contains(`player-control--play`)) {
+      audio.play();
+    }
+    evt.target.classList.toggle(`player-control--pause`);
+    evt.target.classList.toggle(`player-control--play`);
   });
 
   return firstScreen;

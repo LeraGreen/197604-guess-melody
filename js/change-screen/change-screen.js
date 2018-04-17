@@ -30,7 +30,7 @@ export const showGameScreen = (state, questions) => {
   } else {
     console.log(`шеф, всё пропало`);
   }
-  // добавить проверку на время
+  // TODO обавить проверку на время
 };
 
 export const checkArtistScreen = (answer, question) => answer === question.artist;

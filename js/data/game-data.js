@@ -168,6 +168,8 @@ export const getWinnerStatistics = (userPoints, otherResults) => {
   }
   const percent = Math.round(((winners.length - userPosition) / winners.length) * 100);
   return {position: userPosition, players: winners.length, percent};
+
+  // TODO отловить случаи с отрицательным значением
 };
 
 export const upMistake = (state) => {
