@@ -158,6 +158,7 @@ export const getStatistics = (userResult, gameSettings, otherResults) => {
 
 export const getWinnerStatistics = (userPoints, otherResults) => {
   const winners = otherResults.slice(0);
+  const winnersQuantity = winners.length;
   let userPosition;
   for (let i = 0; i < otherResults.length; i++) {
     if (winners[i] < userPoints) {
@@ -165,6 +166,11 @@ export const getWinnerStatistics = (userPoints, otherResults) => {
       userPosition = i + 1;
       break;
     }
+  }
+
+  if (winners.length === winnersQuantity) {
+    winners.push(userPoints);
+    userPosition = winners.length;
   }
   const percent = Math.round(((winners.length - userPosition) / winners.length) * 100);
   return {position: userPosition, players: winners.length, percent};

@@ -20,7 +20,6 @@ const getGreetingScreen = () => {
   playButton.addEventListener(`click`, () => {
     Object.assign(currentState, initialState);
     showGameScreen(currentState, questions);
-    // showScreen(getFirstScreen(currentState, questions[0]));
   });
   return greetingScreen;
 };
