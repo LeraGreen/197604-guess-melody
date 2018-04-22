@@ -50,17 +50,17 @@ export const questions = [
         name: `Travel Light`
       },
       {
-        src: `https://www.youtube.com/audiolibrary_download?vid=dc3b4dc549becd6b`,
+        src: `https://www.youtube.com/audiolibrary_download?vid=a127d9b7de8a17cf`,
         genre: `Jazz`,
         name: `Travel Light`
       },
       {
-        src: `https://www.youtube.com/audiolibrary_download?vid=dc3b4dc549becd6b`,
+        src: `https://www.youtube.com/audiolibrary_download?vid=dfb828f40096184c`,
         genre: `Jazz`,
         name: `Travel Light`
       },
       {
-        src: `https://www.youtube.com/audiolibrary_download?vid=dc3b4dc549becd6b`,
+        src: `https://www.youtube.com/audiolibrary_download?vid=bcbe5be936a32fb1`,
         genre: `Rock`,
         name: `Travel Light`
       }
@@ -108,20 +108,11 @@ export const questions = [
 
 export const statistics = [20, 19, 15, 4, 2];
 
-export const tick = (state) => {
-  if (state.time > settings.timeToEnd) {
-    state.time--;
-  }
-  return state;
-};
-
-export const checkAnswer = (answerData) => {
-  if (answerData) {
-  // if (answerData.answer) {
-    // временно пока нет времени
-    // if (answerData.time < 30) {
-    //   return `fast`;
-    // }
+export const checkAnswer = (answer, time) => {
+  if (answer) {
+    if (time < 30) {
+      return `fast`;
+    }
     return `correct`;
   }
   return `wrong`;

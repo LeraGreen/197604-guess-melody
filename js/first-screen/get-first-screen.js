@@ -1,7 +1,7 @@
 import {getElementFromTemplate} from '../utils';
 // import getSecondScreen from '../second-screen/get-second-screen';
 import header from '../header/header';
-import {questions, checkAnswer} from '../data/game-data';
+import {questions} from '../data/game-data';
 import {showGameScreen, checkArtistScreen} from '../change-screen/change-screen';
 
 
@@ -40,8 +40,7 @@ const getFirstScreen = (state, question) => {
   const audio = firstScreen.querySelector(`audio`);
   answersForm.addEventListener(`change`, (evt) => {
     if (evt.target.name === `answer`) {
-      state.answers.push(checkAnswer(checkArtistScreen(evt.target.value, question)));
-      showGameScreen(state, questions);
+      showGameScreen(state, questions, checkArtistScreen(evt.target.value, question));
     }
   });
   playerControl.addEventListener(`click`, (evt) => {

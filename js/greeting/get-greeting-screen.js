@@ -18,7 +18,9 @@ const getGreetingScreen = () => {
   const greetingScreen = getElementFromTemplate(template);
   const playButton = greetingScreen.querySelector(`.main-play`);
   playButton.addEventListener(`click`, () => {
-    Object.assign(currentState, initialState);
+    Object.assign(currentState, initialState, {
+      answers: []
+    });
     showGameScreen(currentState, questions);
   });
   return greetingScreen;

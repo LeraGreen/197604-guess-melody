@@ -12,7 +12,7 @@ const getWinScreen = (state, statistics) => {
     <section class="logo" title="Угадай мелодию"><h1>Угадай мелодию</h1></section>
 
     <h2 class="title">Вы настоящий меломан!</h2>
-    <div class="main-stat">За ${pluralize(time.minutes, [`минут`, `минута`, `минуты`])} и ${pluralize(time.seconds, [`секунд`, `секунда`, `секунды`])}
+    <div class="main-stat">За ${pluralize(time.minutes, [`минут`, `минуту`, `минуты`])} и ${pluralize(time.seconds, [`секунд`, `секунду`, `секунды`])}
       <br>вы&nbsp;набрали ${pluralize(points, [`баллов`, `балл`, `балла`])} (${pluralize(fastAnswers, [`быстрых`, `быстрый`, `быстрых`])})
       <br>${pluralize(state.mistakes, [`ошибок`, `ошибка`, `ошибки`])}</div>
     <span class="main-comparison">Вы заняли ${winnerStatistics.position} место из ${pluralize(winnerStatistics.players, [`игроков`, `игрока`, `игроков`])}. Это лучше, чем у ${pluralize(winnerStatistics.percent, [`игроков`, `игрока`, `игроков`], `%`)}!</span>

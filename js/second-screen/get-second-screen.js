@@ -1,6 +1,6 @@
 import {getElementFromTemplate} from '../utils';
 import header from '../header/header';
-import {questions, checkAnswer} from '../data/game-data';
+import {questions} from '../data/game-data';
 import {showGameScreen, checkGenreScreen} from '../change-screen/change-screen';
 
 const getSecondScreen = (state, question) => {
@@ -14,8 +14,8 @@ const getSecondScreen = (state, question) => {
     acc + `<div class="genre-answer">
       <div class="player-wrapper">
         <div class="player">
-          <audio src="${it.src}" preload="auto" id="audio-${i}"></audio>
-          <button class="player-control player-control--play" data-audio="audio-${i}"></button>
+          <audio src="${it.src}" preload="auto"></audio>
+          <button class="player-control player-control--play"></button>
           <div class="player-track">
             <span class="player-status"></span>
           </div>
@@ -33,7 +33,8 @@ const getSecondScreen = (state, question) => {
 
   const secondScreen = getElementFromTemplate(template);
   const answersForm = secondScreen.querySelector(`.genre`);
-  const playerControlls = secondScreen.querySelectorAll(`.player-control`);
+  const players = secondScreen.querySelectorAll(`.player`);
+  let activePlayer = null;
   answersForm.addEventListener(`submit`, (evt) => {
     evt.preventDefault();
     const answers = answersForm.elements.answer;
@@ -42,24 +43,29 @@ const getSecondScreen = (state, question) => {
       if (answer.checked) {
         checkedAnswers.push(answer.value);
       }
-      if (checkedAnswers.length) {
-        state.answers.push(checkAnswer(checkGenreScreen(checkedAnswers, question)));
-        showGameScreen(state, questions);
-      }
     }
-    // TODO Обработать как ошибку экран без ответа на вопрос
-    // TODO Или не отправлять форму и выводить сообщение с выбором хотя бы одного варианта
+    showGameScreen(state, questions, checkGenreScreen(checkedAnswers, question));
   });
-  for (const playerControl of playerControlls) {
-    playerControl.addEventListener(`click`, (evt) => {
-      // неведомый превентдефоулт
-      // TODO в каждый момент времени может играть не больше одной композиции
-      evt.preventDefault();
-      const audio = secondScreen.querySelector(`#${evt.target.dataset.audio}`);
 
+  for (const player of players) {
+    const button = player.querySelector(`button`);
+    const audio = player.querySelector(`audio`);
+    button.addEventListener(`click`, (evt) => {
+      evt.preventDefault();
       if (evt.target.classList.contains(`player-control--pause`)) {
         audio.pause();
+        if (activePlayer) {
+          activePlayer = null;
+        }
       } else if (evt.target.classList.contains(`player-control--play`)) {
+        if (activePlayer) {
+          const activeSong = activePlayer.querySelector(`audio`);
+          const activeButton = activePlayer.querySelector(`button`);
+          activeSong.pause();
+          activeButton.classList.toggle(`player-control--pause`);
+          activeButton.classList.toggle(`player-control--play`);
+        }
+        activePlayer = player;
         audio.play();
       }
       evt.target.classList.toggle(`player-control--pause`);
