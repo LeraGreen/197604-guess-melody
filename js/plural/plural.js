@@ -1,6 +1,6 @@
 const WORDS_LENGTH = 3;
 
-export default (number, words) => {
+export default (number, words, unit = ``) => {
   if (words.length !== WORDS_LENGTH) {
     return `${number}`;
   }
@@ -19,6 +19,6 @@ export default (number, words) => {
     }
   }
 
-  const string = `${number} ${numeral}`;
+  const string = `${number}${unit} ${numeral}`;
   return string;
 };

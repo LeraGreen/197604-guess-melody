@@ -1,98 +1,77 @@
-import {getElementFromTemplate, showScreen, getRandomFromArray} from '../utils';
-import getWinScreen from '../results/get-win-screen';
-import getAttemptsOutScreen from '../results/get-attempts-out-screen';
-import getTimeOutScreen from '../results/get-timeout-screen';
+import {getElementFromTemplate} from '../utils';
+import header from '../header/header';
+import {questions} from '../data/game-data';
+import {showGameScreen, checkGenreScreen} from '../change-screen/change-screen';
 
-const getSecondScreen = () => {
+const getSecondScreen = (state, question) => {
   const template = `<section class="main main--level main--level-genre">
-    <svg xmlns="http://www.w3.org/2000/svg" class="timer" viewBox="0 0 780 780">
-      <circle
-        cx="390" cy="390" r="370"
-        class="timer-line"
-        style="filter: url(.#blur); transform: rotate(-90deg) scaleY(-1); transform-origin: center"></circle>
-
-      <div class="timer-value" xmlns="http://www.w3.org/1999/xhtml">
-        <span class="timer-value-mins">05</span><!--
-        --><span class="timer-value-dots">:</span><!--
-        --><span class="timer-value-secs">00</span>
-      </div>
-    </svg>
-    <div class="main-mistakes">
-      <img class="main-mistake" src="img/wrong-answer.png" width="35" height="49">
-      <img class="main-mistake" src="img/wrong-answer.png" width="35" height="49">
-      <img class="main-mistake" src="img/wrong-answer.png" width="35" height="49">
-    </div>
+    ${header(state)}
 
     <div class="main-wrap">
-      <h2 class="title">Выберите инди-рок треки</h2>
+      <h2 class="title">Выберите ${question.genre} треки</h2>
       <form class="genre">
-        <div class="genre-answer">
-          <div class="player-wrapper">
-            <div class="player">
-              <audio></audio>
-              <button class="player-control player-control--pause"></button>
-              <div class="player-track">
-                <span class="player-status"></span>
-              </div>
-            </div>
+      ${question.answers.reduce((acc, it, i) =>
+    acc + `<div class="genre-answer">
+      <div class="player-wrapper">
+        <div class="player">
+          <audio src="${it.src}" preload="auto"></audio>
+          <button class="player-control player-control--play"></button>
+          <div class="player-track">
+            <span class="player-status"></span>
           </div>
-          <input type="checkbox" name="answer" value="answer-1" id="a-1">
-          <label class="genre-answer-check" for="a-1"></label>
         </div>
-
-        <div class="genre-answer">
-          <div class="player-wrapper">
-            <div class="player">
-              <audio></audio>
-              <button class="player-control player-control--play"></button>
-              <div class="player-track">
-                <span class="player-status"></span>
-              </div>
-            </div>
-          </div>
-          <input type="checkbox" name="answer" value="answer-1" id="a-2">
-          <label class="genre-answer-check" for="a-2"></label>
-        </div>
-
-        <div class="genre-answer">
-          <div class="player-wrapper">
-            <div class="player">
-              <audio></audio>
-              <button class="player-control player-control--play"></button>
-              <div class="player-track">
-                <span class="player-status"></span>
-              </div>
-            </div>
-          </div>
-          <input type="checkbox" name="answer" value="answer-1" id="a-3">
-          <label class="genre-answer-check" for="a-3"></label>
-        </div>
-
-        <div class="genre-answer">
-          <div class="player-wrapper">
-            <div class="player">
-              <audio></audio>
-              <button class="player-control player-control--play"></button>
-              <div class="player-track">
-                <span class="player-status"></span>
-              </div>
-            </div>
-          </div>
-          <input type="checkbox" name="answer" value="answer-1" id="a-4">
-          <label class="genre-answer-check" for="a-4"></label>
-        </div>
+      </div>
+      <input type="checkbox" name="answer" value="${it.genre}" id="a-${i}">
+      <label class="genre-answer-check" for="a-${i}"></label>
+    </div>` + `\n`
+      , ``)}
 
         <button class="genre-answer-send" type="submit">Ответить</button>
       </form>
     </div>
   </section>`;
 
-  const resultScreens = [getWinScreen(), getAttemptsOutScreen(), getTimeOutScreen()];
   const secondScreen = getElementFromTemplate(template);
   const answersForm = secondScreen.querySelector(`.genre`);
-  answersForm.addEventListener(`submit`, () => {
-    showScreen(getRandomFromArray(resultScreens));
+  const players = secondScreen.querySelectorAll(`.player`);
+  let activePlayer = null;
+  answersForm.addEventListener(`submit`, (evt) => {
+    evt.preventDefault();
+    const answers = answersForm.elements.answer;
+    const checkedAnswers = [];
+    for (const answer of answers) {
+      if (answer.checked) {
+        checkedAnswers.push(answer.value);
+      }
+    }
+    showGameScreen(state, questions, checkGenreScreen(checkedAnswers, question));
   });
+
+  for (const player of players) {
+    const button = player.querySelector(`button`);
+    const audio = player.querySelector(`audio`);
+    button.addEventListener(`click`, (evt) => {
+      evt.preventDefault();
+      if (evt.target.classList.contains(`player-control--pause`)) {
+        audio.pause();
+        if (activePlayer) {
+          activePlayer = null;
+        }
+      } else if (evt.target.classList.contains(`player-control--play`)) {
+        if (activePlayer) {
+          const activeSong = activePlayer.querySelector(`audio`);
+          const activeButton = activePlayer.querySelector(`button`);
+          activeSong.pause();
+          activeButton.classList.toggle(`player-control--pause`);
+          activeButton.classList.toggle(`player-control--play`);
+        }
+        activePlayer = player;
+        audio.play();
+      }
+      evt.target.classList.toggle(`player-control--pause`);
+      evt.target.classList.toggle(`player-control--play`);
+    });
+  }
 
   return secondScreen;
 };

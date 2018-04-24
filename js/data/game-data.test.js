@@ -1,5 +1,5 @@
 import {assert} from 'chai';
-import {settings, timer, tick, checkAnswer, calsPoints, getStatistics, getWinnerStatistics} from './game-data';
+import {settings, currentState, tick, checkAnswer, calsPoints, getStatistics, getWinnerStatistics, upMistake, splitTime, calcAnswersType} from './game-data';
 
 
 describe(`check answer type`, () => {
@@ -45,20 +45,36 @@ describe(`points from answers`, () => {
 
 describe(`statistics from game`, () => {
 
-  describe(`winner statistics from game`, () => {
+  describe.only(`winner statistics from game`, () => {
     it(`should return 33 percent for winner`, () => {
-      const otherResults = [20, 15, 3, 14, 5];
+      const otherResults = [20, 15, 14, 5, 3];
       assert.equal(33, getWinnerStatistics(13, otherResults).percent);
     });
-
     it(`should return 6 players`, () => {
-      const otherResults = [20, 15, 3, 14, 5];
+      const otherResults = [20, 15, 14, 5, 3];
       assert.equal(6, getWinnerStatistics(13, otherResults).players);
     });
-
     it(`should return 4 for user position`, () => {
-      const otherResults = [20, 15, 3, 14, 5];
+      const otherResults = [20, 15, 14, 5, 3];
       assert.equal(4, getWinnerStatistics(13, otherResults).position);
+    });
+    it(`should return 100 percent for winner`, () => {
+      const otherResults = [20, 15, 14, 5, 3];
+      assert.equal(83, getWinnerStatistics(25, otherResults).percent);
+    });
+    it(`should return 6 players`, () => {
+      const otherResults = [20, 15, 14, 5, 3];
+      assert.equal(6, getWinnerStatistics(25, otherResults).players);
+    });
+    it(`should return 1 for user position`, () => {
+      const otherResults = [20, 15, 14, 5, 3];
+      assert.equal(1, getWinnerStatistics(25, otherResults).position);
+    });
+    it(`should work with the smallest number`, () => {
+      const otherResults = [20, 15, 14, 5, 3];
+      assert.equal(6, getWinnerStatistics(1, otherResults).position);
+      assert.equal(6, getWinnerStatistics(1, otherResults).players);
+      assert.equal(0, getWinnerStatistics(1, otherResults).percent);
     });
   });
 
@@ -96,33 +112,113 @@ describe(`statistics from game`, () => {
   });
 });
 
-describe(`Timer tick`, () => {
-  it(`Should increase current time on tick and show that time hasn't reached maximum`, () => {
-    const timerTest = Object.assign({}, timer, {
-      currentTime: 27
+describe(`Change state`, () => {
+  describe(`Change mistakes`, () => {
+    it(`Should increase current mistakes and show that mistakes hasn't reached maximum`, () => {
+      const mistakesTest = Object.assign({}, currentState, {
+        mistakes: 0
+      });
+      assert.equal(1, upMistake(mistakesTest).mistakes);
     });
 
-    assert.equal(28, tick(timerTest).currentTime);
-    assert.equal(false, tick(timerTest).isFinished);
+    it(`Shouldn't increase current mistakes and should show that mistakes has reached maximum`, () => {
+      const mistakesTest = Object.assign({}, currentState, {
+        mistakes: 2
+      });
+      assert.equal(3, upMistake(mistakesTest).mistakes);
+    });
+
+    it(`Shouldn't increase current mistakes and should show that mistakes has reached maximum`, () => {
+      const mistakesTest = Object.assign({}, currentState, {
+        mistakes: 3,
+        isFinished: false
+      });
+      assert.equal(3, upMistake(mistakesTest).mistakes);
+    });
   });
 
-  it(`Should tick and return flag if timer has reached maximum`, () => {
-    const timerTest = Object.assign({}, timer, {
-      currentTime: 5 * 60 - 1,
-      maxTime: 5 * 60
+  describe(`Timer tick`, () => {
+    it(`Should decrease current time on tick and show that time hasn't reached minimum`, () => {
+      const timerTest = Object.assign({}, currentState, {
+        time: 27
+      });
+
+      assert.equal(26, tick(timerTest).time);
     });
 
-    assert.equal(300, tick(timerTest).currentTime);
-    assert(tick(timerTest).isFinished);
+    it(`Should tick and return flag if timer hasn't reached maximum`, () => {
+      const timerTest = Object.assign({}, currentState, {
+        time: 5 * 60
+      });
+
+      assert.equal(299, tick(timerTest).time);
+    });
+
+    it(`Should return 0 and flag if timer already in minimum`, () => {
+      const timerTest = Object.assign({}, currentState, {
+        time: 0
+      });
+
+      assert.equal(0, tick(timerTest).time);
+    });
+
+    it(`Should return 0 and flag if timer already in minimum`, () => {
+      const timerTest = Object.assign({}, currentState, {
+        time: 1
+      });
+
+      assert.equal(0, tick(timerTest).time);
+    });
   });
 
-  it(`Shouldn't up if timer already in maximum`, () => {
-    const timerTest = Object.assign({}, timer, {
-      currentTime: 5 * 60,
-      maxTime: 5 * 60
+});
+
+describe(`Get minutes and seconds from seconds`, () => {
+  it(`Shoulls return 4 minutes and 59 seconds`, () => {
+    const timeTest = Object.assign({}, currentState, {
+      time: 5 * 60 - 1
     });
 
-    assert.equal(300, tick(timerTest).currentTime);
-    assert.equal(true, tick(timerTest).isFinished);
+    assert.equal(4, splitTime(timeTest.time).minutes);
+    assert.equal(59, splitTime(timeTest.time).seconds);
+  });
+
+  it(`Shoulls return 0 minutes and 59 seconds`, () => {
+    const timeTest = Object.assign({}, currentState, {
+      time: 59
+    });
+
+    assert.equal(0, splitTime(timeTest.time).minutes);
+    assert.equal(59, splitTime(timeTest.time).seconds);
+  });
+
+  it(`Shoulls return 5 minutes and 0 seconds`, () => {
+    const timeTest = Object.assign({}, currentState, {
+      time: 300
+    });
+
+    assert.equal(5, splitTime(timeTest.time).minutes);
+    assert.equal(0, splitTime(timeTest.time).seconds);
+  });
+
+});
+
+describe(`Calc answers type`, () => {
+  it(`Shouls return 3 wrong answers`, () => {
+    const answers = [`fast`, `correct`, `wrong`, `fast`, `correct`, `wrong`, `fast`, `correct`, `wrong`, `fast`];
+
+    assert.equal(3, calcAnswersType(answers, `wrong`));
+  });
+
+  it(`Shouls return 3 correct answers`, () => {
+    const answers = [`fast`, `correct`, `wrong`, `fast`, `correct`, `wrong`, `fast`, `correct`, `wrong`, `fast`];
+
+    assert.equal(3, calcAnswersType(answers, `correct`));
+  });
+
+  it(`Shouls return 0 correct answers`, () => {
+    const answers = [`fast`, `wrong`, `fast`, `wrong`, `fast`, `wrong`, `fast`];
+
+    assert.equal(0, calcAnswersType(answers, `correct`));
   });
 });
