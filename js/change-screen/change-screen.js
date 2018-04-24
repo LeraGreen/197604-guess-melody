@@ -1,14 +1,15 @@
-import getFirstScreen from '../first-screen/get-first-screen';
-import getSecondScreen from '../second-screen/get-second-screen';
+import FirstScreenView from '../first-screen/first-screen-view';
+import SecondScreenView from '../second-screen/second-screen-view';
 import {settings, currentState, initialState, statistics, upMistake, splitTime, checkAnswer} from '../data/game-data';
 import {showScreen} from '../utils';
-import getWinScreen from '../results/get-win-screen';
-import getAttemptsOutScreen from '../results/get-attempts-out-screen';
-import getTimeOutScreen from '../results/get-timeout-screen';
+import WinScreenView from '../results/win-screen-view';
+import AttemptsOutScreenView from '../results/attempts-out-screen-view';
+import TimeOutScreenView from '../results/timeout-screen-view';
+import GreetingScreenView from '../greeting/greeting-sreen-view';
 
 const screenType = {
-  'artist': getFirstScreen,
-  'genre': getSecondScreen
+  'artist': FirstScreenView,
+  'genre': SecondScreenView
 };
 
 let screenTime = 0;
@@ -39,7 +40,12 @@ export const showGameScreen = (state, questions, answer) => {
       if (state.time === settings.timeToEnd && state.question < settings.screens) {
         clearInterval(timerId);
         screenTime = 0;
-        showScreen(getTimeOutScreen());
+        const timeOutScreen = new TimeOutScreenView();
+        timeOutScreen.showGreetingScreen = () => {
+          const greetingScreen = new GreetingScreenView();
+          showScreen(greetingScreen.element);
+        };
+        showScreen(timeOutScreen.element);
       }
     }, 1000);
   }
@@ -55,18 +61,31 @@ export const showGameScreen = (state, questions, answer) => {
     upMistake(state);
   }
   if (state.mistakes < settings.maxMistakes && questionNumber < settings.screens && question) {
-    showScreen(screenType[question.type](state, question));
+    const questionScreen = new screenType[question.type](state, question);
+    showScreen(questionScreen.element);
     screenTime = state.time;
     state.question++;
   } else if (state.mistakes === settings.maxMistakes) {
-    Object.assign(currentState, initialState);
+    Object.assign(currentState, initialState, {
+      answers: []
+    });
     clearInterval(timerId);
     screenTime = 0;
-    showScreen(getAttemptsOutScreen());
+    const attemptsOutScreen = new AttemptsOutScreenView();
+    attemptsOutScreen.showGreetingScreen = () => {
+      const greetingScreen = new GreetingScreenView();
+      showScreen(greetingScreen.element);
+    };
+    showScreen(attemptsOutScreen.element);
   } else if (state.mistakes < settings.maxMistakes && questionNumber === settings.screens) {
     clearInterval(timerId);
     screenTime = 0;
-    showScreen(getWinScreen(currentState, statistics));
+    const winScreen = new WinScreenView(currentState, statistics);
+    winScreen.showGreetingScreen = () => {
+      const greetingScreen = new GreetingScreenView();
+      showScreen(greetingScreen.element);
+    };
+    showScreen(winScreen.element);
   }
   // TODO обавить проверку на время
   // TODO обнулять стейт после окончания игры
