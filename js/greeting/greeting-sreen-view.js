@@ -22,11 +22,11 @@ class GreetingScreenView {
   bind() {
     const playButton = this.element.querySelector(`.main-play`);
     playButton.addEventListener(`click`, () => {
-      this.startGame();
+      this.onPlayButtonClick();
     });
   }
 
-  startGame() {
+  onPlayButtonClick() {
   }
 }
 

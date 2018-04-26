@@ -7,6 +7,7 @@ export const getElementFromTemplate = (string) => {
 };
 
 export const showScreen = (element) => {
+  // TODO юзать element.element
   const mainClass = `.main`;
   const main = appContainer.querySelector(mainClass);
   if (main) {

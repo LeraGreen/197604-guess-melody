@@ -1,13 +1,12 @@
 import {getElementFromTemplate} from '../utils';
 import header from '../header/header';
-import {questions} from '../data/game-data';
-import {showGameScreen, checkGenreScreen} from '../change-screen/change-screen';
 
 class SecondScreenView {
   constructor(state, question) {
     this.state = state;
     this.question = question;
     this.element = getElementFromTemplate(this.template);
+    this.activePlayer = null;
     this.bind();
   }
 
@@ -43,17 +42,9 @@ class SecondScreenView {
   bind() {
     const answersForm = this.element.querySelector(`.genre`);
     const players = this.element.querySelectorAll(`.player`);
-    let activePlayer = null;
     answersForm.addEventListener(`submit`, (evt) => {
       evt.preventDefault();
-      const answers = answersForm.elements.answer;
-      const checkedAnswers = [];
-      for (const answer of answers) {
-        if (answer.checked) {
-          checkedAnswers.push(answer.value);
-        }
-      }
-      showGameScreen(this.state, questions, checkGenreScreen(checkedAnswers, this.question));
+      this.onFormSubmit(answersForm, this.question);
     });
 
     for (const player of players) {
@@ -61,26 +52,15 @@ class SecondScreenView {
       const audio = player.querySelector(`audio`);
       button.addEventListener(`click`, (evt) => {
         evt.preventDefault();
-        if (evt.target.classList.contains(`player-control--pause`)) {
-          audio.pause();
-          if (activePlayer) {
-            activePlayer = null;
-          }
-        } else if (evt.target.classList.contains(`player-control--play`)) {
-          if (activePlayer) {
-            const activeSong = activePlayer.querySelector(`audio`);
-            const activeButton = activePlayer.querySelector(`button`);
-            activeSong.pause();
-            activeButton.classList.toggle(`player-control--pause`);
-            activeButton.classList.toggle(`player-control--play`);
-          }
-          activePlayer = player;
-          audio.play();
-        }
-        evt.target.classList.toggle(`player-control--pause`);
-        evt.target.classList.toggle(`player-control--play`);
+        this.onPlayerControlClick(player, button, audio);
       });
     }
+  }
+
+  onFormSubmit() {
+  }
+
+  onPlayerControlClick() {
   }
 }
 

@@ -18,10 +18,10 @@ class TimeOutScreenView {
 
   bind() {
     const buttonReplay = this.element.querySelector(`.main-replay`);
-    buttonReplay.addEventListener(`click`, () => this.showGreetingScreen());
+    buttonReplay.addEventListener(`click`, () => this.onReplayButtonClick());
   }
 
-  showGreetingScreen() {
+  onReplayButtonClick() {
   }
 }
 

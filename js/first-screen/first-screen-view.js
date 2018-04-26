@@ -1,7 +1,6 @@
 import {getElementFromTemplate} from '../utils';
 import header from '../header/header';
 import {questions} from '../data/game-data';
-import {showGameScreen, checkArtistScreen} from '../change-screen/change-screen';
 
 class FirstScreenView {
   constructor(state, question) {
@@ -45,22 +44,18 @@ class FirstScreenView {
     const playerControl = this.element.querySelector(`.player-control`);
     const audio = this.element.querySelector(`audio`);
     answersForm.addEventListener(`change`, (evt) => {
-      if (evt.target.name === `answer`) {
-        showGameScreen(this.state, questions, checkArtistScreen(evt.target.value, this.question));
-      }
+      this.onAnswersFormChange(evt.target, questions, this.question);
     });
-    playerControl.addEventListener(`click`, (evt) => {
-      if (evt.target.classList.contains(`player-control--pause`)) {
-        audio.pause();
-      } else if (evt.target.classList.contains(`player-control--play`)) {
-        audio.play();
-      }
-      evt.target.classList.toggle(`player-control--pause`);
-      evt.target.classList.toggle(`player-control--play`);
+
+    playerControl.addEventListener(`click`, () => {
+      this.onPlayerControlClick(playerControl, audio);
     });
   }
 
-  showNextScreen() {
+  onPlayerControlClick() {
+  }
+
+  onAnswersFormChange() {
   }
 }
 

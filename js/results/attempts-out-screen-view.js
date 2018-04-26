@@ -3,6 +3,7 @@ import {getElementFromTemplate} from '../utils';
 class AttemptsOutScreenView {
   constructor() {
     this.element = getElementFromTemplate(this.template);
+    this.bind();
   }
 
   get template() {
@@ -17,10 +18,10 @@ class AttemptsOutScreenView {
 
   bind() {
     const buttonReplay = this.element.querySelector(`.main-replay`);
-    buttonReplay.addEventListener(`click`, () => this.showGreetingScreen());
+    buttonReplay.addEventListener(`click`, () => this.onReplayButtonClick());
   }
 
-  showGreetingScreen() {
+  onReplayButtonClick() {
   }
 }
 
