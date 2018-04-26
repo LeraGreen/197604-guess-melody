@@ -1,7 +1,7 @@
 import {getElementFromTemplate} from '../utils';
 import header from '../header/header';
 
-class SecondScreenView {
+class GenreScreenView {
   constructor(state, question) {
     this.state = state;
     this.question = question;
@@ -64,4 +64,4 @@ class SecondScreenView {
   }
 }
 
-export default SecondScreenView;
+export default GenreScreenView;

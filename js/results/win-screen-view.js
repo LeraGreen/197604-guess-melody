@@ -1,5 +1,5 @@
 import {getElementFromTemplate} from '../utils';
-import {calsPoints, splitTime, calcAnswersType, getWinnerStatistics} from '../data/game-data';
+import {calcPoints, splitTime, calcAnswersType, getWinnerStatistics} from '../data/game-data';
 import pluralize from '../plural/plural';
 
 class WinScreenView {
@@ -12,7 +12,7 @@ class WinScreenView {
 
   get template() {
     this.time = splitTime(this.state.time);
-    const points = calsPoints(this.state.answers);
+    const points = calcPoints(this.state.answers);
     const fastAnswers = calcAnswersType(this.state.answers, `fast`);
     const winnerStatistics = getWinnerStatistics(points, this.statistics);
 

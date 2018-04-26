@@ -123,7 +123,7 @@ answerPoints[AnswerType.WRONG] = -2;
 answerPoints[AnswerType.CORRECT] = 1;
 answerPoints[AnswerType.FAST] = 2;
 
-export const calsPoints = (answers) => {
+export const calcPoints = (answers) => {
   let points = 0;
   for (const answer of answers) {
     points += answerPoints[answer];

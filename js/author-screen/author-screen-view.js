@@ -2,7 +2,7 @@ import {getElementFromTemplate} from '../utils';
 import header from '../header/header';
 import {questions} from '../data/game-data';
 
-class FirstScreenView {
+class AuthorScreenView {
   constructor(state, question) {
     this.state = state;
     this.question = question;
@@ -59,4 +59,4 @@ class FirstScreenView {
   }
 }
 
-export default FirstScreenView;
+export default AuthorScreenView;
