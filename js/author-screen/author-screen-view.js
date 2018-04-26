@@ -45,6 +45,7 @@ class AuthorScreenView {
     const audio = this.element.querySelector(`audio`);
     answersForm.addEventListener(`change`, (evt) => {
       this.onAnswersFormChange(evt.target, questions, this.question);
+      this.stopPlayer(playerControl, audio);
     });
 
     playerControl.addEventListener(`click`, () => {
@@ -52,7 +53,24 @@ class AuthorScreenView {
     });
   }
 
-  onPlayerControlClick() {
+  onPlayerControlClick(button, audio) {
+    if (audio.paused) {
+      audio.play();
+      button.classList.remove(`player-control--play`);
+      button.classList.add(`player-control--pause`);
+    } else {
+      audio.pause();
+      button.classList.remove(`player-control--pause`);
+      button.classList.add(`player-control--play`);
+    }
+  }
+
+  stopPlayer(button, audio) {
+    if (!audio.paused) {
+      audio.pause();
+      button.classList.remove(`player-control--pause`);
+      button.classList.add(`player-control--play`);
+    }
   }
 
   onAnswersFormChange() {

@@ -45,6 +45,7 @@ class GenreScreenView {
     answersForm.addEventListener(`submit`, (evt) => {
       evt.preventDefault();
       this.onFormSubmit(answersForm, this.question);
+      this.stopPlayer();
     });
 
     for (const player of players) {
@@ -60,7 +61,37 @@ class GenreScreenView {
   onFormSubmit() {
   }
 
-  onPlayerControlClick() {
+  onPlayerControlClick(player, button, audio) {
+    if (!audio.paused) {
+      if (this.activePlayer) {
+        this.activePlayer = null;
+      }
+      audio.pause();
+      button.classList.add(`player-control--play`);
+      button.classList.remove(`player-control--pause`);
+    } else {
+      if (this.activePlayer) {
+        const activeSong = this.activePlayer.querySelector(`audio`);
+        const activeButton = this.activePlayer.querySelector(`button`);
+        activeSong.pause();
+        activeButton.classList.add(`player-control--play`);
+        activeButton.classList.remove(`player-control--pause`);
+      }
+      this.activePlayer = player;
+      audio.play();
+      button.classList.remove(`player-control--play`);
+      button.classList.add(`player-control--pause`);
+    }
+  }
+
+  stopPlayer() {
+    if (this.activePlayer) {
+      const activeSong = this.activePlayer.querySelector(`audio`);
+      const activeButton = this.activePlayer.querySelector(`button`);
+      activeSong.pause();
+      activeButton.classList.add(`player-control--play`);
+      activeButton.classList.remove(`player-control--pause`);
+    }
   }
 }
 

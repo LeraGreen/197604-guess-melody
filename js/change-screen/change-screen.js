@@ -73,18 +73,6 @@ export const showGameScreen = (state, questions, answer) => {
     if (question.type === `artist`) {
       // TODO Перенести логику управления плеером обратно внутрь View
       // переопределение методов первого экрана
-      questionScreen.onPlayerControlClick = function (button, audio) {
-        if (audio.paused) {
-          audio.play();
-          button.classList.remove(`player-control--play`);
-          button.classList.add(`player-control--pause`);
-        // TODO if не нужен. Если audio не paused то оно автоматически !paused
-        } else if (!audio.paused) {
-          audio.pause();
-          button.classList.remove(`player-control--pause`);
-          button.classList.add(`player-control--play`);
-        }
-      };
       questionScreen.onAnswersFormChange = function (input, questions, question) {
         if (input.name === `answer`) {
           showGameScreen(state, questions, checkArtistScreen(input.value, question));
@@ -102,29 +90,6 @@ export const showGameScreen = (state, questions, answer) => {
           }
         }
         showGameScreen(this.state, questions, checkGenreScreen(checkedAnswers, question));
-      };
-
-      questionScreen.onPlayerControlClick = function (player, button, audio) {
-        if (!audio.paused) {
-          if (questionScreen.activePlayer) {
-            questionScreen.activePlayer = null;
-          }
-          audio.pause();
-          button.classList.add(`player-control--play`);
-          button.classList.remove(`player-control--pause`);
-        } else if (audio.paused) {
-          if (questionScreen.activePlayer) {
-            const activeSong = questionScreen.activePlayer.querySelector(`audio`);
-            const activeButton = questionScreen.activePlayer.querySelector(`button`);
-            activeSong.pause();
-            activeButton.classList.add(`player-control--play`);
-            activeButton.classList.remove(`player-control--pause`);
-          }
-          questionScreen.activePlayer = player;
-          audio.play();
-          button.classList.remove(`player-control--play`);
-          button.classList.add(`player-control--pause`);
-        }
       };
     }
 
