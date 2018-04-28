@@ -1,9 +1,11 @@
 export const settings = {
   maxMistakes: 3,
   screens: 4,
-  timeToGame: 5 * 60,
+  timeToGame: 5 * 60 + 1,
   timeToEnd: 0
 };
+
+const fastAnswerTime = 30;
 
 const AnswerType = {
   FAST: `fast`,
@@ -110,7 +112,7 @@ export const statistics = [20, 19, 15, 4, 2];
 
 export const checkAnswer = (answer, time) => {
   if (answer) {
-    if (time < 30) {
+    if (time < fastAnswerTime) {
       return `fast`;
     }
     return `correct`;

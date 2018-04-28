@@ -1,5 +1,4 @@
 import {getElementFromTemplate} from '../utils';
-import header from '../header/header';
 import {questions} from '../data/game-data';
 
 class AuthorScreenView {
@@ -12,7 +11,6 @@ class AuthorScreenView {
 
   get template() {
     return `<section class="main main--level main--level-artist">
-      ${header(this.state)}
 
       <div class="main-wrap">
         <h2 class="title main-title">Кто исполняет эту песню?</h2>
@@ -31,7 +29,7 @@ class AuthorScreenView {
             <input class="main-answer-r" type="radio" id="answer-${i}" name="answer" value="${it.artist}"/>
             <label class="main-answer" for="answer-${i}">
               <img class="main-answer-preview" src="${it.imageUrl}"
-                   alt="Пелагея" width="134" height="134">
+                   alt="${it.artist}" width="134" height="134">
               ${it.artist}
             </label>
           </div>` + `\n`
@@ -74,6 +72,11 @@ class AuthorScreenView {
   }
 
   onAnswersFormChange() {
+  }
+
+  append(view) {
+    const nextElement = this.element.querySelector(`.main-wrap`);
+    this.element.insertBefore(view.element, nextElement);
   }
 }
 

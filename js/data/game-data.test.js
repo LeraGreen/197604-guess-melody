@@ -45,7 +45,7 @@ describe(`points from answers`, () => {
 
 describe(`statistics from game`, () => {
 
-  describe.only(`winner statistics from game`, () => {
+  describe(`winner statistics from game`, () => {
     it(`should return 33 percent for winner`, () => {
       const otherResults = [20, 15, 14, 5, 3];
       assert.equal(33, getWinnerStatistics(13, otherResults).percent);

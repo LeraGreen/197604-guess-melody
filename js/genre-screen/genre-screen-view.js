@@ -1,5 +1,4 @@
 import {getElementFromTemplate} from '../utils';
-import header from '../header/header';
 
 class GenreScreenView {
   constructor(state, question) {
@@ -12,7 +11,6 @@ class GenreScreenView {
 
   get template() {
     return `<section class="main main--level main--level-genre">
-      ${header(this.state)}
 
       <div class="main-wrap">
         <h2 class="title">Выберите ${this.question.genre} треки</h2>
@@ -44,7 +42,7 @@ class GenreScreenView {
     const players = this.element.querySelectorAll(`.player`);
     answersForm.addEventListener(`submit`, (evt) => {
       evt.preventDefault();
-      this.onFormSubmit(answersForm, this.question);
+      this.onConfirmAnswers(answersForm, this.question);
       this.stopPlayer();
     });
 
@@ -58,7 +56,7 @@ class GenreScreenView {
     }
   }
 
-  onFormSubmit() {
+  onConfirmAnswers() {
   }
 
   onPlayerControlClick(player, button, audio) {
@@ -92,6 +90,11 @@ class GenreScreenView {
       activeButton.classList.add(`player-control--play`);
       activeButton.classList.remove(`player-control--pause`);
     }
+  }
+
+  append(view) {
+    const nextElement = this.element.querySelector(`.main-wrap`);
+    this.element.insertBefore(view.element, nextElement);
   }
 }
 

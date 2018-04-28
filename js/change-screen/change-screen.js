@@ -6,6 +6,9 @@ import WinScreenView from '../results/win-screen-view';
 import AttemptsOutScreenView from '../results/attempts-out-screen-view';
 import TimeOutScreenView from '../results/timeout-screen-view';
 import GreetingScreenView from '../greeting/greeting-sreen-view';
+import HeaderView from '../header/header';
+import TimerGraphicView from '../timer/timer-graphic-view';
+import TimerTimeView from '../timer/timer-time-view';
 
 const screenType = {
   'artist': AuthorScreenView,
@@ -14,6 +17,37 @@ const screenType = {
 
 let screenTime = 0;
 let timerId = null;
+
+export const initializeGame = () => {
+  const greetingScreen = new GreetingScreenView();
+  greetingScreen.onPlayButtonClick = () => {
+    Object.assign(currentState, initialState, {
+      answers: []
+    });
+    showGameScreen(currentState, questions);
+  };
+  showScreen(greetingScreen.element);
+};
+
+export const workTimer = (state) => {
+  // TODO разобраться с показом времени - показ с 5 секунд
+  // TODO показыает 0 секунд, а потом показывает экран
+  timerId = setInterval(() => {
+    if (state.time > settings.timeToEnd) {
+      state.time--;
+      showTimer(state.time);
+    } else if (state.time === settings.timeToEnd && state.answers.length < settings.screens) {
+      // TODO разобраться почему убирание отсюда stopTimer ломает нахер все
+      // раньше он был в инитиалайз гейм
+      stopTimer();
+      const timeOutScreen = new TimeOutScreenView();
+      timeOutScreen.onReplayButtonClick = function () {
+        initializeGame();
+      };
+      showScreen(timeOutScreen.element);
+    }
+  }, 1000);
+};
 
 const showTimer = (rawTime) => {
   const time = splitTime(rawTime);
@@ -31,30 +65,12 @@ const stopTimer = () => {
 
 export const showGameScreen = (state, questions, answer) => {
   // TODO мэйби выпилить передачу questions внутрь, ибо они итак есть наверху
-  // TODO добавить время повторно, оно не отображается во второй раз
+  if (!timerId) {
+    workTimer(state);
+  }
   let roundTime = 0;
   if (screenTime) {
     roundTime = -(state.time - screenTime);
-  }
-  if (!timerId) {
-    // запуск таймера и отлов окончания времени
-    timerId = setInterval(() => {
-      if (state.time > settings.timeToEnd) {
-        state.time--;
-        showTimer(state.time);
-        // TODO сделать первый вызов снаружи, чтобы таймер сразу загружался с 5 минут
-      } else if (state.time === settings.timeToEnd) {
-        stopTimer();
-      }
-      if (state.time === settings.timeToEnd && state.question < settings.screens) {
-        stopTimer();
-        const timeOutScreen = new TimeOutScreenView();
-        timeOutScreen.onReplayButtonClick = function () {
-          initializeGame();
-        };
-        showScreen(timeOutScreen.element);
-      }
-    }, 1000);
   }
 
   const questionNumber = state.question;
@@ -71,8 +87,6 @@ export const showGameScreen = (state, questions, answer) => {
   if (state.mistakes < settings.maxMistakes && questionNumber < settings.screens && question) {
     const questionScreen = new screenType[question.type](state, question);
     if (question.type === `artist`) {
-      // TODO Перенести логику управления плеером обратно внутрь View
-      // переопределение методов первого экрана
       questionScreen.onAnswersFormChange = function (input, questions, question) {
         if (input.name === `answer`) {
           showGameScreen(state, questions, checkArtistScreen(input.value, question));
@@ -80,8 +94,7 @@ export const showGameScreen = (state, questions, answer) => {
       };
     } else if (question.type === `genre`) {
       // переопределение методов второго экрана
-      // TODO придумать более нейтральное название
-      questionScreen.onFormSubmit = function (inputs, question) {
+      questionScreen.onConfirmAnswers = function (inputs, question) {
         const answers = inputs.elements.answer;
         const checkedAnswers = [];
         for (const answer of answers) {
@@ -94,6 +107,19 @@ export const showGameScreen = (state, questions, answer) => {
     }
 
     // показ игрового экрана
+    const header = new HeaderView(state);
+    // TODO сделать чтобы append() и showScreen() принимали на вход не element
+    // а view целиком. У некоторых View может не быть элемента, потому что они
+    // могут быть построены не на DOM, а, например на Google Maps API, канвасе,
+    // SVG или любом другом способе отображения информации, их много.
+    // Это полиморфизм — разные View отрисовываются по-разному и они сами знают
+    // как именно они это делают.
+    header.renderMistakes(state.mistakes);
+    const timerTimeView = new TimerTimeView();
+    const timerGraphicView = new TimerGraphicView();
+    header.append(timerTimeView);
+    header.append(timerGraphicView);
+    questionScreen.append(header);
     showScreen(questionScreen.element);
     screenTime = state.time;
     state.question++;
@@ -124,16 +150,4 @@ const checkGenreScreen = (answers, question) => {
     return false;
   }
   return answers.every((it) => it === question.genre);
-};
-
-export const initializeGame = () => {
-  const greetingScreen = new GreetingScreenView();
-  greetingScreen.onPlayButtonClick = () => {
-    Object.assign(currentState, initialState, {
-      answers: []
-    });
-    stopTimer();
-    showGameScreen(currentState, questions);
-  };
-  showScreen(greetingScreen.element);
 };
