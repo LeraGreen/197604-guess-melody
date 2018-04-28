@@ -1,11 +1,10 @@
-import {getElementFromTemplate} from '../utils';
+import AbstractView from '../view';
 
-class AuthorScreenView {
+class AuthorScreenView extends AbstractView {
   constructor(state, question) {
+    super();
     this.state = state;
     this.question = question;
-    this.element = getElementFromTemplate(this.template);
-    this.bind();
   }
 
   get template() {
@@ -40,6 +39,7 @@ class AuthorScreenView {
     const answersForm = this.element.querySelector(`.main-list`);
     const playerControl = this.element.querySelector(`.player-control`);
     const audio = this.element.querySelector(`audio`);
+
     answersForm.addEventListener(`change`, (evt) => {
       this.onAnswersFormChange(evt.target, this.question);
       this.stopPlayer(playerControl, audio);
@@ -74,6 +74,7 @@ class AuthorScreenView {
   }
 
   append(view) {
+    // TODO: Ленивые вычисления
     const nextElement = this.element.querySelector(`.main-wrap`);
     this.element.insertBefore(view.element, nextElement);
   }

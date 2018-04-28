@@ -1,12 +1,11 @@
-import {getElementFromTemplate} from '../utils';
+import AbstractView from '../view';
 
-class GenreScreenView {
+class GenreScreenView extends AbstractView {
   constructor(state, question) {
+    super();
     this.state = state;
     this.question = question;
-    this.element = getElementFromTemplate(this.template);
     this.activePlayer = null;
-    this.bind();
   }
 
   get template() {
@@ -40,6 +39,7 @@ class GenreScreenView {
   bind() {
     const answersForm = this.element.querySelector(`.genre`);
     const players = this.element.querySelectorAll(`.player`);
+
     answersForm.addEventListener(`submit`, (evt) => {
       evt.preventDefault();
       this.onConfirmAnswers(answersForm, this.question);

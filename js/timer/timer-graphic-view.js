@@ -1,8 +1,8 @@
-import {getElementFromTemplate} from '../utils';
+import AbstractView from '../view';
 
-class TimerGraphicView {
+class TimerGraphicView extends AbstractView {
   constructor() {
-    this.element = getElementFromTemplate(this.template);
+    super();
   }
 
   get template() {

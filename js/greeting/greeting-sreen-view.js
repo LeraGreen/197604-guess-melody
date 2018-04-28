@@ -1,10 +1,6 @@
-import {getElementFromTemplate} from '../utils';
+import AbstractView from '../view';
 
-class GreetingScreenView {
-  constructor() {
-    this.element = getElementFromTemplate(this.template);
-    this.bind();
-  }
+class GreetingScreenView extends AbstractView {
 
   get template() {
     return `<section class="main main--welcome">

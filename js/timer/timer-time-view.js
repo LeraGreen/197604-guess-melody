@@ -1,8 +1,10 @@
-import {getElementFromTemplate} from '../utils';
+import AbstractView from '../view';
+import {splitTime} from '../data/game-data';
 
-class TimerTimeView {
+// TODO: TimerTextView
+class TimerTimeView extends AbstractView {
   constructor() {
-    this.element = getElementFromTemplate(this.template);
+    super();
   }
 
   get template() {
@@ -11,6 +13,22 @@ class TimerTimeView {
       --><span class="timer-value-dots">:</span><!--
       --><span class="timer-value-secs" id="seconds"></span>
     </div>`;
+  }
+
+  // TODO плохое название метода, я бы назвал его showTime
+  renderTimer(rawTime) {
+    const time = splitTime(rawTime);
+
+    if (!this._minutesElement) {
+      this._minutesElement = document.getElementById(`minutes`);
+    }
+
+    if (!this._secondsElement) {
+      this._secondsElement = document.getElementById(`seconds`);
+    }
+
+    this._minutesElement.textContent = time.minutes >= 10 ? time.minutes : `0` + time.minutes;
+    this._secondsElement.textContent = time.seconds >= 10 ? time.seconds : `0` + time.seconds;
   }
 }
 

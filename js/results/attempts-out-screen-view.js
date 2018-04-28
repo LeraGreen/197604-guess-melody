@@ -1,11 +1,6 @@
-import {getElementFromTemplate} from '../utils';
+import AbstractView from '../view';
 
-class AttemptsOutScreenView {
-  constructor() {
-    this.element = getElementFromTemplate(this.template);
-    this.bind();
-  }
-
+class AttemptsOutScreenView extends AbstractView {
   get template() {
     return `<section class="main main--result">
       <section class="logo" title="Угадай мелодию"><h1>Угадай мелодию</h1></section>
@@ -17,8 +12,8 @@ class AttemptsOutScreenView {
   }
 
   bind() {
-    const buttonReplay = this.element.querySelector(`.main-replay`);
-    buttonReplay.addEventListener(`click`, () => this.onReplayButtonClick());
+    const replayButton = this.element.querySelector(`.main-replay`);
+    replayButton.addEventListener(`click`, () => this.onReplayButtonClick());
   }
 
   onReplayButtonClick() {

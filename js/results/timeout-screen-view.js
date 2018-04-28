@@ -1,9 +1,8 @@
-import {getElementFromTemplate} from '../utils';
+import AbstractView from '../view';
 
-class TimeOutScreenView {
+class TimeOutScreenView extends AbstractView {
   constructor() {
-    this.element = getElementFromTemplate(this.template);
-    this.bind();
+    super();
   }
 
   get template() {

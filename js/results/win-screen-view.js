@@ -1,17 +1,22 @@
-import {getElementFromTemplate} from '../utils';
+import AbstractView from '../view';
 import {calcPoints, splitTime, calcAnswersType, getWinnerStatistics} from '../data/game-data';
 import pluralize from '../plural/plural';
 
-class WinScreenView {
+class WinScreenView extends AbstractView {
   constructor(state, statistics) {
+    super();
+    // TODO все свойства, которыми нельзя пользоваться снаружи
+    // объявить как private (подчеркнуть). Все объекты приложения
     this.state = state;
     this.statistics = statistics;
-    this.element = getElementFromTemplate(this.template);
-    this.bind();
   }
 
   get template() {
+    // TODO: зачем время в this? Достаточно просто переменной
     this.time = splitTime(this.state.time);
+
+    // Это не вопрос отображения, а сама игра. Очки, место и другие параметры
+    // это не про вьюху
     const points = calcPoints(this.state.answers);
     const fastAnswers = calcAnswersType(this.state.answers, `fast`);
     const winnerStatistics = getWinnerStatistics(points, this.statistics);
@@ -29,8 +34,8 @@ class WinScreenView {
   }
 
   bind() {
-    const buttonReplay = this.element.querySelector(`.main-replay`);
-    buttonReplay.addEventListener(`click`, () => this.onReplayButtonClick());
+    const replayButton = this.element.querySelector(`.main-replay`);
+    replayButton.addEventListener(`click`, () => this.onReplayButtonClick());
   }
 
   onReplayButtonClick() {

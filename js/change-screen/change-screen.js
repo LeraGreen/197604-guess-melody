@@ -1,24 +1,25 @@
 import AuthorScreenView from '../author-screen/author-screen-view';
 import GenreScreenView from '../genre-screen/genre-screen-view';
-import {settings, currentState, initialState, statistics, upMistake, splitTime, checkAnswer, questions} from '../data/game-data';
+import {settings, currentState, initialState, statistics, upMistake, checkAnswer, questions} from '../data/game-data';
 import {showScreen} from '../utils';
 import WinScreenView from '../results/win-screen-view';
 import AttemptsOutScreenView from '../results/attempts-out-screen-view';
 import TimeOutScreenView from '../results/timeout-screen-view';
 import GreetingScreenView from '../greeting/greeting-sreen-view';
-import HeaderView from '../header/header';
+import MistakesView from '../mistakes/mistakes-view';
 import TimerGraphicView from '../timer/timer-graphic-view';
 import TimerTimeView from '../timer/timer-time-view';
 
 // TODO а что делать если правильный ответ пустой?
 // Написать битовые маскиииииииииииии уиииииииииии!
 // TODO Переписать тесты под новые функции и новые штуки в функциях
-
 const screenType = {
   'artist': AuthorScreenView,
   'genre': GenreScreenView
 };
 
+let timerGraphic = null;
+let timerTime = null;
 let screenTime = 0;
 let timerId = null;
 
@@ -28,6 +29,8 @@ export const initializeGame = () => {
     Object.assign(currentState, initialState, {
       answers: []
     });
+    timerGraphic = new TimerGraphicView();
+    timerTime = new TimerTimeView();
     showGameScreen(currentState);
   };
   showScreen(greetingScreen);
@@ -37,9 +40,10 @@ export const workTimer = (state) => {
   // TODO разобраться с показом времени - показ с 5 секунд
   // TODO показыает 0 секунд, а потом показывает экран
   timerId = setInterval(() => {
+    state.time--;
+
     if (state.time > settings.timeToEnd) {
-      state.time--;
-      showTimer(state.time);
+      timerTime.renderTimer(state.time);
     } else if (state.time === settings.timeToEnd && state.answers.length < settings.screens) {
       // TODO разобраться почему убирание отсюда stopTimer ломает нахер все
       // раньше он был в инитиалайз гейм
@@ -51,14 +55,6 @@ export const workTimer = (state) => {
       showScreen(timeOutScreen);
     }
   }, 1000);
-};
-
-const showTimer = (rawTime) => {
-  const time = splitTime(rawTime);
-  const minutes = document.getElementById(`minutes`);
-  const seconds = document.getElementById(`seconds`);
-  minutes.textContent = time.minutes >= 10 ? time.minutes : `0` + time.minutes;
-  seconds.textContent = time.seconds >= 10 ? time.seconds : `0` + time.seconds;
 };
 
 const stopTimer = () => {
@@ -109,13 +105,11 @@ export const showGameScreen = (state, answer) => {
       };
     }
 
-    const header = new HeaderView(state);
-    header.renderMistakes(state.mistakes);
-    const timerTimeView = new TimerTimeView();
-    const timerGraphicView = new TimerGraphicView();
-    header.append(timerTimeView);
-    header.append(timerGraphicView);
-    questionScreen.append(header);
+    questionScreen.append(timerGraphic);
+    questionScreen.append(timerTime);
+    const mistakes = new MistakesView(state);
+    mistakes.renderMistakes(state.mistakes);
+    questionScreen.append(mistakes);
     showScreen(questionScreen);
     screenTime = state.time;
     state.question++;
