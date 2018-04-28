@@ -10,6 +10,10 @@ import HeaderView from '../header/header';
 import TimerGraphicView from '../timer/timer-graphic-view';
 import TimerTimeView from '../timer/timer-time-view';
 
+// TODO а что делать если правильный ответ пустой?
+// Написать битовые маскиииииииииииии уиииииииииии!
+// TODO Переписать тесты под новые функции и новые штуки в функциях
+
 const screenType = {
   'artist': AuthorScreenView,
   'genre': GenreScreenView
@@ -24,9 +28,9 @@ export const initializeGame = () => {
     Object.assign(currentState, initialState, {
       answers: []
     });
-    showGameScreen(currentState, questions);
+    showGameScreen(currentState);
   };
-  showScreen(greetingScreen.element);
+  showScreen(greetingScreen);
 };
 
 export const workTimer = (state) => {
@@ -44,7 +48,7 @@ export const workTimer = (state) => {
       timeOutScreen.onReplayButtonClick = function () {
         initializeGame();
       };
-      showScreen(timeOutScreen.element);
+      showScreen(timeOutScreen);
     }
   }, 1000);
 };
@@ -53,8 +57,8 @@ const showTimer = (rawTime) => {
   const time = splitTime(rawTime);
   const minutes = document.getElementById(`minutes`);
   const seconds = document.getElementById(`seconds`);
-  minutes.textContent = time.minutes;
-  seconds.textContent = time.seconds;
+  minutes.textContent = time.minutes >= 10 ? time.minutes : `0` + time.minutes;
+  seconds.textContent = time.seconds >= 10 ? time.seconds : `0` + time.seconds;
 };
 
 const stopTimer = () => {
@@ -63,7 +67,7 @@ const stopTimer = () => {
   timerId = null;
 };
 
-export const showGameScreen = (state, questions, answer) => {
+export const showGameScreen = (state, answer) => {
   // TODO мэйби выпилить передачу questions внутрь, ибо они итак есть наверху
   if (!timerId) {
     workTimer(state);
@@ -87,14 +91,13 @@ export const showGameScreen = (state, questions, answer) => {
   if (state.mistakes < settings.maxMistakes && questionNumber < settings.screens && question) {
     const questionScreen = new screenType[question.type](state, question);
     if (question.type === `artist`) {
-      questionScreen.onAnswersFormChange = function (input, questions, question) {
+      questionScreen.onAnswersFormChange = function (input, question) {
         if (input.name === `answer`) {
-          showGameScreen(state, questions, checkArtistScreen(input.value, question));
+          showGameScreen(state, checkArtistScreen(input.value, question));
         }
       };
     } else if (question.type === `genre`) {
-      // переопределение методов второго экрана
-      questionScreen.onConfirmAnswers = function (inputs, question) {
+      questionScreen.onConfirmAnswers = function (inputs) {
         const answers = inputs.elements.answer;
         const checkedAnswers = [];
         for (const answer of answers) {
@@ -102,25 +105,18 @@ export const showGameScreen = (state, questions, answer) => {
             checkedAnswers.push(answer.value);
           }
         }
-        showGameScreen(this.state, questions, checkGenreScreen(checkedAnswers, question));
+        showGameScreen(this.state, checkGenreScreen(checkedAnswers, question));
       };
     }
 
-    // показ игрового экрана
     const header = new HeaderView(state);
-    // TODO сделать чтобы append() и showScreen() принимали на вход не element
-    // а view целиком. У некоторых View может не быть элемента, потому что они
-    // могут быть построены не на DOM, а, например на Google Maps API, канвасе,
-    // SVG или любом другом способе отображения информации, их много.
-    // Это полиморфизм — разные View отрисовываются по-разному и они сами знают
-    // как именно они это делают.
     header.renderMistakes(state.mistakes);
     const timerTimeView = new TimerTimeView();
     const timerGraphicView = new TimerGraphicView();
     header.append(timerTimeView);
     header.append(timerGraphicView);
     questionScreen.append(header);
-    showScreen(questionScreen.element);
+    showScreen(questionScreen);
     screenTime = state.time;
     state.question++;
   } else if (state.mistakes === settings.maxMistakes) {
@@ -129,23 +125,20 @@ export const showGameScreen = (state, questions, answer) => {
     attemptsOutScreen.onReplayButtonClick = function () {
       initializeGame();
     };
-    showScreen(attemptsOutScreen.element);
+    showScreen(attemptsOutScreen);
   } else if (state.mistakes < settings.maxMistakes && questionNumber === settings.screens) {
     stopTimer();
     const winScreen = new WinScreenView(currentState, statistics);
     winScreen.onReplayButtonClick = function () {
       initializeGame();
     };
-    showScreen(winScreen.element);
+    showScreen(winScreen);
   }
-  // TODO Переписать тесты под новые функции и новые штуки в функциях
 };
 
 const checkArtistScreen = (answer, question) => answer === question.artist;
 
 const checkGenreScreen = (answers, question) => {
-  // TODO а что делать если правильный ответ пустой?
-  // Написать битовые маскиииииииииииии уиииииииииии!
   if (!answers.length) {
     return false;
   }

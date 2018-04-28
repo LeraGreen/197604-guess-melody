@@ -7,14 +7,14 @@ export const getElementFromTemplate = (string) => {
   //TODO что-то тут придумать
 };
 
-export const showScreen = (element) => {
+export const showScreen = (view) => {
   // TODO юзать element.element
   const mainClass = `.main`;
   const main = appContainer.querySelector(mainClass);
   if (main) {
     appContainer.removeChild(main);
   }
-  appContainer.insertBefore(element, appContainer.children[0]);
+  appContainer.insertBefore(view.element, appContainer.children[0]);
 };
 
 export const getRandomFromArray = (array) => array[Math.floor(Math.random() * array.length)];

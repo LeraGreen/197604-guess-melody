@@ -1,5 +1,4 @@
 import {getElementFromTemplate} from '../utils';
-import {questions} from '../data/game-data';
 
 class AuthorScreenView {
   constructor(state, question) {
@@ -42,7 +41,7 @@ class AuthorScreenView {
     const playerControl = this.element.querySelector(`.player-control`);
     const audio = this.element.querySelector(`audio`);
     answersForm.addEventListener(`change`, (evt) => {
-      this.onAnswersFormChange(evt.target, questions, this.question);
+      this.onAnswersFormChange(evt.target, this.question);
       this.stopPlayer(playerControl, audio);
     });
 
