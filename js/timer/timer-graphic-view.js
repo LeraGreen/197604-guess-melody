@@ -1,10 +1,6 @@
 import AbstractView from '../view';
 
 class TimerGraphicView extends AbstractView {
-  constructor() {
-    super();
-  }
-
   get template() {
     return `<svg xmlns="http://www.w3.org/2000/svg" class="timer" viewBox="0 0 780 780">
     <circle

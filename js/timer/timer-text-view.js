@@ -1,8 +1,7 @@
 import AbstractView from '../view';
 import {splitTime} from '../data/game-data';
 
-// TODO: TimerTextView
-class TimerTimeView extends AbstractView {
+class TimerTextView extends AbstractView {
   constructor() {
     super();
   }
@@ -15,8 +14,7 @@ class TimerTimeView extends AbstractView {
     </div>`;
   }
 
-  // TODO плохое название метода, я бы назвал его showTime
-  renderTimer(rawTime) {
+  showTime(rawTime) {
     const time = splitTime(rawTime);
 
     if (!this._minutesElement) {
@@ -32,4 +30,4 @@ class TimerTimeView extends AbstractView {
   }
 }
 
-export default TimerTimeView;
+export default TimerTextView;

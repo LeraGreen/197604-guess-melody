@@ -1,10 +1,9 @@
 import AbstractView from '../view';
 
 class AuthorScreenView extends AbstractView {
-  constructor(state, question) {
+  constructor(question) {
     super();
-    this.state = state;
-    this.question = question;
+    this._question = question;
   }
 
   get template() {
@@ -14,7 +13,7 @@ class AuthorScreenView extends AbstractView {
         <h2 class="title main-title">Кто исполняет эту песню?</h2>
         <div class="player-wrapper">
           <div class="player">
-            <audio src="${this.question.src}" autoplay preload="auto"></audio>
+            <audio src="${this._question.src}" autoplay preload="auto"></audio>
             <button class="player-control player-control--pause"></button>
             <div class="player-track">
               <span class="player-status"></span>
@@ -22,7 +21,7 @@ class AuthorScreenView extends AbstractView {
           </div>
         </div>
         <form class="main-list">
-     ${this.question.answers.reduce((acc, it, i) =>
+     ${this._question.answers.reduce((acc, it, i) =>
     acc + `<div class="main-answer-wrapper">
             <input class="main-answer-r" type="radio" id="answer-${i}" name="answer" value="${it.artist}"/>
             <label class="main-answer" for="answer-${i}">
@@ -41,7 +40,7 @@ class AuthorScreenView extends AbstractView {
     const audio = this.element.querySelector(`audio`);
 
     answersForm.addEventListener(`change`, (evt) => {
-      this.onAnswersFormChange(evt.target, this.question);
+      this.onAnswersFormChange(evt.target, this._question);
       this.stopPlayer(playerControl, audio);
     });
 
@@ -74,9 +73,10 @@ class AuthorScreenView extends AbstractView {
   }
 
   append(view) {
-    // TODO: Ленивые вычисления
-    const nextElement = this.element.querySelector(`.main-wrap`);
-    this.element.insertBefore(view.element, nextElement);
+    if (!this._nextElement) {
+      this._nextElement = this.element.querySelector(`.main-wrap`);
+    }
+    this.element.insertBefore(view.element, this._nextElement);
   }
 }
 

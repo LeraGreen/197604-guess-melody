@@ -16,8 +16,8 @@ class TimeOutScreenView extends AbstractView {
   }
 
   bind() {
-    const buttonReplay = this.element.querySelector(`.main-replay`);
-    buttonReplay.addEventListener(`click`, () => this.onReplayButtonClick());
+    const replayButton = this.element.querySelector(`.main-replay`);
+    replayButton.addEventListener(`click`, () => this.onReplayButtonClick());
   }
 
   onReplayButtonClick() {

@@ -1,20 +1,19 @@
 import AbstractView from '../view';
 
 class GenreScreenView extends AbstractView {
-  constructor(state, question) {
+  constructor(question) {
     super();
-    this.state = state;
-    this.question = question;
-    this.activePlayer = null;
+    this._question = question;
+    this._activePlayer = null;
   }
 
   get template() {
     return `<section class="main main--level main--level-genre">
 
       <div class="main-wrap">
-        <h2 class="title">Выберите ${this.question.genre} треки</h2>
+        <h2 class="title">Выберите ${this._question.genre} треки</h2>
         <form class="genre">
-        ${this.question.answers.reduce((acc, it, i) =>
+        ${this._question.answers.reduce((acc, it, i) =>
     acc + `<div class="genre-answer">
         <div class="player-wrapper">
           <div class="player">
@@ -42,7 +41,7 @@ class GenreScreenView extends AbstractView {
 
     answersForm.addEventListener(`submit`, (evt) => {
       evt.preventDefault();
-      this.onConfirmAnswers(answersForm, this.question);
+      this.onConfirmAnswers(answersForm, this._question);
       this.stopPlayer();
     });
 
@@ -61,21 +60,21 @@ class GenreScreenView extends AbstractView {
 
   onPlayerControlClick(player, button, audio) {
     if (!audio.paused) {
-      if (this.activePlayer) {
-        this.activePlayer = null;
+      if (this._activePlayer) {
+        this._activePlayer = null;
       }
       audio.pause();
       button.classList.add(`player-control--play`);
       button.classList.remove(`player-control--pause`);
     } else {
-      if (this.activePlayer) {
-        const activeSong = this.activePlayer.querySelector(`audio`);
-        const activeButton = this.activePlayer.querySelector(`button`);
+      if (this._activePlayer) {
+        const activeSong = this._activePlayer.querySelector(`audio`);
+        const activeButton = this._activePlayer.querySelector(`button`);
         activeSong.pause();
         activeButton.classList.add(`player-control--play`);
         activeButton.classList.remove(`player-control--pause`);
       }
-      this.activePlayer = player;
+      this._activePlayer = player;
       audio.play();
       button.classList.remove(`player-control--play`);
       button.classList.add(`player-control--pause`);
@@ -83,9 +82,9 @@ class GenreScreenView extends AbstractView {
   }
 
   stopPlayer() {
-    if (this.activePlayer) {
-      const activeSong = this.activePlayer.querySelector(`audio`);
-      const activeButton = this.activePlayer.querySelector(`button`);
+    if (this._activePlayer) {
+      const activeSong = this._activePlayer.querySelector(`audio`);
+      const activeButton = this._activePlayer.querySelector(`button`);
       activeSong.pause();
       activeButton.classList.add(`player-control--play`);
       activeButton.classList.remove(`player-control--pause`);

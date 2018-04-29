@@ -1,6 +1,6 @@
 import AuthorScreenView from '../author-screen/author-screen-view';
 import GenreScreenView from '../genre-screen/genre-screen-view';
-import {settings, currentState, initialState, statistics, upMistake, checkAnswer, questions} from '../data/game-data';
+import {settings, currentState, initialState, statistics, upMistake, checkAnswer, questions, calcPoints, calcAnswersType, getWinnerStatistics} from '../data/game-data';
 import {showScreen} from '../utils';
 import WinScreenView from '../results/win-screen-view';
 import AttemptsOutScreenView from '../results/attempts-out-screen-view';
@@ -8,7 +8,7 @@ import TimeOutScreenView from '../results/timeout-screen-view';
 import GreetingScreenView from '../greeting/greeting-sreen-view';
 import MistakesView from '../mistakes/mistakes-view';
 import TimerGraphicView from '../timer/timer-graphic-view';
-import TimerTimeView from '../timer/timer-time-view';
+import TimerTextView from '../timer/timer-text-view';
 
 // TODO а что делать если правильный ответ пустой?
 // Написать битовые маскиииииииииииии уиииииииииии!
@@ -19,7 +19,7 @@ const screenType = {
 };
 
 let timerGraphic = null;
-let timerTime = null;
+let timerText = null;
 let screenTime = 0;
 let timerId = null;
 
@@ -30,30 +30,32 @@ export const initializeGame = () => {
       answers: []
     });
     timerGraphic = new TimerGraphicView();
-    timerTime = new TimerTimeView();
+    timerText = new TimerTextView();
     showGameScreen(currentState);
   };
   showScreen(greetingScreen);
 };
+const workTimer = (state) => {
+  if (state.time > settings.timeToEnd) {
+    timerText.showTime(state.time);
+  } else if (state.time === settings.timeToEnd && state.answers.length < settings.screens) {
+    // TODO разобраться почему убирание отсюда stopTimer ломает нахер все
+    // раньше он был в инитиалайз гейм
+    stopTimer();
+    const timeOutScreen = new TimeOutScreenView();
+    timeOutScreen.onReplayButtonClick = function () {
+      initializeGame();
+    };
+    showScreen(timeOutScreen);
+  }
+};
 
-export const workTimer = (state) => {
+export const startTimer = (state) => {
   // TODO разобраться с показом времени - показ с 5 секунд
   // TODO показыает 0 секунд, а потом показывает экран
   timerId = setInterval(() => {
     state.time--;
-
-    if (state.time > settings.timeToEnd) {
-      timerTime.renderTimer(state.time);
-    } else if (state.time === settings.timeToEnd && state.answers.length < settings.screens) {
-      // TODO разобраться почему убирание отсюда stopTimer ломает нахер все
-      // раньше он был в инитиалайз гейм
-      stopTimer();
-      const timeOutScreen = new TimeOutScreenView();
-      timeOutScreen.onReplayButtonClick = function () {
-        initializeGame();
-      };
-      showScreen(timeOutScreen);
-    }
+    workTimer(state);
   }, 1000);
 };
 
@@ -66,7 +68,7 @@ const stopTimer = () => {
 export const showGameScreen = (state, answer) => {
   // TODO мэйби выпилить передачу questions внутрь, ибо они итак есть наверху
   if (!timerId) {
-    workTimer(state);
+    startTimer(state);
   }
   let roundTime = 0;
   if (screenTime) {
@@ -85,32 +87,34 @@ export const showGameScreen = (state, answer) => {
   }
 
   if (state.mistakes < settings.maxMistakes && questionNumber < settings.screens && question) {
-    const questionScreen = new screenType[question.type](state, question);
+  // Разобраться с передачей стейта, чтобы он явно менялся, а не отовсюду по ссылкам
+    const questionScreen = new screenType[question.type](question);
     if (question.type === `artist`) {
-      questionScreen.onAnswersFormChange = function (input, question) {
+      questionScreen.onAnswersFormChange = function (input, screenQuestion) {
         if (input.name === `answer`) {
-          showGameScreen(state, checkArtistScreen(input.value, question));
+          showGameScreen(state, checkArtistScreen(input.value, screenQuestion));
         }
       };
     } else if (question.type === `genre`) {
       questionScreen.onConfirmAnswers = function (inputs) {
         const answers = inputs.elements.answer;
         const checkedAnswers = [];
-        for (const answer of answers) {
-          if (answer.checked) {
-            checkedAnswers.push(answer.value);
+        for (const it of answers) {
+          if (it.checked) {
+            checkedAnswers.push(it.value);
           }
         }
-        showGameScreen(this.state, checkGenreScreen(checkedAnswers, question));
+        showGameScreen(state, checkGenreScreen(checkedAnswers, question));
       };
     }
 
     questionScreen.append(timerGraphic);
-    questionScreen.append(timerTime);
+    questionScreen.append(timerText);
     const mistakes = new MistakesView(state);
-    mistakes.renderMistakes(state.mistakes);
+    mistakes.showMistakes(state.mistakes);
     questionScreen.append(mistakes);
     showScreen(questionScreen);
+    workTimer(state);
     screenTime = state.time;
     state.question++;
   } else if (state.mistakes === settings.maxMistakes) {
@@ -122,7 +126,11 @@ export const showGameScreen = (state, answer) => {
     showScreen(attemptsOutScreen);
   } else if (state.mistakes < settings.maxMistakes && questionNumber === settings.screens) {
     stopTimer();
-    const winScreen = new WinScreenView(currentState, statistics);
+    const points = calcPoints(state.answers);
+    const fastAnswers = calcAnswersType(state.answers, `fast`);
+    const winnerStatistics = getWinnerStatistics(points, statistics);
+    const gameTime = settings.timeToGame - state.time;
+    const winScreen = new WinScreenView(currentState, statistics, points, fastAnswers, winnerStatistics, gameTime);
     winScreen.onReplayButtonClick = function () {
       initializeGame();
     };
