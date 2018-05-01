@@ -1,3 +1,3 @@
-import {initializeGame} from './change-screen/change-screen';
+import {GameScreen} from './change-screen/change-screen';
 
-initializeGame();
+new GameScreen().init();

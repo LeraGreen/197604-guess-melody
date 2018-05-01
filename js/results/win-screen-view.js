@@ -3,10 +3,9 @@ import {splitTime} from '../data/game-data';
 import pluralize from '../plural/plural';
 
 class WinScreenView extends AbstractView {
-  constructor(state, statistics, points, fastAnswers, winnerStatistics, gameTime) {
+  constructor(state, points, fastAnswers, winnerStatistics, gameTime) {
     super();
     this._state = state;
-    this._statistics = statistics;
     this._points = points;
     this._fastAnswers = fastAnswers;
     this._winnerStatistics = winnerStatistics;
@@ -18,7 +17,6 @@ class WinScreenView extends AbstractView {
 
     return `<section class="main main--result">
       <section class="logo" title="Угадай мелодию"><h1>Угадай мелодию</h1></section>
-
       <h2 class="title">Вы настоящий меломан!</h2>
       <div class="main-stat">За ${pluralize(time.minutes, [`минут`, `минуту`, `минуты`])} и ${pluralize(time.seconds, [`секунд`, `секунду`, `секунды`])}
         <br>вы&nbsp;набрали ${pluralize(this._points, [`баллов`, `балл`, `балла`])} (${pluralize(this._fastAnswers, [`быстрых`, `быстрый`, `быстрых`])})
