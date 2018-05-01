@@ -16,3 +16,7 @@ export const showScreen = (view) => {
 };
 
 export const getRandomFromArray = (array) => array[Math.floor(Math.random() * array.length)];
+
+export const addLeadingZero = (number) => {
+  return number >= 10 ? number : `0` + number;
+};

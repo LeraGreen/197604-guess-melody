@@ -1,4 +1,4 @@
-import AbstractView from '../view';
+import AbstractView from '../abstract-view';
 
 class AuthorScreenView extends AbstractView {
   constructor(question) {
@@ -8,7 +8,6 @@ class AuthorScreenView extends AbstractView {
 
   get template() {
     return `<section class="main main--level main--level-artist">
-
       <div class="main-wrap">
         <h2 class="title main-title">Кто исполняет эту песню?</h2>
         <div class="player-wrapper">
@@ -21,51 +20,55 @@ class AuthorScreenView extends AbstractView {
           </div>
         </div>
         <form class="main-list">
-     ${this._question.answers.reduce((acc, it, i) =>
-    acc + `<div class="main-answer-wrapper">
-            <input class="main-answer-r" type="radio" id="answer-${i}" name="answer" value="${it.artist}"/>
-            <label class="main-answer" for="answer-${i}">
-              <img class="main-answer-preview" src="${it.imageUrl}"
+          ${this._question.answers.reduce((acc, it, i) => acc +
+            `<div class="main-answer-wrapper">
+              <input class="main-answer-r" type="radio" id="answer-${i}" name="answer" value="${it.artist}"/>
+              <label class="main-answer" for="answer-${i}">
+                <img class="main-answer-preview" src="${it.imageUrl}"
                    alt="${it.artist}" width="134" height="134">
-              ${it.artist}
-            </label>
-          </div>` + `\n`
-      , ``)}
+                ${it.artist}
+              </label>
+            </div>` + `\n`, ``)}
+        </form>
     </section>`;
   }
 
   bind() {
     const answersForm = this.element.querySelector(`.main-list`);
-    const playerControl = this.element.querySelector(`.player-control`);
-    const audio = this.element.querySelector(`audio`);
+    if (!this._playerControl) {
+      this._playerControl = this.element.querySelector(`.player-control`);
+    }
+    if (!this._audio) {
+      this._audio = this.element.querySelector(`audio`);
+    }
 
     answersForm.addEventListener(`change`, (evt) => {
       this.onAnswersFormChange(evt.target, this._question);
-      this.stopPlayer(playerControl, audio);
+      this.stopPlayer();
     });
 
-    playerControl.addEventListener(`click`, () => {
-      this.onPlayerControlClick(playerControl, audio);
+    this._playerControl.addEventListener(`click`, () => {
+      this.onPlayerControlClick();
     });
   }
 
-  onPlayerControlClick(button, audio) {
-    if (audio.paused) {
-      audio.play();
-      button.classList.remove(`player-control--play`);
-      button.classList.add(`player-control--pause`);
+  onPlayerControlClick() {
+    if (this._audio.paused) {
+      this._audio.play();
+      this._playerControl.classList.remove(`player-control--play`);
+      this._playerControl.classList.add(`player-control--pause`);
     } else {
-      audio.pause();
-      button.classList.remove(`player-control--pause`);
-      button.classList.add(`player-control--play`);
+      this._audio.pause();
+      this._playerControl.classList.remove(`player-control--pause`);
+      this._playerControl.classList.add(`player-control--play`);
     }
   }
 
-  stopPlayer(button, audio) {
-    if (!audio.paused) {
-      audio.pause();
-      button.classList.remove(`player-control--pause`);
-      button.classList.add(`player-control--play`);
+  stopPlayer() {
+    if (!this._audio.paused) {
+      this._audio.pause();
+      this._playerControl.classList.remove(`player-control--pause`);
+      this._playerControl.classList.add(`player-control--play`);
     }
   }
 

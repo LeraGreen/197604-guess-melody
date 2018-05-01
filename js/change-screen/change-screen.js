@@ -1,6 +1,6 @@
 import AuthorScreenView from '../author-screen/author-screen-view';
 import GenreScreenView from '../genre-screen/genre-screen-view';
-import {settings, currentState, initialState, statistics, upMistake, checkAnswer, questions, calcPoints, calcAnswersType, getWinnerStatistics} from '../data/game-data';
+import {settings, currentState, initialState, statistics, upMistake, checkAnswer, questions, calcPoints, calcAnswersType, getWinnerStatistics, AnswerType} from '../data/game-data';
 import {showScreen} from '../utils';
 import WinScreenView from '../results/win-screen-view';
 import AttemptsOutScreenView from '../results/attempts-out-screen-view';
@@ -13,9 +13,15 @@ import TimerTextView from '../timer/timer-text-view';
 // TODO а что делать если правильный ответ пустой?
 // Написать битовые маскиииииииииииии уиииииииииии!
 // TODO Переписать тесты под новые функции и новые штуки в функциях
+
+const QuestionType = {
+  ARTIST: `artist`,
+  GENRE: `genre`
+};
+
 const screenType = {
-  'artist': AuthorScreenView,
-  'genre': GenreScreenView
+  [QuestionType.ARTIST]: AuthorScreenView,
+  [QuestionType.GENRE]: GenreScreenView
 };
 
 let timerGraphic = null;
@@ -35,7 +41,8 @@ export const initializeGame = () => {
   };
   showScreen(greetingScreen);
 };
-const workTimer = (state) => {
+
+const updateTimer = (state) => {
   if (state.time > settings.timeToEnd) {
     timerText.showTime(state.time);
   } else if (state.time === settings.timeToEnd && state.answers.length < settings.screens) {
@@ -51,11 +58,9 @@ const workTimer = (state) => {
 };
 
 export const startTimer = (state) => {
-  // TODO разобраться с показом времени - показ с 5 секунд
-  // TODO показыает 0 секунд, а потом показывает экран
   timerId = setInterval(() => {
     state.time--;
-    workTimer(state);
+    updateTimer(state);
   }, 1000);
 };
 
@@ -66,13 +71,12 @@ const stopTimer = () => {
 };
 
 export const showGameScreen = (state, answer) => {
-  // TODO мэйби выпилить передачу questions внутрь, ибо они итак есть наверху
   if (!timerId) {
     startTimer(state);
   }
   let roundTime = 0;
   if (screenTime) {
-    roundTime = -(state.time - screenTime);
+    roundTime = screenTime - state.time;
   }
 
   const questionNumber = state.question;
@@ -87,16 +91,16 @@ export const showGameScreen = (state, answer) => {
   }
 
   if (state.mistakes < settings.maxMistakes && questionNumber < settings.screens && question) {
-  // Разобраться с передачей стейта, чтобы он явно менялся, а не отовсюду по ссылкам
+    // TODO Разобраться с передачей стейта, чтобы он явно менялся, а не отовсюду по ссылкам
     const questionScreen = new screenType[question.type](question);
-    if (question.type === `artist`) {
+    if (question.type === QuestionType.ARTIST) {
       questionScreen.onAnswersFormChange = function (input, screenQuestion) {
         if (input.name === `answer`) {
           showGameScreen(state, checkArtistScreen(input.value, screenQuestion));
         }
       };
-    } else if (question.type === `genre`) {
-      questionScreen.onConfirmAnswers = function (inputs) {
+    } else if (question.type === QuestionType.GENRE) {
+      questionScreen.onAnswer = function (inputs) {
         const answers = inputs.elements.answer;
         const checkedAnswers = [];
         for (const it of answers) {
@@ -110,30 +114,29 @@ export const showGameScreen = (state, answer) => {
 
     questionScreen.append(timerGraphic);
     questionScreen.append(timerText);
+
     const mistakes = new MistakesView(state);
     mistakes.showMistakes(state.mistakes);
     questionScreen.append(mistakes);
+
     showScreen(questionScreen);
-    workTimer(state);
+
+    updateTimer(state);
     screenTime = state.time;
     state.question++;
   } else if (state.mistakes === settings.maxMistakes) {
     stopTimer();
     const attemptsOutScreen = new AttemptsOutScreenView();
-    attemptsOutScreen.onReplayButtonClick = function () {
-      initializeGame();
-    };
+    attemptsOutScreen.onReplayButtonClick = initializeGame;
     showScreen(attemptsOutScreen);
   } else if (state.mistakes < settings.maxMistakes && questionNumber === settings.screens) {
     stopTimer();
     const points = calcPoints(state.answers);
-    const fastAnswers = calcAnswersType(state.answers, `fast`);
+    const fastAnswers = calcAnswersType(state.answers, AnswerType.FAST);
     const winnerStatistics = getWinnerStatistics(points, statistics);
     const gameTime = settings.timeToGame - state.time;
     const winScreen = new WinScreenView(currentState, statistics, points, fastAnswers, winnerStatistics, gameTime);
-    winScreen.onReplayButtonClick = function () {
-      initializeGame();
-    };
+    winScreen.onReplayButtonClick = initializeGame;
     showScreen(winScreen);
   }
 };

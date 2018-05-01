@@ -1,4 +1,4 @@
-import AbstractView from '../view';
+import AbstractView from '../abstract-view';
 import {splitTime} from '../data/game-data';
 import pluralize from '../plural/plural';
 

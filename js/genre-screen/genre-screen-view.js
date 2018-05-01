@@ -1,4 +1,4 @@
-import AbstractView from '../view';
+import AbstractView from '../abstract-view';
 
 class GenreScreenView extends AbstractView {
   constructor(question) {
@@ -9,26 +9,23 @@ class GenreScreenView extends AbstractView {
 
   get template() {
     return `<section class="main main--level main--level-genre">
-
       <div class="main-wrap">
         <h2 class="title">Выберите ${this._question.genre} треки</h2>
         <form class="genre">
-        ${this._question.answers.reduce((acc, it, i) =>
-    acc + `<div class="genre-answer">
-        <div class="player-wrapper">
-          <div class="player">
-            <audio src="${it.src}" preload="auto"></audio>
-            <button class="player-control player-control--play"></button>
-            <div class="player-track">
-              <span class="player-status"></span>
+          ${this._question.answers.reduce((acc, it, i) => acc +
+          `<div class="genre-answer">
+             <div class="player-wrapper">
+              <div class="player">
+                <audio src="${it.src}" preload="auto"></audio>
+                <button class="player-control player-control--play"></button>
+                <div class="player-track">
+                  <span class="player-status"></span>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-        <input type="checkbox" name="answer" value="${it.genre}" id="a-${i}">
-        <label class="genre-answer-check" for="a-${i}"></label>
-      </div>` + `\n`
-      , ``)}
-
+            <input type="checkbox" name="answer" value="${it.genre}" id="a-${i}">
+            <label class="genre-answer-check" for="a-${i}"></label>
+          </div>` + `\n`, ``)}
           <button class="genre-answer-send" type="submit">Ответить</button>
         </form>
       </div>
@@ -41,7 +38,7 @@ class GenreScreenView extends AbstractView {
 
     answersForm.addEventListener(`submit`, (evt) => {
       evt.preventDefault();
-      this.onConfirmAnswers(answersForm, this._question);
+      this.onAnswer(answersForm, this._question);
       this.stopPlayer();
     });
 
@@ -55,7 +52,7 @@ class GenreScreenView extends AbstractView {
     }
   }
 
-  onConfirmAnswers() {
+  onAnswer() {
   }
 
   onPlayerControlClick(player, button, audio) {
@@ -92,8 +89,10 @@ class GenreScreenView extends AbstractView {
   }
 
   append(view) {
-    const nextElement = this.element.querySelector(`.main-wrap`);
-    this.element.insertBefore(view.element, nextElement);
+    if (!this._nextElement) {
+      this._nextElement = this.element.querySelector(`.main-wrap`);
+    }
+    this.element.insertBefore(view.element, this._nextElement);
   }
 }
 

@@ -1,11 +1,8 @@
-import AbstractView from '../view';
+import AbstractView from '../abstract-view';
 import {splitTime} from '../data/game-data';
+import {addLeadingZero} from '../utils';
 
 class TimerTextView extends AbstractView {
-  constructor() {
-    super();
-  }
-
   get template() {
     return `<div class="timer-value" xmlns="http://www.w3.org/1999/xhtml">
       <span class="timer-value-mins" id="minutes"></span><!--
@@ -25,8 +22,8 @@ class TimerTextView extends AbstractView {
       this._secondsElement = document.getElementById(`seconds`);
     }
 
-    this._minutesElement.textContent = time.minutes >= 10 ? time.minutes : `0` + time.minutes;
-    this._secondsElement.textContent = time.seconds >= 10 ? time.seconds : `0` + time.seconds;
+    this._minutesElement.textContent = addLeadingZero(time.minutes);
+    this._secondsElement.textContent = addLeadingZero(time.seconds);
   }
 }
 

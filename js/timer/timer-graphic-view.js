@@ -1,4 +1,4 @@
-import AbstractView from '../view';
+import AbstractView from '../abstract-view';
 
 class TimerGraphicView extends AbstractView {
   get template() {
