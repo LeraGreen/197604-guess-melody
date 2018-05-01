@@ -5,7 +5,9 @@ export const settings = {
   timeToEnd: 0
 };
 
-const AnswerType = {
+const FAST_ANSWER_TIME = 30;
+
+export const AnswerType = {
   FAST: `fast`,
   CORRECT: `correct`,
   WRONG: `wrong`
@@ -110,7 +112,7 @@ export const statistics = [20, 19, 15, 4, 2];
 
 export const checkAnswer = (answer, time) => {
   if (answer) {
-    if (time < 30) {
+    if (time <= FAST_ANSWER_TIME) {
       return `fast`;
     }
     return `correct`;
@@ -123,7 +125,7 @@ answerPoints[AnswerType.WRONG] = -2;
 answerPoints[AnswerType.CORRECT] = 1;
 answerPoints[AnswerType.FAST] = 2;
 
-export const calsPoints = (answers) => {
+export const calcPoints = (answers) => {
   let points = 0;
   for (const answer of answers) {
     points += answerPoints[answer];

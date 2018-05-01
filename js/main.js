@@ -1,4 +1,3 @@
-import {showScreen} from './utils';
-import getGreetingScreen from './greeting/get-greeting-screen';
+import {initializeGame} from './change-screen/change-screen';
 
-showScreen(getGreetingScreen());
+initializeGame();

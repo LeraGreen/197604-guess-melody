@@ -2,7 +2,7 @@ import {assert} from 'chai';
 import {settings, currentState, tick, checkAnswer, calsPoints, getStatistics, getWinnerStatistics, upMistake, splitTime, calcAnswersType} from './game-data';
 
 
-describe(`check answer type`, () => {
+describe.skip(`check answer type`, () => {
   it(`should return fast for correct answer for 10 seconds`, () => {
     assert.equal(`fast`, checkAnswer({answer: 1, time: 10}));
   });
@@ -17,7 +17,7 @@ describe(`check answer type`, () => {
 });
 
 
-describe(`points from answers`, () => {
+describe.skip(`points from answers`, () => {
   it(`should return 2 if answer is fast`, () => {
     assert.equal(2, calsPoints([`fast`]));
   });
@@ -43,9 +43,9 @@ describe(`points from answers`, () => {
   });
 });
 
-describe(`statistics from game`, () => {
+describe.skip(`statistics from game`, () => {
 
-  describe.only(`winner statistics from game`, () => {
+  describe(`winner statistics from game`, () => {
     it(`should return 33 percent for winner`, () => {
       const otherResults = [20, 15, 14, 5, 3];
       assert.equal(33, getWinnerStatistics(13, otherResults).percent);
@@ -112,7 +112,7 @@ describe(`statistics from game`, () => {
   });
 });
 
-describe(`Change state`, () => {
+describe.skip(`Change state`, () => {
   describe(`Change mistakes`, () => {
     it(`Should increase current mistakes and show that mistakes hasn't reached maximum`, () => {
       const mistakesTest = Object.assign({}, currentState, {
@@ -173,7 +173,7 @@ describe(`Change state`, () => {
 
 });
 
-describe(`Get minutes and seconds from seconds`, () => {
+describe.skip(`Get minutes and seconds from seconds`, () => {
   it(`Shoulls return 4 minutes and 59 seconds`, () => {
     const timeTest = Object.assign({}, currentState, {
       time: 5 * 60 - 1
@@ -203,7 +203,7 @@ describe(`Get minutes and seconds from seconds`, () => {
 
 });
 
-describe(`Calc answers type`, () => {
+describe.skip(`Calc answers type`, () => {
   it(`Shouls return 3 wrong answers`, () => {
     const answers = [`fast`, `correct`, `wrong`, `fast`, `correct`, `wrong`, `fast`, `correct`, `wrong`, `fast`];
 
