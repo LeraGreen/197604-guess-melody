@@ -20,8 +20,6 @@ export const initialState = {
   answers: []
 };
 
-export const currentState = {};
-
 export const questions = [
   {
     type: `artist`,
@@ -120,10 +118,11 @@ export const checkAnswer = (answer, time) => {
   return `wrong`;
 };
 
-export const answerPoints = {};
-answerPoints[AnswerType.WRONG] = -2;
-answerPoints[AnswerType.CORRECT] = 1;
-answerPoints[AnswerType.FAST] = 2;
+export const answerPoints = {
+  [AnswerType.WRONG]: -2,
+  [AnswerType.CORRECT]: 1,
+  [AnswerType.FAST]: 2
+};
 
 export const calcPoints = (answers) => {
   let points = 0;
