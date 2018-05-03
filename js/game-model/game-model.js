@@ -144,7 +144,7 @@ export class GameModel {
   }
 
   calcAnswersType(type) {
-    return this._state.answers.filter((el) => el === type).length;
+    return (this._state.answers.filter((el) => el === type).length);
   }
 
   checkAnswer(answer, time) {

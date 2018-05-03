@@ -1,14 +1,14 @@
-import ArtistScreenView from '../artist-screen/artist-screen-view';
-import GenreScreenView from '../genre-screen/genre-screen-view';
+import ArtistScreenView from '../game-views/artist-screen/artist-screen-view';
+import GenreScreenView from '../game-views/genre-screen/genre-screen-view';
 import {statistics, AnswerType} from '../data/game-data';
 import {showScreen} from '../utils';
-import WinScreenView from '../results/win-screen-view';
-import AttemptsOutScreenView from '../results/attempts-out-screen-view';
-import TimeOutScreenView from '../results/timeout-screen-view';
-import GreetingScreenView from '../greeting/greeting-sreen-view';
-import MistakesView from '../mistakes/mistakes-view';
-import TimerGraphicView from '../timer/timer-graphic-view';
-import TimerTextView from '../timer/timer-text-view';
+import WinScreenView from '../game-views/results/win-screen-view';
+import AttemptsOutScreenView from '../game-views/results/attempts-out-screen-view';
+import TimeOutScreenView from '../game-views/results/timeout-screen-view';
+import GreetingScreenView from '../game-views/greeting/greeting-sreen-view';
+import MistakesView from '../game-views/mistakes/mistakes-view';
+import TimerGraphicView from '../game-views/timer/timer-graphic-view';
+import TimerTextView from '../game-views/timer/timer-text-view';
 import {GameModel} from '../game-model/game-model';
 
 // TODO может сделать папку gameviews и положить туда все вьюхи

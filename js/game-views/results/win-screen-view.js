@@ -1,6 +1,6 @@
-import AbstractView from '../abstract-view';
-import {splitTime} from '../data/game-data';
-import pluralize from '../plural/plural';
+import AbstractView from '../../abstract-view';
+import {splitTime} from '../../data/game-data';
+import pluralize from '../../plural/plural';
 
 class WinScreenView extends AbstractView {
   constructor(mistakes, points, fastAnswers, winnerStatistics, gameTime) {

@@ -1,5 +1,5 @@
-import {getElementFromTemplate} from '../utils';
-import AbstractView from '../abstract-view';
+import {getElementFromTemplate} from '../../utils';
+import AbstractView from '../../abstract-view';
 
 class MistakesView extends AbstractView {
   get template() {
