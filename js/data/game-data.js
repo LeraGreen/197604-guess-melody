@@ -5,7 +5,7 @@ export const settings = {
   timeToEnd: 0
 };
 
-const FAST_ANSWER_TIME = 30;
+export const FAST_ANSWER_TIME = 30;
 
 export const AnswerType = {
   FAST: `fast`,
@@ -108,74 +108,12 @@ export const questions = [
 
 export const statistics = [20, 19, 15, 4, 2];
 
-export const checkAnswer = (answer, time) => {
-  if (answer) {
-    if (time <= FAST_ANSWER_TIME) {
-      return `fast`;
-    }
-    return `correct`;
-  }
-  return `wrong`;
-};
-
 export const answerPoints = {
   [AnswerType.WRONG]: -2,
   [AnswerType.CORRECT]: 1,
   [AnswerType.FAST]: 2
 };
 
-export const calcPoints = (answers) => {
-  let points = 0;
-  for (const answer of answers) {
-    points += answerPoints[answer];
-  }
-  if (points < 0) {
-    points = -1;
-  }
-  return points;
-};
-
-export const getStatistics = (userResult, gameSettings, otherResults) => {
-  if (userResult.level < settings.screens) {
-    if (!userResult.remainingTime) {
-      return `Время вышло! Вы не успели отгадать все мелодии`;
-    }
-    if (!userResult.remainingLives) {
-      return `У вас закончились все попытки. Ничего, повезёт в следующий раз!`;
-    }
-  }
-  const winnerResult = getWinnerStatistics(userResult.points, otherResults);
-  return `Вы заняли ${winnerResult.position} место из ${winnerResult.players} игроков. Это лучше, чем у ${winnerResult.percent}% игроков!`;
-};
-
-export const getWinnerStatistics = (userPoints, otherResults) => {
-  const winners = otherResults.slice(0);
-  const winnersQuantity = winners.length;
-  let userPosition;
-  for (let i = 0; i < otherResults.length; i++) {
-    if (winners[i] < userPoints) {
-      winners.splice(i, 0, userPoints);
-      userPosition = i + 1;
-      break;
-    }
-  }
-
-  if (winners.length === winnersQuantity) {
-    winners.push(userPoints);
-    userPosition = winners.length;
-  }
-  const percent = Math.round(((winners.length - userPosition) / winners.length) * 100);
-  return {position: userPosition, players: winners.length, percent};
-
-  // TODO отловить случаи с отрицательным значением
-};
-
-export const upMistake = (state) => {
-  if (state.mistakes < settings.maxMistakes) {
-    state.mistakes++;
-  }
-  return state;
-};
 
 export const splitTime = (seconds) => {
   const minutes = Math.floor(seconds / 60);
@@ -183,4 +121,3 @@ export const splitTime = (seconds) => {
   return {'minutes': minutes, 'seconds': remainingSeconds};
 };
 
-export const calcAnswersType = (array, type) => array.filter((el) => el === type).length;

@@ -38,7 +38,15 @@ class GenreScreenView extends AbstractView {
 
     answersForm.addEventListener(`submit`, (evt) => {
       evt.preventDefault();
-      this.onAnswer(answersForm, this._question);
+      const answers = answersForm.elements.answer;
+      //TODO мэйби переименовать
+      const checkedAnswers = [];
+      for (const it of answers) {
+        if (it.checked) {
+          checkedAnswers.push(it.value);
+        }
+      }
+      this.onAnswer(checkedAnswers, this._question);
       this.stopPlayer();
     });
 
