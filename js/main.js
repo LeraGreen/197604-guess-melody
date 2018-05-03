@@ -1,3 +1,3 @@
-import {initializeGame} from './change-screen/change-screen';
+import {GamePresenter} from './game-presenter/game-presenter';
 
-initializeGame();
+new GamePresenter().init();

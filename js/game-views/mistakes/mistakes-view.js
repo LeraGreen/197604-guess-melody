@@ -1,5 +1,5 @@
-import {getElementFromTemplate} from '../utils';
-import AbstractView from '../abstract-view';
+import {getElementFromTemplate} from '../../utils';
+import AbstractView from '../../abstract-view';
 
 class MistakesView extends AbstractView {
   get template() {
@@ -7,14 +7,14 @@ class MistakesView extends AbstractView {
   }
 
   showMistakes(mistakes) {
-    const mistakesArr = new Array(mistakes)
+    const mistakesFragment = new Array(mistakes)
         .fill(`<img class="main-mistake" src="img/wrong-answer.png" width="35" height="49">`)
         .reduce((prev, current) => {
           const template = getElementFromTemplate(current);
           prev.appendChild(template);
           return prev;
         }, document.createDocumentFragment());
-    this.element.appendChild(mistakesArr);
+    this.element.appendChild(mistakesFragment);
   }
 }
 

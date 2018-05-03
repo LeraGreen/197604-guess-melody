@@ -1,4 +1,4 @@
-import AbstractView from '../abstract-view';
+import AbstractView from '../../abstract-view';
 
 class TimerGraphicView extends AbstractView {
   get template() {
@@ -6,7 +6,7 @@ class TimerGraphicView extends AbstractView {
     <circle
       cx="390" cy="390" r="370"
       class="timer-line"
-      style="filter: url(.#blur); transform: rotate(-90deg) scaleY(-1); transform-origin: center"></circle>
+      style="filter: url(#blur); transform: rotate(-90deg) scaleY(-1); transform-origin: center"></circle>
   </svg>`;
   }
 }

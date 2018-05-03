@@ -1,6 +1,6 @@
-import AbstractView from '../abstract-view';
+import AbstractView from '../../abstract-view';
 
-class AuthorScreenView extends AbstractView {
+class ArtistScreenView extends AbstractView {
   constructor(question) {
     super();
     this._question = question;
@@ -43,8 +43,10 @@ class AuthorScreenView extends AbstractView {
     }
 
     answersForm.addEventListener(`change`, (evt) => {
-      this.onAnswersFormChange(evt.target, this._question);
-      this.stopPlayer();
+      if (evt.target.name === `answer`) {
+        this.onAnswersFormChange(evt.target.value, this._question);
+        this.stopPlayer();
+      }
     });
 
     this._playerControl.addEventListener(`click`, () => {
@@ -75,6 +77,7 @@ class AuthorScreenView extends AbstractView {
   onAnswersFormChange() {
   }
 
+  // TODO проверить почему unused
   append(view) {
     if (!this._nextElement) {
       this._nextElement = this.element.querySelector(`.main-wrap`);
@@ -83,4 +86,4 @@ class AuthorScreenView extends AbstractView {
   }
 }
 
-export default AuthorScreenView;
+export default ArtistScreenView;

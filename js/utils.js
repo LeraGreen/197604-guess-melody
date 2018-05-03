@@ -15,8 +15,4 @@ export const showScreen = (view) => {
   appContainer.insertBefore(view.element, appContainer.children[0]);
 };
 
-export const getRandomFromArray = (array) => array[Math.floor(Math.random() * array.length)];
-
-export const addLeadingZero = (number) => {
-  return number >= 10 ? number : `0` + number;
-};
+export const addLeadingZero = (number) => `${number >= 10 ? `` : `0`}${number}`;

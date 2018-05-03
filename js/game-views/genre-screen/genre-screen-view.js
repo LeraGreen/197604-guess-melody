@@ -1,4 +1,4 @@
-import AbstractView from '../abstract-view';
+import AbstractView from '../../abstract-view';
 
 class GenreScreenView extends AbstractView {
   constructor(question) {
@@ -38,7 +38,14 @@ class GenreScreenView extends AbstractView {
 
     answersForm.addEventListener(`submit`, (evt) => {
       evt.preventDefault();
-      this.onAnswer(answersForm, this._question);
+      const answers = answersForm.elements.answer;
+      const checkedAnswerOptions = [];
+      for (const it of answers) {
+        if (it.checked) {
+          checkedAnswerOptions.push(it.value);
+        }
+      }
+      this.onAnswer(checkedAnswerOptions, this._question);
       this.stopPlayer();
     });
 
