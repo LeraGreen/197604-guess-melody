@@ -87,6 +87,9 @@ export class GameModel {
   }
 
   checkTimer() {
+    if (this._state.time === this._settings.timeToAlarm) {
+      this.onAlarm();
+    }
     if (this._state.time > this._settings.timeToEnd) {
       this.onTick(this._state.time);
     } else if (this._state.time === this._settings.timeToEnd && this._state.answers.length < this._settings.screens) {
@@ -100,6 +103,9 @@ export class GameModel {
   }
 
   onTimeEnd() {
+  }
+
+  onAlarm() {
   }
 
   addAnswer(answer) {

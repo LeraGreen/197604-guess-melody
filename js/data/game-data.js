@@ -2,7 +2,8 @@ export const settings = {
   maxMistakes: 3,
   screens: 0,
   timeToGame: 5 * 60,
-  timeToEnd: 0
+  timeToEnd: 0,
+  timeToAlarm: 30
 };
 
 // TODO как указать количество экранов

@@ -47,6 +47,9 @@ export class GamePresenter {
       this._bindTimeOutScreen();
       showScreen(this._timeOutScreen);
     };
+    this._gameModel.onAlarm = () => {
+      this._timerText.setAlarm(true);
+    };
   }
 
   init() {

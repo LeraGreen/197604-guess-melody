@@ -25,6 +25,10 @@ class TimerTextView extends AbstractView {
     this._minutesElement.textContent = addLeadingZero(time.minutes);
     this._secondsElement.textContent = addLeadingZero(time.seconds);
   }
+
+  setAlarm(isAlarm) {
+    this.element.classList.toggle(`timer-value--finished`, isAlarm);
+  }
 }
 
 export default TimerTextView;
