@@ -88,68 +88,7 @@ describe(`winner statistics from game`, () => {
     assert.equal(0, GameModel.getWinnerStatistic(1, otherResults).percent);
   });
 });
-//
-// describe.skip(`Change state`, () => {
-//   describe(`Change mistakes`, () => {
-//     it(`Should increase current mistakes and show that mistakes hasn't reached maximum`, () => {
-//       const mistakesTest = Object.assign({}, currentState, {
-//         mistakes: 0
-//       });
-//       assert.equal(1, upMistake(mistakesTest).mistakes);
-//     });
-//
-//     it(`Shouldn't increase current mistakes and should show that mistakes has reached maximum`, () => {
-//       const mistakesTest = Object.assign({}, currentState, {
-//         mistakes: 2
-//       });
-//       assert.equal(3, upMistake(mistakesTest).mistakes);
-//     });
-//
-//     it(`Shouldn't increase current mistakes and should show that mistakes has reached maximum`, () => {
-//       const mistakesTest = Object.assign({}, currentState, {
-//         mistakes: 3,
-//         isFinished: false
-//       });
-//       assert.equal(3, upMistake(mistakesTest).mistakes);
-//     });
-//   });
-//
-//   describe(`Timer tick`, () => {
-//     it(`Should decrease current time on tick and show that time hasn't reached minimum`, () => {
-//       const timerTest = Object.assign({}, currentState, {
-//         time: 27
-//       });
-//
-//       assert.equal(26, tick(timerTest).time);
-//     });
-//
-//     it(`Should tick and return flag if timer hasn't reached maximum`, () => {
-//       const timerTest = Object.assign({}, currentState, {
-//         time: 5 * 60
-//       });
-//
-//       assert.equal(299, tick(timerTest).time);
-//     });
-//
-//     it(`Should return 0 and flag if timer already in minimum`, () => {
-//       const timerTest = Object.assign({}, currentState, {
-//         time: 0
-//       });
-//
-//       assert.equal(0, tick(timerTest).time);
-//     });
-//
-//     it(`Should return 0 and flag if timer already in minimum`, () => {
-//       const timerTest = Object.assign({}, currentState, {
-//         time: 1
-//       });
-//
-//       assert.equal(0, tick(timerTest).time);
-//     });
-//   });
-//
-// });
-//
+
 describe(`Get minutes and seconds from seconds`, () => {
   it(`Shoulls return 4 minutes and 59 seconds`, () => {
     const testTime = 299;
