@@ -1,5 +1,5 @@
 import AbstractView from '../../abstract-view';
-import {splitTime} from '../../data/game-data';
+import {splitTime} from "../../utils";
 import {addLeadingZero} from '../../utils';
 
 class TimerTextView extends AbstractView {

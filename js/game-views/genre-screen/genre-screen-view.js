@@ -80,7 +80,7 @@ class GenreScreenView extends AbstractView {
         activeButton.classList.remove(`player-control--pause`);
       }
       this._activePlayer = player;
-      audio.play();
+      audio.play().catch(() => {});
       button.classList.remove(`player-control--play`);
       button.classList.add(`player-control--pause`);
     }

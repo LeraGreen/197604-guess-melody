@@ -57,7 +57,7 @@ export class GameModel {
   }
 
   get question() {
-    return this.questions[this._state.question];
+    return this._questions[this._state.question];
   }
 
   get mistakes() {
@@ -108,7 +108,7 @@ export class GameModel {
 
   isGameContinued() {
     const questionNumber = this._state.question;
-    this._question = this.questions[questionNumber];
+    this._question = this._questions[questionNumber];
     return (this._state.mistakes < this._settings.maxMistakes && questionNumber < this._settings.screens && this._question);
   }
 

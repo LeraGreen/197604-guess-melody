@@ -57,7 +57,7 @@ class ArtistScreenView extends AbstractView {
 
   onPlayerControlClick() {
     if (this._audio.paused) {
-      this._audio.play();
+      this._audio.play().catch(() => {});
       this._playerControl.classList.remove(`player-control--play`);
       this._playerControl.classList.add(`player-control--pause`);
     } else {

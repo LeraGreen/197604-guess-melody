@@ -10,6 +10,7 @@ import MistakesView from '../game-views/mistakes/mistakes-view';
 import TimerGraphicView from '../game-views/timer/timer-graphic-view';
 import TimerTextView from '../game-views/timer/timer-text-view';
 import {GameModel} from '../game-model/game-model';
+import {loadData} from "../main";
 
 // TODO а что делать если правильный ответ пустой?
 // Написать битовые маскиииииииииииии уиииииииииии!
@@ -140,7 +141,7 @@ export class GamePresenter {
 
   _bindAttemptsOutScreen() {
     this._attemptsOutScreen.onReplayButtonClick = () => {
-      this.init();
+      loadData();
     };
   }
 
@@ -152,13 +153,13 @@ export class GamePresenter {
     const gameTime = this._gameModel.gameTime;
     this._winScreen = new WinScreenView(mistakes, points, fastAnswers, winnerStatistics, gameTime);
     this._winScreen.onReplayButtonClick = () => {
-      this.init();
+      loadData();
     };
   }
 
   _bindTimeOutScreen() {
     this._timeOutScreen.onReplayButtonClick = () => {
-      this.init();
+      loadData();
     };
   }
 }

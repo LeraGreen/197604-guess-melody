@@ -1,6 +1,6 @@
 import {assert} from 'chai';
 import {GameModel} from "../game-model/game-model";
-import {splitTime} from "./game-data";
+import {splitTime} from "../utils";
 
 
 describe(`check answer type`, () => {
