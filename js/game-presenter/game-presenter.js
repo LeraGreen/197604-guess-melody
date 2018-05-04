@@ -11,7 +11,6 @@ import TimerGraphicView from '../game-views/timer/timer-graphic-view';
 import TimerTextView from '../game-views/timer/timer-text-view';
 import {GameModel} from '../game-model/game-model';
 
-// TODO может сделать папку gameviews и положить туда все вьюхи
 // TODO а что делать если правильный ответ пустой?
 // Написать битовые маскиииииииииииии уиииииииииии!
 // TODO Переписать тесты под новые функции и новые штуки в функциях
@@ -27,7 +26,7 @@ const screenType = {
 };
 
 export class GamePresenter {
-  constructor() {
+  constructor(data) {
     this._greetingScreen = null;
     this._questionScreen = null;
     this._timerId = null;
@@ -37,7 +36,7 @@ export class GamePresenter {
     this._timeOutScreen = null;
     this._attemptsOutScreen = null;
     this._winScreen = null;
-    this._gameModel = new GameModel();
+    this._gameModel = new GameModel(data);
     this._gameModel.onTick = (time) => {
       this._timerText.showTime(time);
     };
@@ -66,7 +65,8 @@ export class GamePresenter {
     if (this._gameModel.isGameContinued()) {
       const questionType = this._gameModel.questionType;
       const question = this._gameModel.question;
-      this._questionScreen = new screenType[questionType](question);
+      const answerVariants = this._gameModel.answerVariants;
+      this._questionScreen = new screenType[questionType](question, answerVariants);
       if (questionType === QuestionType.ARTIST) {
         this._bindArtistScreen();
       } else if (questionType === QuestionType.GENRE) {
@@ -112,17 +112,17 @@ export class GamePresenter {
   }
 
   _bindArtistScreen() {
-    this._questionScreen.onAnswersFormChange = (answer, screenQuestion) => {
+    this._questionScreen.onAnswersFormChange = (answer, answersVariants) => {
       const roundTime = this._gameModel.calcRoundTime(this._screenTime);
-      this._gameModel.checkAnswer(GameModel.checkArtistScreen(answer, screenQuestion), roundTime);
+      this._gameModel.checkAnswer(GameModel.checkArtistScreen(answer, answersVariants), roundTime);
       this._showNextGameScreen();
     };
   }
 
   _bindGenreScreen() {
-    this._questionScreen.onAnswer = (answers, screenQuestion) => {
+    this._questionScreen.onAnswer = (answers, screenQuestion, answerVariants) => {
       const roundTime = this._gameModel.calcRoundTime(this._screenTime);
-      this._gameModel.checkAnswer(GameModel.checkGenreScreen(answers, screenQuestion), roundTime);
+      this._gameModel.checkAnswer(GameModel.checkGenreScreen(answers, screenQuestion, answerVariants), roundTime);
       this._showNextGameScreen();
     };
   }

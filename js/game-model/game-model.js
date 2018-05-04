@@ -1,8 +1,10 @@
-import {answerPoints, initialState, questions, settings, FAST_ANSWER_TIME, AnswerType} from "../data/game-data";
+import {answerPoints, initialState, settings, FAST_ANSWER_TIME, AnswerType} from "../data/game-data";
 
 export class GameModel {
-  constructor() {
+  constructor(questions) {
     this._state = {};
+    this.questions = questions;
+    this._question = null;
   }
 
   static getWinnerStatistic(userPoints, otherResults) {
@@ -46,12 +48,14 @@ export class GameModel {
     return answers.every((it) => it === question.genre);
   }
 
-  static checkArtistScreen(answer, question) {
-    return answer === question.artist;
+  static checkArtistScreen(answer, answerVariants) {
+    const rightAnswer = answerVariants.find((it) => it.isCorrect).title;
+    return answer === rightAnswer;
   }
 
+  // TODO мэйби еще квешн
   get question() {
-    return questions[this._state.question];
+    return this.questions[this._state.question];
   }
 
   get mistakes() {
@@ -68,6 +72,10 @@ export class GameModel {
 
   get questionType() {
     return this._question.type;
+  }
+
+  get answerVariants() {
+    return this.questions[this._state.question].answers;
   }
 
   resetState() {
@@ -102,7 +110,8 @@ export class GameModel {
 
   isGameContinued() {
     const questionNumber = this._state.question;
-    this._question = questions[questionNumber];
+    // TODO разобраться с названиями
+    this._question = this.questions[questionNumber];
     return (this._state.mistakes < settings.maxMistakes && questionNumber < settings.screens && this._question);
   }
 

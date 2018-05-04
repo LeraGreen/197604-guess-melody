@@ -1,15 +1,16 @@
 import AbstractView from '../../abstract-view';
 
 class ArtistScreenView extends AbstractView {
-  constructor(question) {
+  constructor(question, answersVariants) {
     super();
     this._question = question;
+    this._answersVariants = answersVariants;
   }
 
   get template() {
     return `<section class="main main--level main--level-artist">
       <div class="main-wrap">
-        <h2 class="title main-title">Кто исполняет эту песню?</h2>
+        <h2 class="title main-title">${this._question.question}</h2>
         <div class="player-wrapper">
           <div class="player">
             <audio src="${this._question.src}" autoplay preload="auto"></audio>
@@ -20,13 +21,13 @@ class ArtistScreenView extends AbstractView {
           </div>
         </div>
         <form class="main-list">
-          ${this._question.answers.reduce((acc, it, i) => acc +
+          ${this._answersVariants.reduce((acc, it, i) => acc +
             `<div class="main-answer-wrapper">
-              <input class="main-answer-r" type="radio" id="answer-${i}" name="answer" value="${it.artist}"/>
+              <input class="main-answer-r" type="radio" id="answer-${i}" name="answer" value="${it.title}"/>
               <label class="main-answer" for="answer-${i}">
-                <img class="main-answer-preview" src="${it.imageUrl}"
-                   alt="${it.artist}" width="134" height="134">
-                ${it.artist}
+                <img class="main-answer-preview" src="${it.image.url}"
+                   alt="${it.title}" width="134" height="134">
+                ${it.title}
               </label>
             </div>` + `\n`, ``)}
         </form>
@@ -44,7 +45,7 @@ class ArtistScreenView extends AbstractView {
 
     answersForm.addEventListener(`change`, (evt) => {
       if (evt.target.name === `answer`) {
-        this.onAnswersFormChange(evt.target.value, this._question);
+        this.onAnswersFormChange(evt.target.value, this._answersVariants);
         this.stopPlayer();
       }
     });
