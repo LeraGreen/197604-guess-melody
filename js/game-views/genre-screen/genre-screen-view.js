@@ -1,19 +1,19 @@
 import AbstractView from '../../abstract-view';
 
 class GenreScreenView extends AbstractView {
-  constructor(question, answerVariants) {
+  constructor(question) {
     super();
     this._question = question;
     this._activePlayer = null;
-    this._answerVariants = answerVariants;
+    this._answersVariants = this._question.answers;
   }
-// TODO не жирно ли вьюхе знать про квешн квешн
+
   get template() {
     return `<section class="main main--level main--level-genre">
       <div class="main-wrap">
         <h2 class="title">${this._question.question}</h2>
         <form class="genre">
-          ${this._answerVariants.reduce((acc, it, i) => acc +
+          ${this._answersVariants.reduce((acc, it, i) => acc +
           `<div class="genre-answer">
              <div class="player-wrapper">
               <div class="player">
@@ -46,7 +46,7 @@ class GenreScreenView extends AbstractView {
           checkedAnswerOptions.push(it.value);
         }
       }
-      this.onAnswer(checkedAnswerOptions, this._question, this._answerVariants);
+      this.onAnswer(checkedAnswerOptions, this._question, this._answersVariants);
       this.stopPlayer();
     });
 

@@ -1,10 +1,10 @@
 import AbstractView from '../../abstract-view';
 
 class ArtistScreenView extends AbstractView {
-  constructor(question, answersVariants) {
+  constructor(question) {
     super();
     this._question = question;
-    this._answersVariants = answersVariants;
+    this._answersVariants = this._question.answers;
   }
 
   get template() {
@@ -78,7 +78,6 @@ class ArtistScreenView extends AbstractView {
   onAnswersFormChange() {
   }
 
-  // TODO проверить почему unused
   append(view) {
     if (!this._nextElement) {
       this._nextElement = this.element.querySelector(`.main-wrap`);

@@ -8,7 +8,7 @@ fetch(`https://es.dump.academy/guess-melody/questions`).
       throw new Error(`Неизвестный статус: ${response.status}${response.statusText}`);
     }).
     then((data) => new GamePresenter(data).init()).
-    catch((err) => console.error(err));
+    catch((err) => window.console.error(err));
 
 // TODO Сделать вывод ошибки
 // TODO Сделать прелоад картинок и всякого чтобы не было пустоты

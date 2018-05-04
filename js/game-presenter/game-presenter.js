@@ -65,8 +65,7 @@ export class GamePresenter {
     if (this._gameModel.isGameContinued()) {
       const questionType = this._gameModel.questionType;
       const question = this._gameModel.question;
-      const answerVariants = this._gameModel.answerVariants;
-      this._questionScreen = new screenType[questionType](question, answerVariants);
+      this._questionScreen = new screenType[questionType](question);
       if (questionType === QuestionType.ARTIST) {
         this._bindArtistScreen();
       } else if (questionType === QuestionType.GENRE) {

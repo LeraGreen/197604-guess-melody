@@ -3,8 +3,11 @@ import {answerPoints, initialState, settings, FAST_ANSWER_TIME, AnswerType} from
 export class GameModel {
   constructor(questions) {
     this._state = {};
-    this.questions = questions;
+    this._questions = questions;
     this._question = null;
+    this._settings = Object.assign({}, settings, {
+      screens: this._questions.length
+    });
   }
 
   static getWinnerStatistic(userPoints, otherResults) {
@@ -53,7 +56,6 @@ export class GameModel {
     return answer === rightAnswer;
   }
 
-  // TODO мэйби еще квешн
   get question() {
     return this.questions[this._state.question];
   }
@@ -67,15 +69,11 @@ export class GameModel {
   }
 
   get gameTime() {
-    return settings.timeToGame - this._state.time;
+    return this._settings.timeToGame - this._state.time;
   }
 
   get questionType() {
     return this._question.type;
-  }
-
-  get answerVariants() {
-    return this.questions[this._state.question].answers;
   }
 
   resetState() {
@@ -89,9 +87,9 @@ export class GameModel {
   }
 
   checkTimer() {
-    if (this._state.time > settings.timeToEnd) {
+    if (this._state.time > this._settings.timeToEnd) {
       this.onTick(this._state.time);
-    } else if (this._state.time === settings.timeToEnd && this._state.answers.length < settings.screens) {
+    } else if (this._state.time === this._settings.timeToEnd && this._state.answers.length < this._settings.screens) {
       // TODO разобраться почему убирание отсюда stopTimer ломает нахер все
       // раньше он был в инитиалайз гейм
       this.onTimeEnd();
@@ -110,9 +108,8 @@ export class GameModel {
 
   isGameContinued() {
     const questionNumber = this._state.question;
-    // TODO разобраться с названиями
     this._question = this.questions[questionNumber];
-    return (this._state.mistakes < settings.maxMistakes && questionNumber < settings.screens && this._question);
+    return (this._state.mistakes < this._settings.maxMistakes && questionNumber < this._settings.screens && this._question);
   }
 
   upQuestion() {
@@ -120,12 +117,12 @@ export class GameModel {
   }
 
   isAttemptsOut() {
-    return this._state.mistakes === settings.maxMistakes;
+    return this._state.mistakes === this._settings.maxMistakes;
   }
 
   isUserWin() {
     const questionNumber = this._state.question;
-    return (this._state.mistakes < settings.maxMistakes && questionNumber === settings.screens);
+    return (this._state.mistakes < this._settings.maxMistakes && questionNumber === this._settings.screens);
   }
 
   checkMistake() {
@@ -136,7 +133,7 @@ export class GameModel {
   }
 
   upMistake() {
-    if (this._state.mistakes < settings.maxMistakes) {
+    if (this._state.mistakes < this._settings.maxMistakes) {
       this._state.mistakes++;
     }
   }

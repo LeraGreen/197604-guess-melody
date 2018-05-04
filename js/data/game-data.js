@@ -1,6 +1,6 @@
 export const settings = {
   maxMistakes: 3,
-  screens: 10,
+  screens: 0,
   timeToGame: 5 * 60,
   timeToEnd: 0
 };
