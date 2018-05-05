@@ -4,13 +4,15 @@ export default (number, words, unit = ``) => {
   if (words.length !== WORDS_LENGTH) {
     return `${number}`;
   }
+
   let numeral = words[1];
 
   if (number >= 11 && number <= 14) {
     numeral = words[0];
   } else {
     const remainder = number % 10;
-    if (!remainder) {
+
+    if (remainder === 0) {
       numeral = words[0];
     } else if (remainder >= 2 && remainder <= 4) {
       numeral = words[2];
@@ -19,6 +21,5 @@ export default (number, words, unit = ``) => {
     }
   }
 
-  const string = `${number}${unit} ${numeral}`;
-  return string;
+  return `${number}${unit} ${numeral}`;
 };

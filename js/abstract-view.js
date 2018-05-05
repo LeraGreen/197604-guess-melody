@@ -1,6 +1,6 @@
 import {getElementFromTemplate} from './utils';
 
-export default class AbstractView {
+class AbstractView {
   get template() {
     throw new Error(`You don't have any template`);
   }
@@ -17,3 +17,5 @@ export default class AbstractView {
     return this._element;
   }
 }
+
+export default AbstractView;

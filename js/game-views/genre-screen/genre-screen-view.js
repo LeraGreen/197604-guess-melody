@@ -5,15 +5,16 @@ class GenreScreenView extends AbstractView {
     super();
     this._question = question;
     this._activePlayer = null;
+    this._answersVariants = this._question.answers;
   }
 
   get template() {
     return `<section class="main main--level main--level-genre">
       <div class="main-wrap">
-        <h2 class="title">Выберите ${this._question.genre} треки</h2>
+        <h2 class="title">${this._question.question}</h2>
         <form class="genre">
-          ${this._question.answers.reduce((acc, it, i) => acc +
-          `<div class="genre-answer">
+          ${this._answersVariants.reduce((acc, it, i) => `${acc}
+          <div class="genre-answer" ${this._showRightAnswer(it)}>
              <div class="player-wrapper">
               <div class="player">
                 <audio src="${it.src}" preload="auto"></audio>
@@ -25,11 +26,46 @@ class GenreScreenView extends AbstractView {
             </div>
             <input type="checkbox" name="answer" value="${it.genre}" id="a-${i}">
             <label class="genre-answer-check" for="a-${i}"></label>
-          </div>` + `\n`, ``)}
+          </div>\n`, ``)}
           <button class="genre-answer-send" type="submit">Ответить</button>
         </form>
       </div>
     </section>`;
+  }
+
+  _onPlayerControlClick(player, button, audio) {
+    if (!audio.paused) {
+      if (this._activePlayer) {
+        this._activePlayer = null;
+      }
+      audio.pause();
+      button.classList.add(`player-control--play`);
+      button.classList.remove(`player-control--pause`);
+    } else {
+      this._stopPlayer();
+
+      this._activePlayer = player;
+      audio.play().catch(() => {});
+      button.classList.remove(`player-control--play`);
+      button.classList.add(`player-control--pause`);
+    }
+  }
+
+  _stopPlayer() {
+    if (this._activePlayer) {
+      const activeSong = this._activePlayer.querySelector(`audio`);
+      const activeButton = this._activePlayer.querySelector(`button`);
+      activeSong.pause();
+      activeButton.classList.add(`player-control--play`);
+      activeButton.classList.remove(`player-control--pause`);
+    }
+  }
+
+  // Подсветка правильного ответа для удобства проверки
+  _showRightAnswer(answer) {
+    return answer.genre === this._question.genre ?
+      `style="outline: rgba(225, 151, 23, .5) solid 3px"` :
+      ``;
   }
 
   bind() {
@@ -45,8 +81,8 @@ class GenreScreenView extends AbstractView {
           checkedAnswerOptions.push(it.value);
         }
       }
-      this.onAnswer(checkedAnswerOptions, this._question);
-      this.stopPlayer();
+      this.onAnswer(checkedAnswerOptions, this._question, this._answersVariants);
+      this._stopPlayer();
     });
 
     for (const player of players) {
@@ -54,44 +90,8 @@ class GenreScreenView extends AbstractView {
       const audio = player.querySelector(`audio`);
       button.addEventListener(`click`, (evt) => {
         evt.preventDefault();
-        this.onPlayerControlClick(player, button, audio);
+        this._onPlayerControlClick(player, button, audio);
       });
-    }
-  }
-
-  onAnswer() {
-  }
-
-  onPlayerControlClick(player, button, audio) {
-    if (!audio.paused) {
-      if (this._activePlayer) {
-        this._activePlayer = null;
-      }
-      audio.pause();
-      button.classList.add(`player-control--play`);
-      button.classList.remove(`player-control--pause`);
-    } else {
-      if (this._activePlayer) {
-        const activeSong = this._activePlayer.querySelector(`audio`);
-        const activeButton = this._activePlayer.querySelector(`button`);
-        activeSong.pause();
-        activeButton.classList.add(`player-control--play`);
-        activeButton.classList.remove(`player-control--pause`);
-      }
-      this._activePlayer = player;
-      audio.play();
-      button.classList.remove(`player-control--play`);
-      button.classList.add(`player-control--pause`);
-    }
-  }
-
-  stopPlayer() {
-    if (this._activePlayer) {
-      const activeSong = this._activePlayer.querySelector(`audio`);
-      const activeButton = this._activePlayer.querySelector(`button`);
-      activeSong.pause();
-      activeButton.classList.add(`player-control--play`);
-      activeButton.classList.remove(`player-control--pause`);
     }
   }
 
@@ -100,6 +100,9 @@ class GenreScreenView extends AbstractView {
       this._nextElement = this.element.querySelector(`.main-wrap`);
     }
     this.element.insertBefore(view.element, this._nextElement);
+  }
+
+  onAnswer() {
   }
 }
 

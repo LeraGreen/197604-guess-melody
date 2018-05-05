@@ -1,5 +1,5 @@
 import AbstractView from '../../abstract-view';
-import {splitTime} from '../../data/game-data';
+import {splitTime} from "../../utils";
 import {addLeadingZero} from '../../utils';
 
 class TimerTextView extends AbstractView {
@@ -24,6 +24,10 @@ class TimerTextView extends AbstractView {
 
     this._minutesElement.textContent = addLeadingZero(time.minutes);
     this._secondsElement.textContent = addLeadingZero(time.seconds);
+  }
+
+  setAlarm(isAlarm) {
+    this.element.classList.toggle(`timer-value--finished`, isAlarm);
   }
 }
 

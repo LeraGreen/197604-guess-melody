@@ -1,33 +1,30 @@
 import ArtistScreenView from '../game-views/artist-screen/artist-screen-view';
 import GenreScreenView from '../game-views/genre-screen/genre-screen-view';
-import {statistics, AnswerType} from '../data/game-data';
+import {AnswerType} from '../data/game-data';
 import {showScreen} from '../utils';
 import WinScreenView from '../game-views/results/win-screen-view';
 import AttemptsOutScreenView from '../game-views/results/attempts-out-screen-view';
 import TimeOutScreenView from '../game-views/results/timeout-screen-view';
-import GreetingScreenView from '../game-views/greeting/greeting-sreen-view';
+import GreetingScreenView from '../game-views/greeting/greeting-screen-view';
 import MistakesView from '../game-views/mistakes/mistakes-view';
 import TimerGraphicView from '../game-views/timer/timer-graphic-view';
 import TimerTextView from '../game-views/timer/timer-text-view';
-import {GameModel} from '../game-model/game-model';
-
-// TODO может сделать папку gameviews и положить туда все вьюхи
-// TODO а что делать если правильный ответ пустой?
-// Написать битовые маскиииииииииииии уиииииииииии!
-// TODO Переписать тесты под новые функции и новые штуки в функциях
+import GameModel from '../game-model/game-model';
+import {loadData} from "../main";
+import {sendStatistics, loadStatistics} from "../main";
 
 const QuestionType = {
   ARTIST: `artist`,
   GENRE: `genre`
 };
 
-const screenType = {
+const questionTypeToView = {
   [QuestionType.ARTIST]: ArtistScreenView,
   [QuestionType.GENRE]: GenreScreenView
 };
 
-export class GamePresenter {
-  constructor() {
+class GamePresenter {
+  constructor(data) {
     this._greetingScreen = null;
     this._questionScreen = null;
     this._timerId = null;
@@ -37,15 +34,23 @@ export class GamePresenter {
     this._timeOutScreen = null;
     this._attemptsOutScreen = null;
     this._winScreen = null;
-    this._gameModel = new GameModel();
+
+    this._gameModel = new GameModel(data);
+
     this._gameModel.onTick = (time) => {
       this._timerText.showTime(time);
+      this._timerGraphic.showTime(time, this._gameModel.gameTime);
     };
+
     this._gameModel.onTimeEnd = () => {
       this._stopTimer();
       this._timeOutScreen = new TimeOutScreenView();
       this._bindTimeOutScreen();
       showScreen(this._timeOutScreen);
+    };
+
+    this._gameModel.onAlarm = () => {
+      this._timerText.setAlarm(true);
     };
   }
 
@@ -66,7 +71,8 @@ export class GamePresenter {
     if (this._gameModel.isGameContinued()) {
       const questionType = this._gameModel.questionType;
       const question = this._gameModel.question;
-      this._questionScreen = new screenType[questionType](question);
+      this._questionScreen = new questionTypeToView[questionType](question);
+
       if (questionType === QuestionType.ARTIST) {
         this._bindArtistScreen();
       } else if (questionType === QuestionType.GENRE) {
@@ -76,6 +82,7 @@ export class GamePresenter {
       if (!this._timerGraphic) {
         this._timerGraphic = new TimerGraphicView();
       }
+
       if (!this._timerText) {
         this._timerText = new TimerTextView();
       }
@@ -88,21 +95,23 @@ export class GamePresenter {
       this._gameModel.upQuestion();
     } else {
       this._stopTimer();
+
       if (this._gameModel.isAttemptsOut()) {
         this._attemptsOutScreen = new AttemptsOutScreenView();
         this._bindAttemptsOutScreen();
         showScreen(this._attemptsOutScreen);
       } else if (this._gameModel.isUserWin()) {
-        this._bindWinScreen();
-        showScreen(this._winScreen);
+        loadStatistics().then((data) => {
+          this._onStatisticsLoad(data);
+        }).catch(() => {});
       }
     }
   }
 
   _startTimer() {
     this._timerId = setInterval(() => {
-      this._gameModel.tickTimer();
       this._gameModel.checkTimer();
+      this._gameModel.tickTimer();
     }, 1000);
   }
 
@@ -112,17 +121,17 @@ export class GamePresenter {
   }
 
   _bindArtistScreen() {
-    this._questionScreen.onAnswersFormChange = (answer, screenQuestion) => {
+    this._questionScreen.onAnswersFormChange = (answer, answersVariants) => {
       const roundTime = this._gameModel.calcRoundTime(this._screenTime);
-      this._gameModel.checkAnswer(GameModel.checkArtistScreen(answer, screenQuestion), roundTime);
+      this._gameModel.checkAnswer(GameModel.isArtistAnswerCorrect(answer, answersVariants), roundTime);
       this._showNextGameScreen();
     };
   }
 
   _bindGenreScreen() {
-    this._questionScreen.onAnswer = (answers, screenQuestion) => {
+    this._questionScreen.onAnswer = (answers, screenQuestion, answerVariants) => {
       const roundTime = this._gameModel.calcRoundTime(this._screenTime);
-      this._gameModel.checkAnswer(GameModel.checkGenreScreen(answers, screenQuestion), roundTime);
+      this._gameModel.checkAnswer(GameModel.isGenreAnswerCorrect(answers, screenQuestion, answerVariants), roundTime);
       this._showNextGameScreen();
     };
   }
@@ -141,25 +150,34 @@ export class GamePresenter {
 
   _bindAttemptsOutScreen() {
     this._attemptsOutScreen.onReplayButtonClick = () => {
-      this.init();
+      loadData();
     };
   }
 
   _bindWinScreen() {
-    const points = this._gameModel.calcPoints();
-    const fastAnswers = this._gameModel.calcAnswersType(AnswerType.FAST);
-    const winnerStatistics = GameModel.getWinnerStatistic(points, statistics);
-    const mistakes = this._gameModel.mistakes;
-    const gameTime = this._gameModel.gameTime;
-    this._winScreen = new WinScreenView(mistakes, points, fastAnswers, winnerStatistics, gameTime);
     this._winScreen.onReplayButtonClick = () => {
-      this.init();
+      loadData();
     };
   }
 
   _bindTimeOutScreen() {
     this._timeOutScreen.onReplayButtonClick = () => {
-      this.init();
+      loadData();
     };
   }
+
+  _onStatisticsLoad(data) {
+    const points = this._gameModel.calcPoints();
+    sendStatistics(points);
+
+    const fastAnswers = this._gameModel.calcAnswersType(AnswerType.FAST);
+    const mistakes = this._gameModel.mistakes;
+    const gameTime = this._gameModel.gameTime - this._gameModel.time;
+    const winnerStatistics = GameModel.getWinnerStatistic(points, data);
+    this._winScreen = new WinScreenView(mistakes, points, fastAnswers, winnerStatistics, gameTime);
+    this._bindWinScreen();
+    showScreen(this._winScreen);
+  }
 }
+
+export default GamePresenter;

@@ -1,57 +1,63 @@
-import {answerPoints, initialState, questions, settings, FAST_ANSWER_TIME, AnswerType} from "../data/game-data";
+import {answerPoints, initialState, settings, FAST_ANSWER_TIME, AnswerType} from "../data/game-data";
 
-export class GameModel {
-  constructor() {
+class GameModel {
+  constructor(questions) {
     this._state = {};
+    this._questions = questions;
+    this._question = null;
+    this._settings = Object.assign({}, settings, {
+      screens: this._questions.length
+    });
   }
 
   static getWinnerStatistic(userPoints, otherResults) {
-    const winners = otherResults.slice(0);
-    const winnersQuantity = winners.length;
-    let userPosition;
+    const winners = otherResults
+        .slice(0)
+        .sort((prev, next) => next.points - prev.points);
+
+    let position = -1;
+
     for (let i = 0; i < otherResults.length; i++) {
-      if (winners[i] < userPoints) {
-        winners.splice(i, 0, userPoints);
-        userPosition = i + 1;
+      if (winners[i].points < userPoints) {
+        position = i + 1;
         break;
       }
     }
 
-    if (winners.length === winnersQuantity) {
-      winners.push(userPoints);
-      userPosition = winners.length;
+    if (position === -1) {
+      position = winners.length + 1;
     }
-    const percent = Math.round(((winners.length - userPosition) / winners.length) * 100);
-    return {position: userPosition, players: winners.length, percent};
 
-    // TODO отловить случаи с отрицательным значением
+    const players = winners.length + 1;
+    const percent = Math.round(((players - position) / players) * 100);
+
+    return {position, players, percent};
   }
 
-  static getAnswerType(answer, time) {
+  static getAnswerType(isCorrect, time) {
     let type = AnswerType.WRONG;
-    if (answer) {
-      if (time <= FAST_ANSWER_TIME) {
-        type = AnswerType.FAST;
-      } else {
-        type = AnswerType.CORRECT;
-      }
+    if (isCorrect) {
+      type = time <= FAST_ANSWER_TIME ?
+        AnswerType.FAST :
+        AnswerType.CORRECT;
     }
     return type;
   }
 
-  static checkGenreScreen(answers, question) {
+  static isGenreAnswerCorrect(answers, question) {
     if (!answers.length) {
       return false;
     }
     return answers.every((it) => it === question.genre);
   }
 
-  static checkArtistScreen(answer, question) {
-    return answer === question.artist;
+  static isArtistAnswerCorrect(answer, answerVariants) {
+    const rightAnswer = answerVariants.find((it) => it.isCorrect).title;
+    return answer === rightAnswer;
   }
 
   get question() {
-    return questions[this._state.question];
+    return this._questions[this._state.question];
   }
 
   get mistakes() {
@@ -62,12 +68,12 @@ export class GameModel {
     return this._state.time;
   }
 
-  get gameTime() {
-    return settings.timeToGame - this._state.time;
-  }
-
   get questionType() {
     return this._question.type;
+  }
+
+  get gameTime() {
+    return this._settings.timeToGame;
   }
 
   resetState() {
@@ -81,11 +87,13 @@ export class GameModel {
   }
 
   checkTimer() {
-    if (this._state.time > settings.timeToEnd) {
+    if (this._state.time > this._settings.timeToEnd) {
       this.onTick(this._state.time);
-    } else if (this._state.time === settings.timeToEnd && this._state.answers.length < settings.screens) {
-      // TODO разобраться почему убирание отсюда stopTimer ломает нахер все
-      // раньше он был в инитиалайз гейм
+
+      if (this._state.time === this._settings.timeToAlarm) {
+        this.onAlarm();
+      }
+    } else if (this._state.time === this._settings.timeToEnd && this._state.answers.length < this._settings.screens) {
       this.onTimeEnd();
     }
   }
@@ -96,14 +104,19 @@ export class GameModel {
   onTimeEnd() {
   }
 
+  onAlarm() {
+  }
+
   addAnswer(answer) {
     this._state.answers.push(answer);
   }
 
   isGameContinued() {
     const questionNumber = this._state.question;
-    this._question = questions[questionNumber];
-    return (this._state.mistakes < settings.maxMistakes && questionNumber < settings.screens && this._question);
+    this._question = this._questions[questionNumber];
+    return this._state.mistakes < this._settings.maxMistakes &&
+      questionNumber < this._settings.screens &&
+      this._question;
   }
 
   upQuestion() {
@@ -111,12 +124,13 @@ export class GameModel {
   }
 
   isAttemptsOut() {
-    return this._state.mistakes === settings.maxMistakes;
+    return this._state.mistakes === this._settings.maxMistakes;
   }
 
   isUserWin() {
     const questionNumber = this._state.question;
-    return (this._state.mistakes < settings.maxMistakes && questionNumber === settings.screens);
+    return this._state.mistakes < this._settings.maxMistakes &&
+      questionNumber === this._settings.screens;
   }
 
   checkMistake() {
@@ -127,7 +141,7 @@ export class GameModel {
   }
 
   upMistake() {
-    if (this._state.mistakes < settings.maxMistakes) {
+    if (this._state.mistakes < this._settings.maxMistakes) {
       this._state.mistakes++;
     }
   }
@@ -144,7 +158,7 @@ export class GameModel {
   }
 
   calcAnswersType(type) {
-    return (this._state.answers.filter((el) => el === type).length);
+    return this._state.answers.filter((el) => el === type).length;
   }
 
   checkAnswer(answer, time) {
@@ -159,4 +173,6 @@ export class GameModel {
     return startTime - this._state.time;
   }
 }
+
+export default GameModel;
 

@@ -27,6 +27,7 @@
   text-indent: -100em;
   transform-origin: center;
   width: 0;
+  cursor: pointer;
 }
 
 .main-play:hover {
@@ -35,4 +36,17 @@
 
 .main-play:active {
   transform: scale(1.04);
+}
+
+.main-play--disabled {
+  border-left-color: #ccb4a2;
+  cursor: auto;
+}
+
+.main-play--disabled:hover {
+  transform: none;
+}
+
+.main-play--disabled:active {
+  transform: none;
 }
