@@ -9,7 +9,7 @@ export const loadData = () => {
         throw new Error(`Неизвестный статус: ${response.status}${response.statusText}`);
       }).
       then((data) => new GamePresenter(data).init()).
-      catch((err) => window.console.error(err));
+      catch((err) => console.error(err));
 };
 
 export const sendStatistics = (points) => {
