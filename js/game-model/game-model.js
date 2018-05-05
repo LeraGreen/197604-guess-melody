@@ -6,8 +6,7 @@ class GameModel {
     this._questions = questions;
     this._question = null;
     this._settings = Object.assign({}, settings, {
-      screens: 3
-      // screens: this._questions.length
+      screens: this._questions.length
     });
   }
 

@@ -36,9 +36,8 @@ class GamePresenter {
     this._winScreen = null;
     this._gameModel = new GameModel(data);
     this._gameModel.onTick = (time) => {
-      const coefficient = time / this._gameModel.gameTime;
       this._timerText.showTime(time);
-      this._timerGraphic.showTime(coefficient);
+      this._timerGraphic.showTime(time, this._gameModel.gameTime);
     };
     this._gameModel.onTimeEnd = () => {
       this._stopTimer();
@@ -95,7 +94,9 @@ class GamePresenter {
         this._bindAttemptsOutScreen();
         showScreen(this._attemptsOutScreen);
       } else if (this._gameModel.isUserWin()) {
-        this._bindWinScreen();
+        getStatistics().then((data) => {
+          this._onStatisticsLoad(data);
+        }).catch(() => {});
       }
     }
   }
@@ -147,26 +148,28 @@ class GamePresenter {
   }
 
   _bindWinScreen() {
-    const points = this._gameModel.calcPoints();
-    const fastAnswers = this._gameModel.calcAnswersType(AnswerType.FAST);
-    const mistakes = this._gameModel.mistakes;
-    const gameTime = this._gameModel.time;
-    getStatistics().then((data) => {
-      sendStatistics(points);
-      const winnerStatistics = GameModel.getWinnerStatistic(points, data);
-      this._winScreen = new WinScreenView(mistakes, points, fastAnswers, winnerStatistics, gameTime);
-      this._winScreen.onReplayButtonClick = () => {
-        loadData();
-      };
-      // TODO что делать с этим, бинд не должен знать о отрисовке, в других местах эта штука снаружи
-      showScreen(this._winScreen);
-    }).catch(() => {});
+    this._winScreen.onReplayButtonClick = () => {
+      loadData();
+    };
   }
 
   _bindTimeOutScreen() {
     this._timeOutScreen.onReplayButtonClick = () => {
       loadData();
     };
+  }
+
+  _onStatisticsLoad(data) {
+    const points = this._gameModel.calcPoints();
+    sendStatistics(points);
+
+    const fastAnswers = this._gameModel.calcAnswersType(AnswerType.FAST);
+    const mistakes = this._gameModel.mistakes;
+    const gameTime = this._gameModel.gameTime - this._gameModel.time;
+    const winnerStatistics = GameModel.getWinnerStatistic(points, data);
+    this._winScreen = new WinScreenView(mistakes, points, fastAnswers, winnerStatistics, gameTime);
+    this._bindWinScreen();
+    showScreen(this._winScreen);
   }
 }
 

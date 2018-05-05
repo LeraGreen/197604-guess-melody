@@ -15,7 +15,8 @@ class TimerGraphicView extends AbstractView {
   </svg>`;
   }
 
-  showTime(coefficient) {
+  showTime(currentTime, gameTime) {
+    const coefficient = currentTime / gameTime;
     const offset = (this._circumference - this._circumference * coefficient).toFixed(1);
     this.element.setAttribute(`stroke-dashoffset`, offset);
   }
