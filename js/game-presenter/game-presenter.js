@@ -5,7 +5,7 @@ import {showScreen} from '../utils';
 import WinScreenView from '../game-views/results/win-screen-view';
 import AttemptsOutScreenView from '../game-views/results/attempts-out-screen-view';
 import TimeOutScreenView from '../game-views/results/timeout-screen-view';
-import GreetingScreenView from '../game-views/greeting/greeting-sreen-view';
+import GreetingScreenView from '../game-views/greeting/greeting-screen-view';
 import MistakesView from '../game-views/mistakes/mistakes-view';
 import TimerGraphicView from '../game-views/timer/timer-graphic-view';
 import TimerTextView from '../game-views/timer/timer-text-view';
@@ -36,8 +36,9 @@ class GamePresenter {
     this._winScreen = null;
     this._gameModel = new GameModel(data);
     this._gameModel.onTick = (time) => {
+      const coefficient = time / this._gameModel.gameTime;
       this._timerText.showTime(time);
-      this._timerGraphic.showTime();
+      this._timerGraphic.showTime(coefficient);
     };
     this._gameModel.onTimeEnd = () => {
       this._stopTimer();
@@ -75,8 +76,7 @@ class GamePresenter {
       }
 
       if (!this._timerGraphic) {
-        const gameTime = this._gameModel.gameTime;
-        this._timerGraphic = new TimerGraphicView(gameTime);
+        this._timerGraphic = new TimerGraphicView();
       }
       if (!this._timerText) {
         this._timerText = new TimerTextView();
@@ -96,8 +96,6 @@ class GamePresenter {
         showScreen(this._attemptsOutScreen);
       } else if (this._gameModel.isUserWin()) {
         this._bindWinScreen();
-        // showScreen(this._winScreen);
-        // TODO удалить
       }
     }
   }
@@ -152,7 +150,7 @@ class GamePresenter {
     const points = this._gameModel.calcPoints();
     const fastAnswers = this._gameModel.calcAnswersType(AnswerType.FAST);
     const mistakes = this._gameModel.mistakes;
-    const gameTime = this._gameModel.gameTime;
+    const gameTime = this._gameModel.time;
     getStatistics().then((data) => {
       sendStatistics(points);
       const winnerStatistics = GameModel.getWinnerStatistic(points, data);
@@ -160,6 +158,7 @@ class GamePresenter {
       this._winScreen.onReplayButtonClick = () => {
         loadData();
       };
+      // TODO что делать с этим, бинд не должен знать о отрисовке, в других местах эта штука снаружи
       showScreen(this._winScreen);
     }).catch(() => {});
   }

@@ -6,14 +6,15 @@ class GameModel {
     this._questions = questions;
     this._question = null;
     this._settings = Object.assign({}, settings, {
-      screens: this._questions.length
+      screens: 3
+      // screens: this._questions.length
     });
   }
 
   static getWinnerStatistic(userPoints, otherResults) {
-    const winners = otherResults.map((it) => {
-      return it.points;
-    });
+    const winners = otherResults
+        .map((it) => it.points)
+        .sort((prev, next) => next - prev);
     const winnersQuantity = winners.length;
     let userPosition;
     for (let i = 0; i < otherResults.length; i++) {
@@ -66,10 +67,6 @@ class GameModel {
 
   get time() {
     return this._state.time;
-  }
-
-  get gameTime() {
-    return this._settings.timeToGame - this._state.time;
   }
 
   get questionType() {
