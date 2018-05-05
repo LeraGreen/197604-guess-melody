@@ -12,13 +12,13 @@ class GameModel {
 
   static getWinnerStatistic(userPoints, otherResults) {
     const winners = otherResults
-        .map((it) => it.points)
-        .sort((prev, next) => next - prev);
+        .slice(0)
+        .sort((prev, next) => next.points - prev.points);
 
     let position = -1;
 
     for (let i = 0; i < otherResults.length; i++) {
-      if (winners[i] < userPoints) {
+      if (winners[i].points < userPoints) {
         position = i + 1;
         break;
       }

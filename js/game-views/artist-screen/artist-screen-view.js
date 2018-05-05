@@ -28,15 +28,15 @@ class ArtistScreenView extends AbstractView {
           </div>
         </div>
         <form class="main-list">
-          ${this._answersVariants.reduce((acc, it, i) => acc +
-            `<div class="main-answer-wrapper" ${ArtistScreenView._showRightAnswer(it)}>
+          ${this._answersVariants.reduce((acc, it, i) => `${acc}
+            <div class="main-answer-wrapper" ${ArtistScreenView._showRightAnswer(it)}>
               <input class="main-answer-r" type="radio" id="answer-${i}" name="answer" value="${it.title}"/>
               <label class="main-answer" for="answer-${i}">
                 <img class="main-answer-preview" src="${it.image.url}"
                    alt="${it.title}" width="134" height="134">
                 ${it.title}
               </label>
-            </div>` + `\n`, ``)}
+            </div>\n`, ``)}
         </form>
     </section>`;
   }

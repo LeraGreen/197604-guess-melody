@@ -13,8 +13,8 @@ class GenreScreenView extends AbstractView {
       <div class="main-wrap">
         <h2 class="title">${this._question.question}</h2>
         <form class="genre">
-          ${this._answersVariants.reduce((acc, it, i) => acc +
-          `<div class="genre-answer" ${this._showRightAnswer(it)}>
+          ${this._answersVariants.reduce((acc, it, i) => `${acc}
+          <div class="genre-answer" ${this._showRightAnswer(it)}>
              <div class="player-wrapper">
               <div class="player">
                 <audio src="${it.src}" preload="auto"></audio>
@@ -26,7 +26,7 @@ class GenreScreenView extends AbstractView {
             </div>
             <input type="checkbox" name="answer" value="${it.genre}" id="a-${i}">
             <label class="genre-answer-check" for="a-${i}"></label>
-          </div>` + `\n`, ``)}
+          </div>\n`, ``)}
           <button class="genre-answer-send" type="submit">Ответить</button>
         </form>
       </div>
