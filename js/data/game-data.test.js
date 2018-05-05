@@ -1,5 +1,5 @@
 import {assert} from 'chai';
-import {GameModel} from "../game-model/game-model";
+import GameModel from "../game-model/game-model";
 import {splitTime} from "../utils";
 
 
@@ -16,6 +16,7 @@ describe(`check answer type`, () => {
     assert.equal(`correct`, GameModel.getAnswerType(true, 40));
   });
 });
+
 
 describe(`points from answers`, () => {
   it(`should return 2 if answer is fast`, () => {
@@ -57,35 +58,62 @@ describe(`points from answers`, () => {
 });
 
 describe(`winner statistics from game`, () => {
-  it(`should return 33 percent for winner`, () => {
-    const otherResults = [20, 15, 14, 5, 3];
-    assert.equal(33, GameModel.getWinnerStatistic(13, otherResults).percent);
+
+  describe(`percent`, () => {
+    const otherResults = [
+      {'points': 20},
+      {'points': 15},
+      {'points': 14},
+      {'points': 5},
+      {'points': 3}];
+
+    it(`should return 33 percent for winner`, () => {
+      assert.equal(33, GameModel.getWinnerStatistic(13, otherResults).percent);
+    });
+    it(`should return 100 percent for winner`, () => {
+      assert.equal(83, GameModel.getWinnerStatistic(25, otherResults).percent);
+    });
+    it(`should return 0 percent for winner`, () => {
+      assert.equal(0, GameModel.getWinnerStatistic(1, otherResults).percent);
+    });
   });
-  it(`should return 6 players`, () => {
-    const otherResults = [20, 15, 14, 5, 3];
-    assert.equal(6, GameModel.getWinnerStatistic(13, otherResults).players);
+
+  describe(`position`, () => {
+    const otherResults = [
+      {'points': 20},
+      {'points': 15},
+      {'points': 14},
+      {'points': 5},
+      {'points': 3}];
+
+    it(`should return 4 for user position`, () => {
+      assert.equal(4, GameModel.getWinnerStatistic(13, otherResults).position);
+    });
+    it(`should return 1 for user position`, () => {
+      assert.equal(1, GameModel.getWinnerStatistic(25, otherResults).position);
+    });
+    it(`should return 6 for user position`, () => {
+      assert.equal(6, GameModel.getWinnerStatistic(1, otherResults).position);
+    });
   });
-  it(`should return 4 for user position`, () => {
-    const otherResults = [20, 15, 14, 5, 3];
-    assert.equal(4, GameModel.getWinnerStatistic(13, otherResults).position);
-  });
-  it(`should return 100 percent for winner`, () => {
-    const otherResults = [20, 15, 14, 5, 3];
-    assert.equal(83, GameModel.getWinnerStatistic(25, otherResults).percent);
-  });
-  it(`should return 6 players`, () => {
-    const otherResults = [20, 15, 14, 5, 3];
-    assert.equal(6, GameModel.getWinnerStatistic(25, otherResults).players);
-  });
-  it(`should return 1 for user position`, () => {
-    const otherResults = [20, 15, 14, 5, 3];
-    assert.equal(1, GameModel.getWinnerStatistic(25, otherResults).position);
-  });
-  it(`should work with the smallest number`, () => {
-    const otherResults = [20, 15, 14, 5, 3];
-    assert.equal(6, GameModel.getWinnerStatistic(1, otherResults).position);
-    assert.equal(6, GameModel.getWinnerStatistic(1, otherResults).players);
-    assert.equal(0, GameModel.getWinnerStatistic(1, otherResults).percent);
+
+  describe(`players`, () => {
+    const otherResults = [
+      {'points': 20},
+      {'points': 15},
+      {'points': 14},
+      {'points': 5},
+      {'points': 3}];
+
+    it(`should return 6 players`, () => {
+      assert.equal(6, GameModel.getWinnerStatistic(13, otherResults).players);
+    });
+    it(`should return 6 players`, () => {
+      assert.equal(6, GameModel.getWinnerStatistic(25, otherResults).players);
+    });
+    it(`should return 6 players`, () => {
+      assert.equal(6, GameModel.getWinnerStatistic(1, otherResults).players);
+    });
   });
 });
 

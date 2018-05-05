@@ -1,6 +1,5 @@
 import AbstractView from '../../abstract-view';
 import {splitTime} from '../../utils';
-// TODO точно тут а не метод вьюхи
 import pluralize from '../../plural/plural';
 
 class WinScreenView extends AbstractView {

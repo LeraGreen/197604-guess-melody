@@ -1,5 +1,3 @@
-const appContainer = document.querySelector(`.app`);
-
 export const getElementFromTemplate = (string) => {
   const template = document.createElement(`template`);
   template.innerHTML = string;
@@ -7,6 +5,7 @@ export const getElementFromTemplate = (string) => {
 };
 
 export const showScreen = (view) => {
+  const appContainer = document.querySelector(`.app`);
   const mainClass = `.main`;
   const main = appContainer.querySelector(mainClass);
   if (main) {

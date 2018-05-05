@@ -1,17 +1,20 @@
 import {answerPoints, initialState, settings, FAST_ANSWER_TIME, AnswerType} from "../data/game-data";
 
-export class GameModel {
+class GameModel {
   constructor(questions) {
     this._state = {};
     this._questions = questions;
     this._question = null;
     this._settings = Object.assign({}, settings, {
-      screens: this._questions.length
+      screens: 4
+      // this._questions.length
     });
   }
 
   static getWinnerStatistic(userPoints, otherResults) {
-    const winners = otherResults.slice(0);
+    const winners = otherResults.map((it) => {
+      return it.points;
+    });
     const winnersQuantity = winners.length;
     let userPosition;
     for (let i = 0; i < otherResults.length; i++) {
@@ -28,8 +31,6 @@ export class GameModel {
     }
     const percent = Math.round(((winners.length - userPosition) / winners.length) * 100);
     return {position: userPosition, players: winners.length, percent};
-
-    // TODO отловить случаи с отрицательным значением
   }
 
   static getAnswerType(answer, time) {
@@ -93,8 +94,6 @@ export class GameModel {
     if (this._state.time > this._settings.timeToEnd) {
       this.onTick(this._state.time);
     } else if (this._state.time === this._settings.timeToEnd && this._state.answers.length < this._settings.screens) {
-      // TODO разобраться почему убирание отсюда stopTimer ломает нахер все
-      // раньше он был в инитиалайз гейм
       this.onTimeEnd();
     }
   }
@@ -171,4 +170,6 @@ export class GameModel {
     return startTime - this._state.time;
   }
 }
+
+export default GameModel;
 

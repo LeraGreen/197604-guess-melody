@@ -6,8 +6,6 @@ export const settings = {
   timeToAlarm: 30
 };
 
-// TODO как указать количество экранов
-
 export const FAST_ANSWER_TIME = 30;
 
 export const AnswerType = {
