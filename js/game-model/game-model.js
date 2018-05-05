@@ -6,8 +6,7 @@ class GameModel {
     this._questions = questions;
     this._question = null;
     this._settings = Object.assign({}, settings, {
-      screens: 4
-      // this._questions.length
+      screens: this._questions.length
     });
   }
 
@@ -75,6 +74,10 @@ class GameModel {
 
   get questionType() {
     return this._question.type;
+  }
+
+  get gameTime() {
+    return this._settings.timeToGame;
   }
 
   resetState() {

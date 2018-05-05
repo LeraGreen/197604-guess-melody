@@ -21,8 +21,6 @@ export const initialState = {
   answers: []
 };
 
-export const statistics = [20, 19, 15, 4, 2];
-
 export const answerPoints = {
   [AnswerType.WRONG]: -2,
   [AnswerType.CORRECT]: 1,

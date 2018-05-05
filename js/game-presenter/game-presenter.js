@@ -37,6 +37,7 @@ class GamePresenter {
     this._gameModel = new GameModel(data);
     this._gameModel.onTick = (time) => {
       this._timerText.showTime(time);
+      this._timerGraphic.showTime();
     };
     this._gameModel.onTimeEnd = () => {
       this._stopTimer();
@@ -74,7 +75,8 @@ class GamePresenter {
       }
 
       if (!this._timerGraphic) {
-        this._timerGraphic = new TimerGraphicView();
+        const gameTime = this._gameModel.gameTime;
+        this._timerGraphic = new TimerGraphicView(gameTime);
       }
       if (!this._timerText) {
         this._timerText = new TimerTextView();
