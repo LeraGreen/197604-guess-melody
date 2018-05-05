@@ -6,7 +6,7 @@ class TimerGraphicView extends AbstractView {
     this._radius = 370;
     this._circumference = Math.round(2 * Math.PI * this._radius);
     this._offset = 0;
-    this._number = 2325 / time;
+    this._offsetIncrease = 2325 / time;
   }
   get template() {
     return `<svg xmlns="http://www.w3.org/2000/svg" class="timer" viewBox="0 0 780 780" stroke-dasharray="${this._circumference}">
@@ -18,7 +18,7 @@ class TimerGraphicView extends AbstractView {
   }
 
   showTime() {
-    this._offset += this._number;
+    this._offset += this._offsetIncrease;
     this.element.setAttribute(`stroke-dashoffset`, this._offset);
   }
 
