@@ -14,7 +14,7 @@ class GenreScreenView extends AbstractView {
         <h2 class="title">${this._question.question}</h2>
         <form class="genre">
           ${this._answersVariants.reduce((acc, it, i) => acc +
-          `<div class="genre-answer">
+          `<div class="genre-answer" ${this._showRightAnswer(it)}>
              <div class="player-wrapper">
               <div class="player">
                 <audio src="${it.src}" preload="auto"></audio>
@@ -33,37 +33,7 @@ class GenreScreenView extends AbstractView {
     </section>`;
   }
 
-  bind() {
-    const answersForm = this.element.querySelector(`.genre`);
-    const players = this.element.querySelectorAll(`.player`);
-
-    answersForm.addEventListener(`submit`, (evt) => {
-      evt.preventDefault();
-      const answers = answersForm.elements.answer;
-      const checkedAnswerOptions = [];
-      for (const it of answers) {
-        if (it.checked) {
-          checkedAnswerOptions.push(it.value);
-        }
-      }
-      this.onAnswer(checkedAnswerOptions, this._question, this._answersVariants);
-      this.stopPlayer();
-    });
-
-    for (const player of players) {
-      const button = player.querySelector(`button`);
-      const audio = player.querySelector(`audio`);
-      button.addEventListener(`click`, (evt) => {
-        evt.preventDefault();
-        this.onPlayerControlClick(player, button, audio);
-      });
-    }
-  }
-
-  onAnswer() {
-  }
-
-  onPlayerControlClick(player, button, audio) {
+  _onPlayerControlClick(player, button, audio) {
     if (!audio.paused) {
       if (this._activePlayer) {
         this._activePlayer = null;
@@ -86,7 +56,7 @@ class GenreScreenView extends AbstractView {
     }
   }
 
-  stopPlayer() {
+  _stopPlayer() {
     if (this._activePlayer) {
       const activeSong = this._activePlayer.querySelector(`audio`);
       const activeButton = this._activePlayer.querySelector(`button`);
@@ -96,11 +66,45 @@ class GenreScreenView extends AbstractView {
     }
   }
 
+  // Подсветка правильного ответа для удобства проверки
+  _showRightAnswer(answer) {
+    return answer.genre === this._question.genre ? `style="outline: rgba(225, 151, 23, .5) solid 3px"` : ``;
+  }
+  bind() {
+    const answersForm = this.element.querySelector(`.genre`);
+    const players = this.element.querySelectorAll(`.player`);
+
+    answersForm.addEventListener(`submit`, (evt) => {
+      evt.preventDefault();
+      const answers = answersForm.elements.answer;
+      const checkedAnswerOptions = [];
+      for (const it of answers) {
+        if (it.checked) {
+          checkedAnswerOptions.push(it.value);
+        }
+      }
+      this.onAnswer(checkedAnswerOptions, this._question, this._answersVariants);
+      this._stopPlayer();
+    });
+
+    for (const player of players) {
+      const button = player.querySelector(`button`);
+      const audio = player.querySelector(`audio`);
+      button.addEventListener(`click`, (evt) => {
+        evt.preventDefault();
+        this._onPlayerControlClick(player, button, audio);
+      });
+    }
+  }
+
   append(view) {
     if (!this._nextElement) {
       this._nextElement = this.element.querySelector(`.main-wrap`);
     }
     this.element.insertBefore(view.element, this._nextElement);
+  }
+
+  onAnswer() {
   }
 }
 

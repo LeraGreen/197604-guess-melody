@@ -22,7 +22,7 @@ class ArtistScreenView extends AbstractView {
         </div>
         <form class="main-list">
           ${this._answersVariants.reduce((acc, it, i) => acc +
-            `<div class="main-answer-wrapper">
+            `<div class="main-answer-wrapper" ${this._showRightAnswer(it)}>
               <input class="main-answer-r" type="radio" id="answer-${i}" name="answer" value="${it.title}"/>
               <label class="main-answer" for="answer-${i}">
                 <img class="main-answer-preview" src="${it.image.url}"
@@ -32,6 +32,31 @@ class ArtistScreenView extends AbstractView {
             </div>` + `\n`, ``)}
         </form>
     </section>`;
+  }
+
+  _onPlayerControlClick() {
+    if (this._audio.paused) {
+      this._audio.play().catch(() => {});
+      this._playerControl.classList.remove(`player-control--play`);
+      this._playerControl.classList.add(`player-control--pause`);
+    } else {
+      this._audio.pause();
+      this._playerControl.classList.remove(`player-control--pause`);
+      this._playerControl.classList.add(`player-control--play`);
+    }
+  }
+
+  _stopPlayer() {
+    if (!this._audio.paused) {
+      this._audio.pause();
+      this._playerControl.classList.remove(`player-control--pause`);
+      this._playerControl.classList.add(`player-control--play`);
+    }
+  }
+
+  // Подсветка правильного ответа для удобства проверки
+  _showRightAnswer(answer) {
+    return answer.isCorrect ? `style="outline: rgba(225, 151, 23, .5) solid 3px"` : ``;
   }
 
   bind() {
@@ -46,36 +71,13 @@ class ArtistScreenView extends AbstractView {
     answersForm.addEventListener(`change`, (evt) => {
       if (evt.target.name === `answer`) {
         this.onAnswersFormChange(evt.target.value, this._answersVariants);
-        this.stopPlayer();
+        this._stopPlayer();
       }
     });
 
     this._playerControl.addEventListener(`click`, () => {
-      this.onPlayerControlClick();
+      this._onPlayerControlClick();
     });
-  }
-
-  onPlayerControlClick() {
-    if (this._audio.paused) {
-      this._audio.play().catch(() => {});
-      this._playerControl.classList.remove(`player-control--play`);
-      this._playerControl.classList.add(`player-control--pause`);
-    } else {
-      this._audio.pause();
-      this._playerControl.classList.remove(`player-control--pause`);
-      this._playerControl.classList.add(`player-control--play`);
-    }
-  }
-
-  stopPlayer() {
-    if (!this._audio.paused) {
-      this._audio.pause();
-      this._playerControl.classList.remove(`player-control--pause`);
-      this._playerControl.classList.add(`player-control--play`);
-    }
-  }
-
-  onAnswersFormChange() {
   }
 
   append(view) {
@@ -83,6 +85,9 @@ class ArtistScreenView extends AbstractView {
       this._nextElement = this.element.querySelector(`.main-wrap`);
     }
     this.element.insertBefore(view.element, this._nextElement);
+  }
+
+  onAnswersFormChange() {
   }
 }
 
