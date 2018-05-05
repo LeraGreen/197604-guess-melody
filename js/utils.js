@@ -6,8 +6,7 @@ export const getElementFromTemplate = (string) => {
 
 export const showScreen = (view) => {
   const appContainer = document.querySelector(`.app`);
-  const mainClass = `.main`;
-  const main = appContainer.querySelector(mainClass);
+  const main = appContainer.querySelector(`.main`);
   if (main) {
     appContainer.removeChild(main);
   }
@@ -19,5 +18,5 @@ export const addLeadingZero = (number) => `${number >= 10 ? `` : `0`}${number}`;
 export const splitTime = (seconds) => {
   const minutes = Math.floor(seconds / 60);
   const remainingSeconds = seconds % 60;
-  return {'minutes': minutes, 'seconds': remainingSeconds};
+  return {minutes, seconds: remainingSeconds};
 };

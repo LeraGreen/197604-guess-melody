@@ -26,7 +26,7 @@ export const sendStatistics = (points) => {
       catch((err) => window.console.error(err));
 };
 
-export const getStatistics = () => {
+export const loadStatistics = () => {
   return fetch(`https://es.dump.academy/guess-melody/stats/:197604`).
       then((response) => {
         if (response.ok) {

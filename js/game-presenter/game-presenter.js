@@ -11,14 +11,14 @@ import TimerGraphicView from '../game-views/timer/timer-graphic-view';
 import TimerTextView from '../game-views/timer/timer-text-view';
 import GameModel from '../game-model/game-model';
 import {loadData} from "../main";
-import {sendStatistics, getStatistics} from "../main";
+import {sendStatistics, loadStatistics} from "../main";
 
 const QuestionType = {
   ARTIST: `artist`,
   GENRE: `genre`
 };
 
-const screenType = {
+const questionTypeToView = {
   [QuestionType.ARTIST]: ArtistScreenView,
   [QuestionType.GENRE]: GenreScreenView
 };
@@ -34,17 +34,21 @@ class GamePresenter {
     this._timeOutScreen = null;
     this._attemptsOutScreen = null;
     this._winScreen = null;
+
     this._gameModel = new GameModel(data);
+
     this._gameModel.onTick = (time) => {
       this._timerText.showTime(time);
       this._timerGraphic.showTime(time, this._gameModel.gameTime);
     };
+
     this._gameModel.onTimeEnd = () => {
       this._stopTimer();
       this._timeOutScreen = new TimeOutScreenView();
       this._bindTimeOutScreen();
       showScreen(this._timeOutScreen);
     };
+
     this._gameModel.onAlarm = () => {
       this._timerText.setAlarm(true);
     };
@@ -67,7 +71,8 @@ class GamePresenter {
     if (this._gameModel.isGameContinued()) {
       const questionType = this._gameModel.questionType;
       const question = this._gameModel.question;
-      this._questionScreen = new screenType[questionType](question);
+      this._questionScreen = new questionTypeToView[questionType](question);
+
       if (questionType === QuestionType.ARTIST) {
         this._bindArtistScreen();
       } else if (questionType === QuestionType.GENRE) {
@@ -77,6 +82,7 @@ class GamePresenter {
       if (!this._timerGraphic) {
         this._timerGraphic = new TimerGraphicView();
       }
+
       if (!this._timerText) {
         this._timerText = new TimerTextView();
       }
@@ -89,12 +95,13 @@ class GamePresenter {
       this._gameModel.upQuestion();
     } else {
       this._stopTimer();
+
       if (this._gameModel.isAttemptsOut()) {
         this._attemptsOutScreen = new AttemptsOutScreenView();
         this._bindAttemptsOutScreen();
         showScreen(this._attemptsOutScreen);
       } else if (this._gameModel.isUserWin()) {
-        getStatistics().then((data) => {
+        loadStatistics().then((data) => {
           this._onStatisticsLoad(data);
         }).catch(() => {});
       }
@@ -116,7 +123,7 @@ class GamePresenter {
   _bindArtistScreen() {
     this._questionScreen.onAnswersFormChange = (answer, answersVariants) => {
       const roundTime = this._gameModel.calcRoundTime(this._screenTime);
-      this._gameModel.checkAnswer(GameModel.checkArtistScreen(answer, answersVariants), roundTime);
+      this._gameModel.checkAnswer(GameModel.isArtistAnswerCorrect(answer, answersVariants), roundTime);
       this._showNextGameScreen();
     };
   }
@@ -124,7 +131,7 @@ class GamePresenter {
   _bindGenreScreen() {
     this._questionScreen.onAnswer = (answers, screenQuestion, answerVariants) => {
       const roundTime = this._gameModel.calcRoundTime(this._screenTime);
-      this._gameModel.checkAnswer(GameModel.checkGenreScreen(answers, screenQuestion, answerVariants), roundTime);
+      this._gameModel.checkAnswer(GameModel.isGenreAnswerCorrect(answers, screenQuestion, answerVariants), roundTime);
       this._showNextGameScreen();
     };
   }

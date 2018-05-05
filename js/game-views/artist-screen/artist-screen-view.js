@@ -7,6 +7,13 @@ class ArtistScreenView extends AbstractView {
     this._answersVariants = this._question.answers;
   }
 
+  // Подсветка правильного ответа для удобства проверки
+  static _showRightAnswer(answer) {
+    return answer.isCorrect ?
+      `style="outline: rgba(225, 151, 23, .5) solid 3px"` :
+      ``;
+  }
+
   get template() {
     return `<section class="main main--level main--level-artist">
       <div class="main-wrap">
@@ -22,7 +29,7 @@ class ArtistScreenView extends AbstractView {
         </div>
         <form class="main-list">
           ${this._answersVariants.reduce((acc, it, i) => acc +
-            `<div class="main-answer-wrapper" ${this._showRightAnswer(it)}>
+            `<div class="main-answer-wrapper" ${ArtistScreenView._showRightAnswer(it)}>
               <input class="main-answer-r" type="radio" id="answer-${i}" name="answer" value="${it.title}"/>
               <label class="main-answer" for="answer-${i}">
                 <img class="main-answer-preview" src="${it.image.url}"
@@ -54,16 +61,13 @@ class ArtistScreenView extends AbstractView {
     }
   }
 
-  // Подсветка правильного ответа для удобства проверки
-  _showRightAnswer(answer) {
-    return answer.isCorrect ? `style="outline: rgba(225, 151, 23, .5) solid 3px"` : ``;
-  }
-
   bind() {
     const answersForm = this.element.querySelector(`.main-list`);
+
     if (!this._playerControl) {
       this._playerControl = this.element.querySelector(`.player-control`);
     }
+
     if (!this._audio) {
       this._audio = this.element.querySelector(`audio`);
     }

@@ -42,13 +42,8 @@ class GenreScreenView extends AbstractView {
       button.classList.add(`player-control--play`);
       button.classList.remove(`player-control--pause`);
     } else {
-      if (this._activePlayer) {
-        const activeSong = this._activePlayer.querySelector(`audio`);
-        const activeButton = this._activePlayer.querySelector(`button`);
-        activeSong.pause();
-        activeButton.classList.add(`player-control--play`);
-        activeButton.classList.remove(`player-control--pause`);
-      }
+      this._stopPlayer();
+
       this._activePlayer = player;
       audio.play().catch(() => {});
       button.classList.remove(`player-control--play`);
@@ -68,8 +63,11 @@ class GenreScreenView extends AbstractView {
 
   // Подсветка правильного ответа для удобства проверки
   _showRightAnswer(answer) {
-    return answer.genre === this._question.genre ? `style="outline: rgba(225, 151, 23, .5) solid 3px"` : ``;
+    return answer.genre === this._question.genre ?
+      `style="outline: rgba(225, 151, 23, .5) solid 3px"` :
+      ``;
   }
+
   bind() {
     const answersForm = this.element.querySelector(`.genre`);
     const players = this.element.querySelectorAll(`.player`);

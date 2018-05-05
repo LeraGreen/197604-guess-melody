@@ -14,44 +14,44 @@ class GameModel {
     const winners = otherResults
         .map((it) => it.points)
         .sort((prev, next) => next - prev);
-    const winnersQuantity = winners.length;
-    let userPosition;
+
+    let position = -1;
+
     for (let i = 0; i < otherResults.length; i++) {
       if (winners[i] < userPoints) {
-        winners.splice(i, 0, userPoints);
-        userPosition = i + 1;
+        position = i + 1;
         break;
       }
     }
 
-    if (winners.length === winnersQuantity) {
-      winners.push(userPoints);
-      userPosition = winners.length;
+    if (position === -1) {
+      position = winners.length + 1;
     }
-    const percent = Math.round(((winners.length - userPosition) / winners.length) * 100);
-    return {position: userPosition, players: winners.length, percent};
+
+    const players = winners.length + 1;
+    const percent = Math.round(((players - position) / players) * 100);
+
+    return {position, players, percent};
   }
 
-  static getAnswerType(answer, time) {
+  static getAnswerType(isCorrect, time) {
     let type = AnswerType.WRONG;
-    if (answer) {
-      if (time <= FAST_ANSWER_TIME) {
-        type = AnswerType.FAST;
-      } else {
-        type = AnswerType.CORRECT;
-      }
+    if (isCorrect) {
+      type = time <= FAST_ANSWER_TIME ?
+        AnswerType.FAST :
+        AnswerType.CORRECT;
     }
     return type;
   }
 
-  static checkGenreScreen(answers, question) {
+  static isGenreAnswerCorrect(answers, question) {
     if (!answers.length) {
       return false;
     }
     return answers.every((it) => it === question.genre);
   }
 
-  static checkArtistScreen(answer, answerVariants) {
+  static isArtistAnswerCorrect(answer, answerVariants) {
     const rightAnswer = answerVariants.find((it) => it.isCorrect).title;
     return answer === rightAnswer;
   }
@@ -87,11 +87,12 @@ class GameModel {
   }
 
   checkTimer() {
-    if (this._state.time === this._settings.timeToAlarm) {
-      this.onAlarm();
-    }
     if (this._state.time > this._settings.timeToEnd) {
       this.onTick(this._state.time);
+
+      if (this._state.time === this._settings.timeToAlarm) {
+        this.onAlarm();
+      }
     } else if (this._state.time === this._settings.timeToEnd && this._state.answers.length < this._settings.screens) {
       this.onTimeEnd();
     }
@@ -113,7 +114,9 @@ class GameModel {
   isGameContinued() {
     const questionNumber = this._state.question;
     this._question = this._questions[questionNumber];
-    return (this._state.mistakes < this._settings.maxMistakes && questionNumber < this._settings.screens && this._question);
+    return this._state.mistakes < this._settings.maxMistakes &&
+      questionNumber < this._settings.screens &&
+      this._question;
   }
 
   upQuestion() {
@@ -126,7 +129,8 @@ class GameModel {
 
   isUserWin() {
     const questionNumber = this._state.question;
-    return (this._state.mistakes < this._settings.maxMistakes && questionNumber === this._settings.screens);
+    return this._state.mistakes < this._settings.maxMistakes &&
+      questionNumber === this._settings.screens;
   }
 
   checkMistake() {
@@ -154,7 +158,7 @@ class GameModel {
   }
 
   calcAnswersType(type) {
-    return (this._state.answers.filter((el) => el === type).length);
+    return this._state.answers.filter((el) => el === type).length;
   }
 
   checkAnswer(answer, time) {
