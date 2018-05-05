@@ -97,14 +97,15 @@ class GamePresenter {
       } else if (this._gameModel.isUserWin()) {
         this._bindWinScreen();
         // showScreen(this._winScreen);
+        // TODO удалить
       }
     }
   }
 
   _startTimer() {
     this._timerId = setInterval(() => {
-      this._gameModel.tickTimer();
       this._gameModel.checkTimer();
+      this._gameModel.tickTimer();
     }, 1000);
   }
 

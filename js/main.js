@@ -9,7 +9,7 @@ export const loadData = () => {
         throw new Error(`Неизвестный статус: ${response.status}${response.statusText}`);
       }).
       then((data) => new GamePresenter(data).init()).
-      catch((err) => console.error(err));
+      catch((err) => window.console.error(err));
 };
 
 export const sendStatistics = (points) => {
@@ -22,8 +22,8 @@ export const sendStatistics = (points) => {
       'Content-Type': `application/json`
     }
   }).
-      then((response) => console.log(response.ok ? `Sent` : `Not sent`)).
-      catch((err) => console.error(err));
+      then((response) => window.console.log(response.ok ? `Sent` : `Not sent`)).
+      catch((err) => window.console.error(err));
 };
 
 export const getStatistics = () => {
@@ -41,6 +41,5 @@ loadData();
 
 // TODO Сделать вывод ошибки
 // TODO Сделать прелоад картинок и всякого чтобы не было пустоты
-// TODO Сделать плавное сползание таймера
 // TODO сделать экраны с ошибками
 
