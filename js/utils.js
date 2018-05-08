@@ -4,16 +4,18 @@ export const getElementFromTemplate = (string) => {
   return template.content.children[0];
 };
 
+let appContainer = null;
+
 export const showScreen = (view) => {
-  const appContainer = document.querySelector(`.app`);
+  if (!appContainer) {
+    appContainer = document.querySelector(`.app`);
+  }
   const main = appContainer.querySelector(`.main`);
   if (main) {
     appContainer.removeChild(main);
   }
   appContainer.insertBefore(view.element, appContainer.children[0]);
 };
-
-export const addLeadingZero = (number) => `${number >= 10 ? `` : `0`}${number}`;
 
 export const splitTime = (seconds) => {
   const minutes = Math.floor(seconds / 60);

@@ -10,21 +10,35 @@ import MistakesView from '../game-views/mistakes/mistakes-view';
 import TimerGraphicView from '../game-views/timer/timer-graphic-view';
 import TimerTextView from '../game-views/timer/timer-text-view';
 import GameModel from '../game-model/game-model';
-import {loadData} from "../main";
-import {sendStatistics, loadStatistics} from "../main";
+import Loader from "../loader";
+import startGame from "../main";
+
+const TIMER_INTERVAL = 1000;
 
 const QuestionType = {
   ARTIST: `artist`,
   GENRE: `genre`
 };
 
-const questionTypeToView = {
+const QuestionTypeToView = {
   [QuestionType.ARTIST]: ArtistScreenView,
   [QuestionType.GENRE]: GenreScreenView
 };
 
+const ResultType = {
+  TIME_OUT: `timeEnd`,
+  WIN: `win`,
+  ATTEMPTS_OUT: `attemptsOut`
+};
+
+const TimerResult = {
+  TIME_OUT: `timeEnd`,
+  ALARM: `alarm`,
+  TICK: `tick`
+};
+
 class GamePresenter {
-  constructor(data) {
+  constructor() {
     this._greetingScreen = null;
     this._questionScreen = null;
     this._timerId = null;
@@ -34,24 +48,7 @@ class GamePresenter {
     this._timeOutScreen = null;
     this._attemptsOutScreen = null;
     this._winScreen = null;
-
-    this._gameModel = new GameModel(data);
-
-    this._gameModel.onTick = (time) => {
-      this._timerText.showTime(time);
-      this._timerGraphic.showTime(time, this._gameModel.gameTime);
-    };
-
-    this._gameModel.onTimeEnd = () => {
-      this._stopTimer();
-      this._timeOutScreen = new TimeOutScreenView();
-      this._bindTimeOutScreen();
-      showScreen(this._timeOutScreen);
-    };
-
-    this._gameModel.onAlarm = () => {
-      this._timerText.setAlarm(true);
-    };
+    this._gameModel = null;
   }
 
   init() {
@@ -68,51 +65,30 @@ class GamePresenter {
       this._startTimer();
     }
 
+    this._gameModel.upQuestion();
+
     if (this._gameModel.isGameContinued()) {
-      const questionType = this._gameModel.questionType;
-      const question = this._gameModel.question;
-      this._questionScreen = new questionTypeToView[questionType](question);
-
-      if (questionType === QuestionType.ARTIST) {
-        this._bindArtistScreen();
-      } else if (questionType === QuestionType.GENRE) {
-        this._bindGenreScreen();
-      }
-
-      if (!this._timerGraphic) {
-        this._timerGraphic = new TimerGraphicView();
-      }
-
-      if (!this._timerText) {
-        this._timerText = new TimerTextView();
-      }
-
-      this._showTimer();
-      this._addMistakes();
-
-      showScreen(this._questionScreen);
-      this._screenTime = this._gameModel.time;
-      this._gameModel.upQuestion();
+      this._continueGame();
     } else {
-      this._stopTimer();
-
-      if (this._gameModel.isAttemptsOut()) {
-        this._attemptsOutScreen = new AttemptsOutScreenView();
-        this._bindAttemptsOutScreen();
-        showScreen(this._attemptsOutScreen);
-      } else if (this._gameModel.isUserWin()) {
-        loadStatistics().then((data) => {
-          this._onStatisticsLoad(data);
-        }).catch(() => {});
-      }
+      this._showResultScreen(this._gameModel.getGameResult());
     }
   }
 
   _startTimer() {
     this._timerId = setInterval(() => {
-      this._gameModel.checkTimer();
-      this._gameModel.tickTimer();
-    }, 1000);
+      switch (this._gameModel.checkTimer()) {
+        case TimerResult.TIME_OUT:
+          this._showResultScreen(ResultType.TIME_OUT);
+          break;
+        case TimerResult.ALARM:
+          this._timerText.setAlarm(true);
+          this.tickTimer();
+          break;
+        case TimerResult.TICK:
+          this.tickTimer();
+          break;
+      }
+    }, TIMER_INTERVAL);
   }
 
   _stopTimer() {
@@ -142,41 +118,100 @@ class GamePresenter {
   }
 
   _addMistakes() {
-    const mistakesView = new MistakesView();
-    const mistakes = this._gameModel.mistakes;
-    mistakesView.showMistakes(mistakes);
+    const mistakesView = new MistakesView(this._gameModel.mistakes)
     this._questionScreen.append(mistakesView);
   }
 
   _bindAttemptsOutScreen() {
     this._attemptsOutScreen.onReplayButtonClick = () => {
-      loadData();
+      startGame();
     };
   }
 
   _bindWinScreen() {
     this._winScreen.onReplayButtonClick = () => {
-      loadData();
+      startGame();
     };
   }
 
   _bindTimeOutScreen() {
     this._timeOutScreen.onReplayButtonClick = () => {
-      loadData();
+      startGame();
     };
   }
 
-  _onStatisticsLoad(data) {
+  startGame(data) {
+    this._gameModel = new GameModel(data);
+    this._greetingScreen.enableStartGameButton();
+  }
+
+  _continueGame() {
+    const questionType = this._gameModel.questionType;
+    const question = this._gameModel.question;
+    this._questionScreen = new QuestionTypeToView[questionType](question);
+
+    if (questionType === QuestionType.ARTIST) {
+      this._bindArtistScreen();
+    } else if (questionType === QuestionType.GENRE) {
+      this._bindGenreScreen();
+    }
+
+    if (!this._timerGraphic) {
+      this._timerGraphic = new TimerGraphicView();
+    }
+
+    if (!this._timerText) {
+      this._timerText = new TimerTextView();
+    }
+    this._showTimer();
+    this._addMistakes();
+
+    showScreen(this._questionScreen);
+    this._screenTime = this._gameModel.time;
+  }
+
+  _showResultScreen(result) {
+    this._stopTimer();
+    switch (result) {
+      case ResultType.TIME_OUT:
+        this._timeOutScreen = new TimeOutScreenView();
+        this._bindTimeOutScreen();
+        showScreen(this._timeOutScreen);
+        break;
+      case ResultType.ATTEMPTS_OUT:
+        this._attemptsOutScreen = new AttemptsOutScreenView();
+        this._bindAttemptsOutScreen();
+        showScreen(this._attemptsOutScreen);
+        break;
+      case ResultType.WIN:
+        Loader.loadStatistics().then((data) => {
+          this._onStatisticsLoad(data);
+        }).catch(() => {
+          this._onStatisticsLoad();
+        });
+    }
+  }
+
+  _onStatisticsLoad(data = null) {
     const points = this._gameModel.calcPoints();
-    sendStatistics(points);
+    Loader.sendStatistics(points);
 
     const fastAnswers = this._gameModel.calcAnswersType(AnswerType.FAST);
     const mistakes = this._gameModel.mistakes;
     const gameTime = this._gameModel.gameTime - this._gameModel.time;
-    const winnerStatistics = GameModel.getWinnerStatistic(points, data);
-    this._winScreen = new WinScreenView(mistakes, points, fastAnswers, winnerStatistics, gameTime);
+    const winnerStatistics = data ?
+      GameModel.getWinnerStatistic(points, data) :
+      null;
+
+    this._winScreen = new WinScreenView(points, fastAnswers, mistakes, gameTime, winnerStatistics);
     this._bindWinScreen();
     showScreen(this._winScreen);
+  }
+
+  tickTimer() {
+    this._timerText.showTime(this._gameModel.time);
+    this._timerGraphic.showTime(this._gameModel.time, this._gameModel.gameTime);
+    this._gameModel.tickTimer();
   }
 }
 

@@ -1,12 +1,11 @@
-import {answerPoints, initialState, settings, FAST_ANSWER_TIME, AnswerType} from "../data/game-data";
+import {answerPoints, INITIAL_STATE, SETTINGS, FAST_ANSWER_TIME, AnswerType} from "../data/game-data";
 
 class GameModel {
   constructor(questions) {
     this._state = {};
     this._questions = questions;
-    this._question = null;
-    this._settings = Object.assign({}, settings, {
-      screens: this._questions.length
+    this._settings = Object.assign({}, SETTINGS, {
+      lastScreen: this._questions.length
     });
   }
 
@@ -15,17 +14,13 @@ class GameModel {
         .slice(0)
         .sort((prev, next) => next.points - prev.points);
 
-    let position = -1;
+    let position = winners.length + 1;
 
     for (let i = 0; i < otherResults.length; i++) {
       if (winners[i].points < userPoints) {
         position = i + 1;
         break;
       }
-    }
-
-    if (position === -1) {
-      position = winners.length + 1;
     }
 
     const players = winners.length + 1;
@@ -35,13 +30,12 @@ class GameModel {
   }
 
   static getAnswerType(isCorrect, time) {
-    let type = AnswerType.WRONG;
-    if (isCorrect) {
-      type = time <= FAST_ANSWER_TIME ?
-        AnswerType.FAST :
-        AnswerType.CORRECT;
+    if (!isCorrect) {
+      return AnswerType.WRONG;
     }
-    return type;
+    return time <= FAST_ANSWER_TIME ?
+      AnswerType.FAST :
+      AnswerType.CORRECT;
   }
 
   static isGenreAnswerCorrect(answers, question) {
@@ -69,7 +63,7 @@ class GameModel {
   }
 
   get questionType() {
-    return this._question.type;
+    return this.question.type;
   }
 
   get gameTime() {
@@ -77,7 +71,7 @@ class GameModel {
   }
 
   resetState() {
-    Object.assign(this._state, initialState, {
+    Object.assign(this._state, INITIAL_STATE, {
       answers: []
     });
   }
@@ -87,24 +81,15 @@ class GameModel {
   }
 
   checkTimer() {
-    if (this._state.time > this._settings.timeToEnd) {
-      this.onTick(this._state.time);
-
-      if (this._state.time === this._settings.timeToAlarm) {
-        this.onAlarm();
-      }
-    } else if (this._state.time === this._settings.timeToEnd && this._state.answers.length < this._settings.screens) {
-      this.onTimeEnd();
+    if (this._state.time === this._settings.timeToEnd && this._state.answers.length < this._settings.lastScreen) {
+      return `timeEnd`;
     }
-  }
 
-  onTick() {
-  }
+    if (this._state.time === this._settings.timeToAlarm) {
+      return `alarm`;
+    }
 
-  onTimeEnd() {
-  }
-
-  onAlarm() {
+    return `tick`;
   }
 
   addAnswer(answer) {
@@ -112,26 +97,27 @@ class GameModel {
   }
 
   isGameContinued() {
-    const questionNumber = this._state.question;
-    this._question = this._questions[questionNumber];
     return this._state.mistakes < this._settings.maxMistakes &&
-      questionNumber < this._settings.screens &&
-      this._question;
+      this._state.question < this._settings.lastScreen;
   }
 
   upQuestion() {
     this._state.question++;
   }
 
-  isAttemptsOut() {
-    return this._state.mistakes === this._settings.maxMistakes;
+  getGameResult() {
+    if (this._state.mistakes === this._settings.maxMistakes) {
+      return `attemptsOut`;
+    }
+
+    if (this._state.mistakes < this._settings.maxMistakes &&
+      this._state.question === this._settings.lastScreen) {
+      return `win`;
+    }
+
+    return ``;
   }
 
-  isUserWin() {
-    const questionNumber = this._state.question;
-    return this._state.mistakes < this._settings.maxMistakes &&
-      questionNumber === this._settings.screens;
-  }
 
   checkMistake() {
     const lastAnswer = this._state.answers[this._state.answers.length - 1];
@@ -151,9 +137,6 @@ class GameModel {
     for (const answer of this._state.answers) {
       points += answerPoints[answer];
     }
-    if (points < 0) {
-      points = -1;
-    }
     return points;
   }
 
@@ -162,11 +145,9 @@ class GameModel {
   }
 
   checkAnswer(answer, time) {
-    if (typeof answer !== `undefined`) {
-      const answerType = GameModel.getAnswerType(answer, time);
-      this.addAnswer(answerType);
-      this.checkMistake();
-    }
+    const answerType = GameModel.getAnswerType(answer, time);
+    this.addAnswer(answerType);
+    this.checkMistake();
   }
 
   calcRoundTime(startTime) {

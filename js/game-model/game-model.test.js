@@ -38,12 +38,6 @@ describe(`points from answers`, () => {
     assert.equal(0, testModel.calcPoints());
   });
 
-  it(`should return -1 if wrong answers are more then others`, () => {
-    const testModel = new GameModel(testQuestions);
-    testModel._state.answers = [`wrong`, `wrong`, `wrong`, `wrong`, `fast`, `fast`, `fast`, `wrong`, `wrong`, `wrong`];
-    assert.equal(-1, testModel.calcPoints());
-  });
-
   it(`should return 10 if all answers are correct`, () => {
     const testModel = new GameModel(testQuestions);
     testModel._state.answers = [`correct`, `correct`, `correct`, `correct`, `correct`, `correct`, `correct`, `correct`, `correct`, `correct`];

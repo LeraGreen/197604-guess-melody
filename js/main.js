@@ -1,41 +1,25 @@
-import GamePresenter from './game-presenter/game-presenter';
+import Loader from './loader';
+import GamePresenter from "./game-presenter/game-presenter";
 
-export const loadData = () => {
-  fetch(`https://es.dump.academy/guess-melody/questions`).
-      then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw new Error(`Неизвестный статус: ${response.status}${response.statusText}`);
-      }).
-      then((data) => new GamePresenter(data).init()).
-      catch((err) => window.console.error(err));
+// TODO: Переписать на промисы
+const startGame = () => {
+  let presenter = new GamePresenter();
+  let data = null;
+  const loader = new Loader();
+
+  loader.onDataLoad = (loadedData) => {
+    data = loadedData;
+    loader.preloadAudio(loadedData);
+  };
+
+  loader.onAudioPreload = () => {
+    presenter.startGame(data);
+  };
+
+  presenter.init();
+  loader.loadData();
 };
 
-export const sendStatistics = (points) => {
-  fetch(`https://es.dump.academy/guess-melody/stats/:197604`, {
-    method: `POST`,
-    body: JSON.stringify({
-      'points': points
-    }),
-    headers: {
-      'Content-Type': `application/json`
-    }
-  }).
-      then((response) => window.console.log(response.ok ? `Sent` : `Not sent`)).
-      catch((err) => window.console.error(err));
-};
+startGame();
 
-export const loadStatistics = () => {
-  return fetch(`https://es.dump.academy/guess-melody/stats/:197604`).
-      then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw new Error(`Неизвестный статус: ${response.status}${response.statusText}`);
-      });
-};
-
-
-loadData();
-
+export default startGame;
