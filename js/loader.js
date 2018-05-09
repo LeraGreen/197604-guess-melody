@@ -11,67 +11,37 @@ const checkStatus = (response) => {
 
 
 class Loader {
-  constructor() {
-    this._counter = null;
-  }
-
-  loadData() {
+  static loadData() {
     return fetch(`${SERVER_URL}questions`).
         then((response) => checkStatus(response)).
-        then((response) => response.json()).
-        then(this.onDataLoad);
+        then((response) => response.json());
   }
 
-  preloadAudio(data) {
-    const audioSources = new Set();
+  static preloadAudio(data) {
+    // todo cсделать статик для модели вызать из мэйна пофиксить время порверить еритерии
+    const sources = new Set();
+
     for (const it of data) {
       if (it.type === `artist`) {
-        audioSources.add(it.src);
+        sources.add(it.src);
       }
+
       if (it.type === `genre`) {
         for (const item of it.answers) {
-          audioSources.add(item.src);
+          sources.add(item.src);
         }
       }
     }
 
-    this._counter = audioSources.size;
-
-    for (const source of audioSources) {
+    return Promise.all([...sources].map(((src) => new Promise((resolve, reject) => {
       const audio = new Audio();
       audio.preload = `auto`;
-      audio.addEventListener(`canplaythrough`, this.canPlayThroughListener.bind(this));
-      audio.addEventListener(`error`, this.errorListener.bind(this));
-      audio.src = source;
-      audio.load();
-    }
-  }
 
-  checkCounter() {
-    return this._counter === 0;
-  }
+      audio.addEventListener(`canplaythrough`, resolve);
+      audio.addEventListener(`error`, reject);
 
-  checkAudio() {
-    this._counter--;
-    if (this.checkCounter()) {
-      this.onAudioPreload();
-    }
-  }
-
-  canPlayThroughListener() {
-    this.checkAudio();
-    removeEventListener(`error`, this.checkAudio);
-  }
-
-  errorListener() {
-    this.checkAudio();
-    removeEventListener(`canplaythrough`, this.checkAudio);
-  }
-
-  onDataLoad() {
-  }
-
-  onAudioPreload() {
+      audio.src = src;
+    }))));
   }
 
   static sendStatistics(points) {
