@@ -127,7 +127,7 @@ class GamePresenter {
   }
 
   _addMistakes() {
-    const mistakesView = new MistakesView(this._gameModel.mistakes)
+    const mistakesView = new MistakesView(this._gameModel.mistakes);
     this._questionScreen.append(mistakesView);
   }
 
