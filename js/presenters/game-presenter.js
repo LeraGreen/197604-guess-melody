@@ -1,6 +1,6 @@
 import ArtistScreenView from '../views/game-screens/artist-screen-view';
 import GenreScreenView from '../views/game-screens/genre-screen-view';
-import {showScreen} from '../utils';
+import {showScreen} from '../show-screen';
 import MistakesView from '../views/mistakes/mistakes-view';
 import TimerGraphicView from '../views/timer/timer-graphic-view';
 import TimerTextView from '../views/timer/timer-text-view';

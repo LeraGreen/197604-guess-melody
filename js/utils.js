@@ -4,19 +4,6 @@ export const getElementFromTemplate = (string) => {
   return template.content.children[0];
 };
 
-let appContainer = null;
-
-export const showScreen = (view) => {
-  if (!appContainer) {
-    appContainer = document.querySelector(`.app`);
-  }
-  const main = appContainer.querySelector(`.main`);
-  if (main) {
-    appContainer.removeChild(main);
-  }
-  appContainer.insertBefore(view.element, appContainer.children[0]);
-};
-
 export const splitTime = (seconds) => {
   const minutes = Math.floor(seconds / 60);
   const remainingSeconds = seconds % 60;

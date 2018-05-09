@@ -50,6 +50,23 @@ class GameModel {
     return this._state.time;
   }
 
+  _checkMistake() {
+    const lastAnswer = this._state.answers[this._state.answers.length - 1];
+    if (lastAnswer === AnswerType.WRONG) {
+      this._upMistake();
+    }
+  }
+
+  _upMistake() {
+    if (this._state.mistakes < this._settings.maxMistakes) {
+      this._state.mistakes++;
+    }
+  }
+
+  _addAnswer(answer) {
+    this._state.answers.push(answer);
+  }
+
   tickTimer() {
     this._state.time--;
   }
@@ -64,10 +81,6 @@ class GameModel {
     }
 
     return TimerResult.TICK;
-  }
-
-  addAnswer(answer) {
-    this._state.answers.push(answer);
   }
 
   isGameContinued() {
@@ -92,20 +105,6 @@ class GameModel {
     return ``;
   }
 
-
-  checkMistake() {
-    const lastAnswer = this._state.answers[this._state.answers.length - 1];
-    if (lastAnswer === AnswerType.WRONG) {
-      this.upMistake();
-    }
-  }
-
-  upMistake() {
-    if (this._state.mistakes < this._settings.maxMistakes) {
-      this._state.mistakes++;
-    }
-  }
-
   calcPoints() {
     let points = 0;
     for (const answer of this._state.answers) {
@@ -120,8 +119,8 @@ class GameModel {
 
   checkAnswer(answer, time) {
     const answerType = GameModel.getAnswerType(answer, time);
-    this.addAnswer(answerType);
-    this.checkMistake();
+    this._addAnswer(answerType);
+    this._checkMistake();
   }
 
   calcRoundTime(startTime) {

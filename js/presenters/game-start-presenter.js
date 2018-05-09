@@ -1,5 +1,5 @@
 import GreetingScreenView from '../views/greeting-screen/greeting-screen-view';
-import {showScreen} from '../utils';
+import {showScreen} from '../show-screen';
 import application from '../application';
 
 class GameStartPresenter {
