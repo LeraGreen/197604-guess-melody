@@ -1,10 +1,11 @@
-import AbstractView from '../../abstract-view';
+import AbstractView from '../abstract-view';
 
 class MistakesView extends AbstractView {
   constructor(mistakes) {
     super();
     this._mistakes = mistakes;
   }
+
   get template() {
     return `<div class="main-mistakes">
       ${new Array(this._mistakes)

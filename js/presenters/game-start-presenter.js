@@ -1,8 +1,8 @@
-import GreetingScreenView from '../game-views/greeting/greeting-screen-view';
+import GreetingScreenView from '../views/greeting-screen/greeting-screen-view';
 import {showScreen} from '../utils';
 import application from '../application';
 
-class StartGamePresenter {
+class GameStartPresenter {
   constructor() {
     this._greetingScreen = null;
   }
@@ -20,4 +20,4 @@ class StartGamePresenter {
   }
 }
 
-export default StartGamePresenter;
+export default GameStartPresenter;

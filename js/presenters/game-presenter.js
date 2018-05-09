@@ -1,28 +1,17 @@
-import ArtistScreenView from '../game-views/artist-screen/artist-screen-view';
-import GenreScreenView from '../game-views/genre-screen/genre-screen-view';
+import ArtistScreenView from '../views/game-screens/artist-screen-view';
+import GenreScreenView from '../views/game-screens/genre-screen-view';
 import {showScreen} from '../utils';
-import MistakesView from '../game-views/mistakes/mistakes-view';
-import TimerGraphicView from '../game-views/timer/timer-graphic-view';
-import TimerTextView from '../game-views/timer/timer-text-view';
-import GameModel from '../game-model/game-model';
-import application, {ResultType} from '../application';
+import MistakesView from '../views/mistakes/mistakes-view';
+import TimerGraphicView from '../views/timer/timer-graphic-view';
+import TimerTextView from '../views/timer/timer-text-view';
+import GameModel, {TimerResult, ResultType, QuestionType} from '../game-model/game-model';
+import application from '../application';
 
 const TIMER_INTERVAL = 1000;
-
-const QuestionType = {
-  ARTIST: `artist`,
-  GENRE: `genre`
-};
 
 const QuestionTypeToView = {
   [QuestionType.ARTIST]: ArtistScreenView,
   [QuestionType.GENRE]: GenreScreenView
-};
-
-const TimerResult = {
-  TIME_OUT: `timeEnd`,
-  ALARM: `alarm`,
-  TICK: `tick`
 };
 
 class GamePresenter {
@@ -34,7 +23,6 @@ class GamePresenter {
     this._screenTime = null;
 
     this._gameModel = model;
-    this._gameModel.resetState();
   }
 
   _showNextGameScreen() {
@@ -77,6 +65,22 @@ class GamePresenter {
     application.endGame(resultType);
   }
 
+  _bindArtistScreen() {
+    this._questionScreen.onAnswersFormChange = (answer, answersVariants) => {
+      const roundTime = this._gameModel.calcRoundTime(this._screenTime);
+      this._gameModel.checkAnswer(GameModel.isArtistAnswerCorrect(answer, answersVariants), roundTime);
+      this._showNextGameScreen();
+    };
+  }
+
+  _bindGenreScreen() {
+    this._questionScreen.onAnswer = (answers, screenQuestion, answerVariants) => {
+      const roundTime = this._gameModel.calcRoundTime(this._screenTime);
+      this._gameModel.checkAnswer(GameModel.isGenreAnswerCorrect(answers, screenQuestion, answerVariants), roundTime);
+      this._showNextGameScreen();
+    };
+  }
+
   _startTimer() {
     this._timerId = setInterval(() => {
       switch (this._gameModel.checkTimer()) {
@@ -97,22 +101,6 @@ class GamePresenter {
   _stopTimer() {
     clearInterval(this._timerId);
     this._timerId = null;
-  }
-
-  _bindArtistScreen() {
-    this._questionScreen.onAnswersFormChange = (answer, answersVariants) => {
-      const roundTime = this._gameModel.calcRoundTime(this._screenTime);
-      this._gameModel.checkAnswer(GameModel.isArtistAnswerCorrect(answer, answersVariants), roundTime);
-      this._showNextGameScreen();
-    };
-  }
-
-  _bindGenreScreen() {
-    this._questionScreen.onAnswer = (answers, screenQuestion, answerVariants) => {
-      const roundTime = this._gameModel.calcRoundTime(this._screenTime);
-      this._gameModel.checkAnswer(GameModel.isGenreAnswerCorrect(answers, screenQuestion, answerVariants), roundTime);
-      this._showNextGameScreen();
-    };
   }
 
   _tickTimer() {

@@ -1,12 +1,12 @@
-import TimeOutScreenView from './../game-views/results/timeout-screen-view';
-import AttemptsOutScreenView from './../game-views/results/attempts-out-screen-view';
-import WinScreenView from './../game-views/results/win-screen-view';
+import TimeOutScreenView from '../views/result-screens/timeout-screen-view';
+import AttemptsOutScreenView from '../views/result-screens/attempts-out-screen-view';
+import WinScreenView from '../views/result-screens/win-screen-view';
 import {showScreen} from '../utils';
-import {AnswerType} from './../data/game-data';
+import {AnswerType} from '../game-data/game-data';
 import GameModel from '../game-model/game-model';
 import application from '../application';
 
-class EndGamePresenter {
+class GameEndPresenter {
   static showAttemptsOutScreen() {
     const attemptsOutScreen = new AttemptsOutScreenView();
     attemptsOutScreen.onReplayButtonClick = () => {
@@ -32,15 +32,15 @@ class EndGamePresenter {
       GameModel.getWinnerStatistic(points, data) :
       null;
 
-    this._winScreen = new WinScreenView(points, fastAnswers, mistakes, gameTime, winnerStatistics);
-    this._winScreen.onReplayButtonClick = () => {
+    const winScreen = new WinScreenView(points, fastAnswers, mistakes, gameTime, winnerStatistics);
+    winScreen.onReplayButtonClick = () => {
       application.startGame();
     };
-    showScreen(this._winScreen);
+    showScreen(winScreen);
 
     application.saveStatistics(points);
   }
 }
 
 
-export default EndGamePresenter;
+export default GameEndPresenter;

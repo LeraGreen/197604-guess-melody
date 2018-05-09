@@ -1,4 +1,4 @@
-import AbstractView from '../../abstract-view';
+import AbstractView from '../abstract-view';
 import {splitTime} from '../../utils';
 import pluralize from '../../pluralize/pluralize';
 
@@ -28,7 +28,9 @@ class WinScreenView extends AbstractView {
 
   bind() {
     const replayButton = this.element.querySelector(`.main-replay`);
-    replayButton.addEventListener(`click`, () => this.onReplayButtonClick());
+    replayButton.addEventListener(`click`, () => {
+      this.onReplayButtonClick();
+    });
   }
 
   onReplayButtonClick() {

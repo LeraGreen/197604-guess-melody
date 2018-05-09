@@ -1,4 +1,4 @@
-import AbstractView from '../../abstract-view';
+import AbstractView from '../abstract-view';
 
 class TimeOutScreenView extends AbstractView {
   get template() {
@@ -13,7 +13,9 @@ class TimeOutScreenView extends AbstractView {
 
   bind() {
     const replayButton = this.element.querySelector(`.main-replay`);
-    replayButton.addEventListener(`click`, () => this.onReplayButtonClick());
+    replayButton.addEventListener(`click`, () => {
+      this.onReplayButtonClick();
+    });
   }
 
   onReplayButtonClick() {

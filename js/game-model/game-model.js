@@ -1,11 +1,32 @@
-import {answerPoints, INITIAL_STATE, SETTINGS, FAST_ANSWER_TIME, AnswerType} from '../data/game-data';
+import {answerPoints, INITIAL_STATE, SETTINGS, FAST_ANSWER_TIME, AnswerType} from '../game-data/game-data';
+
+export const TimerResult = {
+  TIME_OUT: `timeEnd`,
+  ALARM: `alarm`,
+  TICK: `tick`
+};
+
+export const ResultType = {
+  TIME_OUT: `timeEnd`,
+  WIN: `win`,
+  ATTEMPTS_OUT: `attemptsOut`
+};
+
+export const QuestionType = {
+  ARTIST: `artist`,
+  GENRE: `genre`
+};
 
 class GameModel {
   constructor(questions) {
-    this._state = {};
     this._questions = questions;
+
     this._settings = Object.assign({}, SETTINGS, {
       lastScreen: this._questions.length
+    });
+
+    this._state = Object.assign({}, INITIAL_STATE, {
+      answers: []
     });
   }
 
@@ -29,26 +50,20 @@ class GameModel {
     return this._state.time;
   }
 
-  resetState() {
-    Object.assign(this._state, INITIAL_STATE, {
-      answers: []
-    });
-  }
-
   tickTimer() {
     this._state.time--;
   }
 
   checkTimer() {
     if (this._state.time === this._settings.timeToEnd && this._state.answers.length < this._settings.lastScreen) {
-      return `timeEnd`;
+      return TimerResult.TIME_OUT;
     }
 
     if (this._state.time === this._settings.timeToAlarm) {
-      return `alarm`;
+      return TimerResult.ALARM;
     }
 
-    return `tick`;
+    return TimerResult.TICK;
   }
 
   addAnswer(answer) {
@@ -66,12 +81,12 @@ class GameModel {
 
   getGameResult() {
     if (this._state.mistakes === this._settings.maxMistakes) {
-      return `attemptsOut`;
+      return ResultType.ATTEMPTS_OUT;
     }
 
     if (this._state.mistakes < this._settings.maxMistakes &&
       this._state.question === this._settings.lastScreen) {
-      return `win`;
+      return ResultType.WIN;
     }
 
     return ``;
@@ -114,9 +129,9 @@ class GameModel {
   }
 
   static getWinnerStatistic(userPoints, otherResults) {
-    const winners = otherResults
-        .slice(0)
-        .sort((prev, next) => next.points - prev.points);
+    const winners = otherResults.
+        slice(0).
+        sort((prev, next) => next.points - prev.points);
 
     let position = winners.length + 1;
 
@@ -137,11 +152,11 @@ class GameModel {
     const sources = new Set();
 
     for (const it of data) {
-      if (it.type === `artist`) {
+      if (it.type === QuestionType.ARTIST) {
         sources.add(it.src);
       }
 
-      if (it.type === `genre`) {
+      if (it.type === QuestionType.GENRE) {
         for (const item of it.answers) {
           sources.add(item.src);
         }

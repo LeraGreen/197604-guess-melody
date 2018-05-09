@@ -1,59 +1,51 @@
-import GameModel from './game-model/game-model';
+import GameModel, {ResultType} from './game-model/game-model';
 import Loader from './loader';
-import StartGamePresenter from './presenters/start-game-presenter';
+import GameStartPresenter from './presenters/game-start-presenter';
 import GamePresenter from './presenters/game-presenter';
-import EndGamePresenter from "./presenters/game-end-presenter";
-
-export const ResultType = {
-  TIME_OUT: `timeEnd`,
-  WIN: `win`,
-  ATTEMPTS_OUT: `attemptsOut`
-};
+import GameEndPresenter from "./presenters/game-end-presenter";
 
 class Application {
   constructor() {
     this._gameModel = null;
-    this._gamePresenter = null;
-    this._startGamePresenter = null;
   }
 
   playGame() {
-    this._gamePresenter = new GamePresenter(this._gameModel);
-    this._gamePresenter.startGame();
+    const gamePresenter = new GamePresenter(this._gameModel);
+    gamePresenter.startGame();
   }
 
   startGame() {
-    this._startGamePresenter = new StartGamePresenter();
-    this._startGamePresenter.init();
+    const startGamePresenter = new GameStartPresenter();
+    startGamePresenter.init();
 
     Loader.loadData().then((loadedData) => {
       this._gameModel = new GameModel(loadedData);
       return Loader.preloadAudio(GameModel.getAudioSources(loadedData));
     }).then(() => {
-      this._startGamePresenter.showStart();
-    });
-  }
-
-  saveStatistics(points) {
-    Loader.sendStatistics(points);
+      startGamePresenter.showStart();
+    }).catch(() => {});
   }
 
   endGame(result) {
     switch (result) {
       case ResultType.TIME_OUT:
-        EndGamePresenter.showTimeOutScreen();
+        GameEndPresenter.showTimeOutScreen();
         break;
       case ResultType.ATTEMPTS_OUT:
-        EndGamePresenter.showAttemptsOutScreen();
+        GameEndPresenter.showAttemptsOutScreen();
         break;
       case ResultType.WIN:
         Loader.loadStatistics().then((data) => {
-          EndGamePresenter.onStatisticsLoad(this._gameModel, data);
+          GameEndPresenter.onStatisticsLoad(this._gameModel, data);
         }).catch(() => {
-          EndGamePresenter.onStatisticsLoad(this._gameModel);
+          GameEndPresenter.onStatisticsLoad(this._gameModel);
         });
         break;
     }
+  }
+
+  saveStatistics(points) {
+    Loader.sendStatistics(points);
   }
 }
 

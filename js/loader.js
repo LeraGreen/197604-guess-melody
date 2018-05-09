@@ -18,7 +18,7 @@ class Loader {
   }
 
   static preloadAudio(sources) {
-    return Promise.all(sources.map(((src) => new Promise((resolve, reject) => {
+    return Promise.all(sources.map((src) => new Promise((resolve, reject) => {
       const audio = new Audio();
       audio.preload = `auto`;
 
@@ -26,7 +26,7 @@ class Loader {
       audio.addEventListener(`error`, reject);
 
       audio.src = src;
-    }))));
+    })));
   }
 
   static sendStatistics(points) {

@@ -1,4 +1,4 @@
-import AbstractView from '../../abstract-view';
+import AbstractView from '../abstract-view';
 
 class AttemptsOutScreenView extends AbstractView {
   get template() {
@@ -12,7 +12,9 @@ class AttemptsOutScreenView extends AbstractView {
 
   bind() {
     const replayButton = this.element.querySelector(`.main-replay`);
-    replayButton.addEventListener(`click`, () => this.onReplayButtonClick());
+    replayButton.addEventListener(`click`, () => {
+      this.onReplayButtonClick();
+    });
   }
 
   onReplayButtonClick() {
