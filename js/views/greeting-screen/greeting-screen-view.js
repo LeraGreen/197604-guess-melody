@@ -1,10 +1,14 @@
-import AbstractView from '../../abstract-view';
+import AbstractView from '../abstract-view';
 
 class GreetingScreenView extends AbstractView {
+  constructor() {
+    super();
+    this._playButton = null;
+  }
   get template() {
     return `<section class="main main--welcome">
       <section class="logo" title="Угадай мелодию"><h1>Угадай мелодию</h1></section>
-      <button class="main-play">Начать игру</button>
+      <button class="main-play" disabled>Начать игру</button>
       <h2 class="title main-title">Правила игры</h2>
       <p class="text main-text">
         Правила просты&nbsp;— за&nbsp;5 минут ответить на все вопросы.<br>
@@ -15,10 +19,14 @@ class GreetingScreenView extends AbstractView {
   }
 
   bind() {
-    const playButton = this.element.querySelector(`.main-play`);
-    playButton.addEventListener(`click`, () => {
+    this._playButton = this.element.querySelector(`.main-play`);
+    this._playButton.addEventListener(`click`, () => {
       this.onPlayButtonClick();
     });
+  }
+
+  enableStartGameButton() {
+    this._playButton.disabled = false;
   }
 
   onPlayButtonClick() {

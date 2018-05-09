@@ -1,10 +1,10 @@
-export const settings = {
+export const SETTINGS = Object.freeze({
   maxMistakes: 3,
-  screens: 0,
+  lastScreen: 0,
   timeToGame: 5 * 60,
   timeToEnd: 0,
   timeToAlarm: 30
-};
+});
 
 export const FAST_ANSWER_TIME = 30;
 
@@ -14,12 +14,12 @@ export const AnswerType = {
   WRONG: `wrong`
 };
 
-export const initialState = {
+export const INITIAL_STATE = Object.freeze({
   mistakes: 0,
-  time: settings.timeToGame,
-  question: 0,
+  time: SETTINGS.timeToGame,
+  question: -1,
   answers: []
-};
+});
 
 export const answerPoints = {
   [AnswerType.WRONG]: -2,

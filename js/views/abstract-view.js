@@ -1,11 +1,8 @@
-import {getElementFromTemplate} from './utils';
+import {getElementFromTemplate} from '../utils';
 
 class AbstractView {
   get template() {
     throw new Error(`You don't have any template`);
-  }
-
-  bind() {
   }
 
   get element() {
@@ -15,6 +12,9 @@ class AbstractView {
     }
 
     return this._element;
+  }
+
+  bind() {
   }
 }
 

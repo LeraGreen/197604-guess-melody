@@ -38,15 +38,15 @@
   transform: scale(1.04);
 }
 
-.main-play--disabled {
+.main-play[disabled] {
   border-left-color: #ccb4a2;
   cursor: auto;
 }
 
-.main-play--disabled:hover {
+.main-play[disabled]:hover {
   transform: none;
 }
 
-.main-play--disabled:active {
+.main-play[disabled]:active {
   transform: none;
 }

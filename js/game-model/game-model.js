@@ -1,59 +1,33 @@
-import {answerPoints, initialState, settings, FAST_ANSWER_TIME, AnswerType} from "../data/game-data";
+import {answerPoints, INITIAL_STATE, SETTINGS, FAST_ANSWER_TIME, AnswerType} from '../game-data/game-data';
+
+export const TimerResult = {
+  TIME_OUT: `timeEnd`,
+  ALARM: `alarm`,
+  TICK: `tick`
+};
+
+export const ResultType = {
+  TIME_OUT: `timeEnd`,
+  WIN: `win`,
+  ATTEMPTS_OUT: `attemptsOut`
+};
+
+export const QuestionType = {
+  ARTIST: `artist`,
+  GENRE: `genre`
+};
 
 class GameModel {
   constructor(questions) {
-    this._state = {};
     this._questions = questions;
-    this._question = null;
-    this._settings = Object.assign({}, settings, {
-      screens: this._questions.length
+
+    this._settings = Object.assign({}, SETTINGS, {
+      lastScreen: this._questions.length
     });
-  }
 
-  static getWinnerStatistic(userPoints, otherResults) {
-    const winners = otherResults
-        .slice(0)
-        .sort((prev, next) => next.points - prev.points);
-
-    let position = -1;
-
-    for (let i = 0; i < otherResults.length; i++) {
-      if (winners[i].points < userPoints) {
-        position = i + 1;
-        break;
-      }
-    }
-
-    if (position === -1) {
-      position = winners.length + 1;
-    }
-
-    const players = winners.length + 1;
-    const percent = Math.round(((players - position) / players) * 100);
-
-    return {position, players, percent};
-  }
-
-  static getAnswerType(isCorrect, time) {
-    let type = AnswerType.WRONG;
-    if (isCorrect) {
-      type = time <= FAST_ANSWER_TIME ?
-        AnswerType.FAST :
-        AnswerType.CORRECT;
-    }
-    return type;
-  }
-
-  static isGenreAnswerCorrect(answers, question) {
-    if (!answers.length) {
-      return false;
-    }
-    return answers.every((it) => it === question.genre);
-  }
-
-  static isArtistAnswerCorrect(answer, answerVariants) {
-    const rightAnswer = answerVariants.find((it) => it.isCorrect).title;
-    return answer === rightAnswer;
+    this._state = Object.assign({}, INITIAL_STATE, {
+      answers: []
+    });
   }
 
   get question() {
@@ -64,22 +38,16 @@ class GameModel {
     return this._state.mistakes;
   }
 
-  get time() {
-    return this._state.time;
-  }
-
   get questionType() {
-    return this._question.type;
+    return this.question.type;
   }
 
   get gameTime() {
     return this._settings.timeToGame;
   }
 
-  resetState() {
-    Object.assign(this._state, initialState, {
-      answers: []
-    });
+  get time() {
+    return this._state.time;
   }
 
   tickTimer() {
@@ -87,24 +55,15 @@ class GameModel {
   }
 
   checkTimer() {
-    if (this._state.time > this._settings.timeToEnd) {
-      this.onTick(this._state.time);
-
-      if (this._state.time === this._settings.timeToAlarm) {
-        this.onAlarm();
-      }
-    } else if (this._state.time === this._settings.timeToEnd && this._state.answers.length < this._settings.screens) {
-      this.onTimeEnd();
+    if (this._state.time === this._settings.timeToEnd && this._state.answers.length < this._settings.lastScreen) {
+      return TimerResult.TIME_OUT;
     }
-  }
 
-  onTick() {
-  }
+    if (this._state.time === this._settings.timeToAlarm) {
+      return TimerResult.ALARM;
+    }
 
-  onTimeEnd() {
-  }
-
-  onAlarm() {
+    return TimerResult.TICK;
   }
 
   addAnswer(answer) {
@@ -112,26 +71,27 @@ class GameModel {
   }
 
   isGameContinued() {
-    const questionNumber = this._state.question;
-    this._question = this._questions[questionNumber];
     return this._state.mistakes < this._settings.maxMistakes &&
-      questionNumber < this._settings.screens &&
-      this._question;
+      this._state.question < this._settings.lastScreen;
   }
 
   upQuestion() {
     this._state.question++;
   }
 
-  isAttemptsOut() {
-    return this._state.mistakes === this._settings.maxMistakes;
+  getGameResult() {
+    if (this._state.mistakes === this._settings.maxMistakes) {
+      return ResultType.ATTEMPTS_OUT;
+    }
+
+    if (this._state.mistakes < this._settings.maxMistakes &&
+      this._state.question === this._settings.lastScreen) {
+      return ResultType.WIN;
+    }
+
+    return ``;
   }
 
-  isUserWin() {
-    const questionNumber = this._state.question;
-    return this._state.mistakes < this._settings.maxMistakes &&
-      questionNumber === this._settings.screens;
-  }
 
   checkMistake() {
     const lastAnswer = this._state.answers[this._state.answers.length - 1];
@@ -151,9 +111,6 @@ class GameModel {
     for (const answer of this._state.answers) {
       points += answerPoints[answer];
     }
-    if (points < 0) {
-      points = -1;
-    }
     return points;
   }
 
@@ -162,15 +119,72 @@ class GameModel {
   }
 
   checkAnswer(answer, time) {
-    if (typeof answer !== `undefined`) {
-      const answerType = GameModel.getAnswerType(answer, time);
-      this.addAnswer(answerType);
-      this.checkMistake();
-    }
+    const answerType = GameModel.getAnswerType(answer, time);
+    this.addAnswer(answerType);
+    this.checkMistake();
   }
 
   calcRoundTime(startTime) {
     return startTime - this._state.time;
+  }
+
+  static getWinnerStatistic(userPoints, otherResults) {
+    const winners = otherResults.
+        slice(0).
+        sort((prev, next) => next.points - prev.points);
+
+    let position = winners.length + 1;
+
+    for (let i = 0; i < otherResults.length; i++) {
+      if (winners[i].points < userPoints) {
+        position = i + 1;
+        break;
+      }
+    }
+
+    const players = winners.length + 1;
+    const percent = Math.round(((players - position) / players) * 100);
+
+    return {position, players, percent};
+  }
+
+  static getAudioSources(data) {
+    const sources = new Set();
+
+    for (const it of data) {
+      if (it.type === QuestionType.ARTIST) {
+        sources.add(it.src);
+      }
+
+      if (it.type === QuestionType.GENRE) {
+        for (const item of it.answers) {
+          sources.add(item.src);
+        }
+      }
+    }
+
+    return [...sources];
+  }
+
+  static getAnswerType(isCorrect, time) {
+    if (!isCorrect) {
+      return AnswerType.WRONG;
+    }
+    return time <= FAST_ANSWER_TIME ?
+      AnswerType.FAST :
+      AnswerType.CORRECT;
+  }
+
+  static isGenreAnswerCorrect(answers, question) {
+    if (!answers.length) {
+      return false;
+    }
+    return answers.every((it) => it === question.genre);
+  }
+
+  static isArtistAnswerCorrect(answer, answerVariants) {
+    const rightAnswer = answerVariants.find((it) => it.isCorrect).title;
+    return answer === rightAnswer;
   }
 }
 

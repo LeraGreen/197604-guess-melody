@@ -1,17 +1,10 @@
-import AbstractView from '../../abstract-view';
+import AbstractView from '../abstract-view';
 
 class ArtistScreenView extends AbstractView {
   constructor(question) {
     super();
     this._question = question;
     this._answersVariants = this._question.answers;
-  }
-
-  // Подсветка правильного ответа для удобства проверки
-  static _showRightAnswer(answer) {
-    return answer.isCorrect ?
-      `style="outline: rgba(225, 151, 23, .5) solid 3px"` :
-      ``;
   }
 
   get template() {
@@ -92,6 +85,13 @@ class ArtistScreenView extends AbstractView {
   }
 
   onAnswersFormChange() {
+  }
+
+  // Подсветка правильного ответа для удобства проверки
+  static _showRightAnswer(answer) {
+    return answer.isCorrect ?
+      `style="outline: rgba(225, 151, 23, .5) solid 3px"` :
+      ``;
   }
 }
 
