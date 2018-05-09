@@ -14,6 +14,7 @@ export const AnswerType = {
   WRONG: `wrong`
 };
 
+
 export const INITIAL_STATE = Object.freeze({
   mistakes: 0,
   time: SETTINGS.timeToGame,
