@@ -25,11 +25,11 @@ class GreetingScreenView extends AbstractView {
     });
   }
 
-  onPlayButtonClick() {
-  }
-
   enableStartGameButton() {
     this._playButton.disabled = false;
+  }
+
+  onPlayButtonClick() {
   }
 }
 

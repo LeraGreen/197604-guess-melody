@@ -1,5 +1,5 @@
 import AbstractView from '../../abstract-view';
-import {splitTime} from "../../utils";
+import {splitTime} from '../../utils';
 
 class TimerTextView extends AbstractView {
   get template() {
@@ -21,15 +21,15 @@ class TimerTextView extends AbstractView {
       this._secondsElement = document.getElementById(`seconds`);
     }
 
-    this._minutesElement.textContent = this._addLeadingZero(time.minutes);
-    this._secondsElement.textContent = this._addLeadingZero(time.seconds);
+    this._minutesElement.textContent = TimerTextView.addLeadingZero(time.minutes);
+    this._secondsElement.textContent = TimerTextView.addLeadingZero(time.seconds);
   }
 
   setAlarm(isAlarm) {
     this.element.classList.toggle(`timer-value--finished`, isAlarm);
   }
 
-  _addLeadingZero(number) {
+  static addLeadingZero(number) {
     return `${number >= 10 ? `` : `0`}${number}`;
   }
 }

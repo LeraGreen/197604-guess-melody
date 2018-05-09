@@ -5,8 +5,7 @@ import MistakesView from '../game-views/mistakes/mistakes-view';
 import TimerGraphicView from '../game-views/timer/timer-graphic-view';
 import TimerTextView from '../game-views/timer/timer-text-view';
 import GameModel from '../game-model/game-model';
-import {endGame} from "../main";
-import {ResultType} from "../main";
+import application, {ResultType} from '../application';
 
 const TIMER_INTERVAL = 1000;
 
@@ -27,26 +26,15 @@ const TimerResult = {
 };
 
 class GamePresenter {
-  constructor() {
+  constructor(model) {
     this._questionScreen = null;
     this._timerId = null;
     this._timerGraphic = null;
     this._timerText = null;
     this._screenTime = null;
-    this._gameModel = null;
-  }
 
-  init(model) {
     this._gameModel = model;
     this._gameModel.resetState();
-  }
-
-  startGame() {
-    if (!this._timerId) {
-      this._startTimer();
-    }
-
-    this._showNextGameScreen();
   }
 
   _showNextGameScreen() {
@@ -54,8 +42,7 @@ class GamePresenter {
     if (this._gameModel.isGameContinued()) {
       this._continueGame();
     } else {
-      this._stopTimer();
-      endGame(this._gameModel.getGameResult());
+      this._endGame(this._gameModel.getGameResult());
     }
   }
 
@@ -77,6 +64,7 @@ class GamePresenter {
     if (!this._timerText) {
       this._timerText = new TimerTextView();
     }
+
     this._showTimer();
     this._addMistakes();
 
@@ -84,11 +72,16 @@ class GamePresenter {
     this._screenTime = this._gameModel.time;
   }
 
+  _endGame(resultType) {
+    this._stopTimer();
+    application.endGame(resultType);
+  }
+
   _startTimer() {
     this._timerId = setInterval(() => {
       switch (this._gameModel.checkTimer()) {
         case TimerResult.TIME_OUT:
-          endGame(ResultType.TIME_OUT);
+          this._endGame(ResultType.TIME_OUT);
           break;
         case TimerResult.ALARM:
           this._timerText.setAlarm(true);
@@ -136,6 +129,14 @@ class GamePresenter {
   _addMistakes() {
     const mistakesView = new MistakesView(this._gameModel.mistakes)
     this._questionScreen.append(mistakesView);
+  }
+
+  startGame() {
+    if (!this._timerId) {
+      this._startTimer();
+    }
+
+    this._showNextGameScreen();
   }
 }
 

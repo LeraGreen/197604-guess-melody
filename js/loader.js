@@ -17,23 +17,8 @@ class Loader {
         then((response) => response.json());
   }
 
-  static preloadAudio(data) {
-    // todo cсделать статик для модели вызать из мэйна пофиксить время порверить еритерии
-    const sources = new Set();
-
-    for (const it of data) {
-      if (it.type === `artist`) {
-        sources.add(it.src);
-      }
-
-      if (it.type === `genre`) {
-        for (const item of it.answers) {
-          sources.add(item.src);
-        }
-      }
-    }
-
-    return Promise.all([...sources].map(((src) => new Promise((resolve, reject) => {
+  static preloadAudio(sources) {
+    return Promise.all(sources.map(((src) => new Promise((resolve, reject) => {
       const audio = new Audio();
       audio.preload = `auto`;
 

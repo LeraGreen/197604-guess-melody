@@ -7,13 +7,6 @@ class ArtistScreenView extends AbstractView {
     this._answersVariants = this._question.answers;
   }
 
-  // Подсветка правильного ответа для удобства проверки
-  static _showRightAnswer(answer) {
-    return answer.isCorrect ?
-      `style="outline: rgba(225, 151, 23, .5) solid 3px"` :
-      ``;
-  }
-
   get template() {
     return `<section class="main main--level main--level-artist">
       <div class="main-wrap">
@@ -92,6 +85,13 @@ class ArtistScreenView extends AbstractView {
   }
 
   onAnswersFormChange() {
+  }
+
+  // Подсветка правильного ответа для удобства проверки
+  static _showRightAnswer(answer) {
+    return answer.isCorrect ?
+      `style="outline: rgba(225, 151, 23, .5) solid 3px"` :
+      ``;
   }
 }
 

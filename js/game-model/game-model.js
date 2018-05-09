@@ -1,4 +1,4 @@
-import {answerPoints, INITIAL_STATE, SETTINGS, FAST_ANSWER_TIME, AnswerType} from "../data/game-data";
+import {answerPoints, INITIAL_STATE, SETTINGS, FAST_ANSWER_TIME, AnswerType} from '../data/game-data';
 
 class GameModel {
   constructor(questions) {
@@ -9,47 +9,6 @@ class GameModel {
     });
   }
 
-  static getWinnerStatistic(userPoints, otherResults) {
-    const winners = otherResults
-        .slice(0)
-        .sort((prev, next) => next.points - prev.points);
-
-    let position = winners.length + 1;
-
-    for (let i = 0; i < otherResults.length; i++) {
-      if (winners[i].points < userPoints) {
-        position = i + 1;
-        break;
-      }
-    }
-
-    const players = winners.length + 1;
-    const percent = Math.round(((players - position) / players) * 100);
-
-    return {position, players, percent};
-  }
-
-  static getAnswerType(isCorrect, time) {
-    if (!isCorrect) {
-      return AnswerType.WRONG;
-    }
-    return time <= FAST_ANSWER_TIME ?
-      AnswerType.FAST :
-      AnswerType.CORRECT;
-  }
-
-  static isGenreAnswerCorrect(answers, question) {
-    if (!answers.length) {
-      return false;
-    }
-    return answers.every((it) => it === question.genre);
-  }
-
-  static isArtistAnswerCorrect(answer, answerVariants) {
-    const rightAnswer = answerVariants.find((it) => it.isCorrect).title;
-    return answer === rightAnswer;
-  }
-
   get question() {
     return this._questions[this._state.question];
   }
@@ -58,16 +17,16 @@ class GameModel {
     return this._state.mistakes;
   }
 
-  get time() {
-    return this._state.time;
-  }
-
   get questionType() {
     return this.question.type;
   }
 
   get gameTime() {
     return this._settings.timeToGame;
+  }
+
+  get time() {
+    return this._state.time;
   }
 
   resetState() {
@@ -152,6 +111,65 @@ class GameModel {
 
   calcRoundTime(startTime) {
     return startTime - this._state.time;
+  }
+
+  static getWinnerStatistic(userPoints, otherResults) {
+    const winners = otherResults
+        .slice(0)
+        .sort((prev, next) => next.points - prev.points);
+
+    let position = winners.length + 1;
+
+    for (let i = 0; i < otherResults.length; i++) {
+      if (winners[i].points < userPoints) {
+        position = i + 1;
+        break;
+      }
+    }
+
+    const players = winners.length + 1;
+    const percent = Math.round(((players - position) / players) * 100);
+
+    return {position, players, percent};
+  }
+
+  static getAudioSources(data) {
+    const sources = new Set();
+
+    for (const it of data) {
+      if (it.type === `artist`) {
+        sources.add(it.src);
+      }
+
+      if (it.type === `genre`) {
+        for (const item of it.answers) {
+          sources.add(item.src);
+        }
+      }
+    }
+
+    return [...sources];
+  }
+
+  static getAnswerType(isCorrect, time) {
+    if (!isCorrect) {
+      return AnswerType.WRONG;
+    }
+    return time <= FAST_ANSWER_TIME ?
+      AnswerType.FAST :
+      AnswerType.CORRECT;
+  }
+
+  static isGenreAnswerCorrect(answers, question) {
+    if (!answers.length) {
+      return false;
+    }
+    return answers.every((it) => it === question.genre);
+  }
+
+  static isArtistAnswerCorrect(answer, answerVariants) {
+    const rightAnswer = answerVariants.find((it) => it.isCorrect).title;
+    return answer === rightAnswer;
   }
 }
 

@@ -1,7 +1,7 @@
 export const SETTINGS = Object.freeze({
   maxMistakes: 3,
   lastScreen: 0,
-  timeToGame: 35,
+  timeToGame: 5 * 60,
   timeToEnd: 0,
   timeToAlarm: 30
 });

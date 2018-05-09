@@ -1,15 +1,16 @@
-import GreetingScreenView from "../game-views/greeting/greeting-screen-view";
-import {showScreen} from "../utils";
-import {playGame} from "../main";
+import GreetingScreenView from '../game-views/greeting/greeting-screen-view';
+import {showScreen} from '../utils';
+import application from '../application';
 
 class StartGamePresenter {
   constructor() {
     this._greetingScreen = null;
   }
+
   init() {
     this._greetingScreen = new GreetingScreenView();
     this._greetingScreen.onPlayButtonClick = () => {
-      playGame();
+      application.playGame();
     };
     showScreen(this._greetingScreen);
   }

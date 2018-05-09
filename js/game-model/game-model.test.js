@@ -1,5 +1,5 @@
 import {assert} from 'chai';
-import GameModel from "./game-model";
+import GameModel from './game-model';
 
 
 describe(`check answer type`, () => {
